@@ -7,7 +7,7 @@ Repository for UMAP project.
 ## Main scripts: :file_folder: 
 
 _**Data preprocessing:**_ 
-  * filename1.m : Downsamples channels to 2500 Hz.
+  * downsample_os_basic.m : Downsamples channels to 2500 Hz.
 
 _**Sleep stages analysis:**_ 
   
