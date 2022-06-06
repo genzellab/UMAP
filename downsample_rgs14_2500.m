@@ -9,10 +9,10 @@ cd('/home/adrian/Documents/UMAP')
 load('OS_RGS14_UMAP_downsampling.mat')
 
 %Specify Rat number
-Rat=7;
+Rat=6;
 % cd('/home/adrian/Documents/UMAP/Ripple Timestamps RGS14 /Ripple Timestamps RGS14 ')
-cd('/home/adrian/Documents/UMAP/Ripple Timestamps RGS14 /corrections_merged')
-
+% cd('/home/adrian/Documents/UMAP/Ripple Timestamps RGS14 /corrections_merged')
+cd('/home/adrian/Documents/UMAP/Ripple Timestamps RGS14 /Ripple Timestamps RGS14 ')
 
 cd(num2str(Rat))
 
@@ -33,7 +33,8 @@ sd_folders=cellfun(@(equis1) erase(equis1,'.mat') ,sd_folders,'UniformOutput',fa
 
 
 
-cd('/media/adrian/GL14_RAT_FANO/Rat_OS_Ephys_RGS14_rat7_373727')
+% cd('/media/adrian/GL14_RAT_FANO/Rat_OS_Ephys_RGS14_rat7_373727')
+cd('/media/adrian/GL04_RAT_HOMER/RAT_OS_Ephys_RGS14/Rat6_373726')
       yy = {'HPC'};       
       xx = {'PFC'};
       ss = 3;   %NREM
