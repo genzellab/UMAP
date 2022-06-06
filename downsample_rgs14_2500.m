@@ -64,7 +64,7 @@ ripple_waveform_umap_comp = [];
 GC_window_ripples_comp = [];
 % GC_window_ripples_broadband_comp = [];
 %xo
-    for j = 3:length(g)  %study day index 
+    for j = 1:length(g)  %study day index 
 
         
         
@@ -383,9 +383,9 @@ Cortex=downsample(Cortex,fs/fs_new);
                             ripple_start_timestamps=ripple_timestamps(:,1); % Extract only the ripple starts.
                             ripple_start_timestamps=[ripple_start_timestamps{:}]; %Values in seconds.
 % xo
-                                     if jj==4 && length(G)>6
-                                         xo
-                                     end
+%                                      if jj==4 && length(G)>6
+%                                          xo
+%                                      end
 %%                                    
                             waveforms_ripples={};
                             waveforms_ripples_umap=[];
