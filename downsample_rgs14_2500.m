@@ -9,10 +9,10 @@ cd('/home/adrian/Documents/UMAP')
 load('OS_RGS14_UMAP_downsampling.mat')
 
 %Specify Rat number
-Rat=6;
+Rat=7;
 % cd('/home/adrian/Documents/UMAP/Ripple Timestamps RGS14 /Ripple Timestamps RGS14 ')
-% cd('/home/adrian/Documents/UMAP/Ripple Timestamps RGS14 /corrections_merged')
-cd('/home/adrian/Documents/UMAP/Ripple Timestamps RGS14 /Ripple Timestamps RGS14 ')
+ cd('/home/adrian/Documents/UMAP/Ripple Timestamps RGS14 /corrections_merged')
+%cd('/home/adrian/Documents/UMAP/Ripple Timestamps RGS14 /Ripple Timestamps RGS14 ')
 
 cd(num2str(Rat))
 
@@ -21,6 +21,9 @@ sd_folders={sd_folders.name};
 sd_folders=sd_folders(3:end);
 % rip_timestamp_folders=sd_folders;
 %xo
+if length(sd_folders)>4
+    sd_folders=sd_folders(2:end);
+end
 
 for ind1=1:length(sd_folders)
 r_time=load(sd_folders{ind1});
@@ -33,8 +36,8 @@ sd_folders=cellfun(@(equis1) erase(equis1,'.mat') ,sd_folders,'UniformOutput',fa
 
 
 
-% cd('/media/adrian/GL14_RAT_FANO/Rat_OS_Ephys_RGS14_rat7_373727')
-cd('/media/adrian/GL04_RAT_HOMER/RAT_OS_Ephys_RGS14/Rat6_373726')
+ cd('/media/adrian/GL14_RAT_FANO/Rat_OS_Ephys_RGS14_rat7_373727')
+%cd('/media/adrian/GL04_RAT_HOMER/RAT_OS_Ephys_RGS14/Rat6_373726')
       yy = {'HPC'};       
       xx = {'PFC'};
       ss = 3;   %NREM
@@ -65,7 +68,7 @@ ripple_waveform_umap_comp = [];
 GC_window_ripples_comp = [];
 % GC_window_ripples_broadband_comp = [];
 %xo
-    for j = 1:length(g)  %study day index 
+    for j = 3:length(g)  %study day index 
 
         
         
@@ -384,9 +387,9 @@ Cortex=downsample(Cortex,fs/fs_new);
                             ripple_start_timestamps=ripple_timestamps(:,1); % Extract only the ripple starts.
                             ripple_start_timestamps=[ripple_start_timestamps{:}]; %Values in seconds.
 % xo
-%                                      if jj==4 && length(G)>6
-%                                          xo
-%                                      end
+                                     if jj==4 && length(G)>6
+                                         xo
+                                     end
 %%                                    
                             waveforms_ripples={};
                             waveforms_ripples_umap=[];
