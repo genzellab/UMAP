@@ -466,7 +466,10 @@ end
                end
                %xo
                 cd ..
-
+if length(ripple_waveform_umap_total)~=9
+    error('Wrong dimensions.')
+end
+                
 % ripple_phases_comp = [ripple_phases_comp;ripple_phases];
 ripple_waveform_comp = [ripple_waveform_comp; ripple_waveform_total];
 % ripple_waveform_broadband_comp = [ripple_waveform_broadband_comp; ripple_waveform_broadband_total];
