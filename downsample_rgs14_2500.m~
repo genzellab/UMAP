@@ -41,8 +41,7 @@ sd_folders=cellfun(@(equis1) erase(equis1,'.mat') ,sd_folders,'UniformOutput',fa
 % cd('/media/irene/MD04_RAT_THETA/rat/Rat_OS_Ephys_RGS14/Rat_OS_Ephys_RGS14_rat6_373726')
 % cd('/media/irene/Rat9/OS_Ephys_RGS14_Rat9_378134')
 %cd('/media/irene/GL13_RAT_BURSTY/Rat_OS_Ephys_RGS14_rat4_357153')
-path_raw_data='/media/adrian/GL03_Rat_Spindle/OS_Ephys_RGS14_rat8_378133';
-cd(path_raw_data)
+cd('/media/adrian/GL03_Rat_Spindle/OS_Ephys_RGS14_rat8_378133')
       yy = {'HPC'};       
       xx = {'PFC'};
       ss = 3;   %NREM
@@ -194,7 +193,27 @@ HPC=downsample(HPC,fs/fs_new);
 try
     Cortex=load_open_ephys_data(['100_CH' num2str(vr(2)) '_0.continuous']);
 catch
-    Cortex=load_open_ephys_data(['100_CH' num2str(vr(2)) '_1.continuous']);          
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        
 end
 Cortex=Cortex.*(0.195);
 
@@ -320,22 +339,16 @@ Cortex=downsample(Cortex,fs/fs_new);
                            cd(G{i+1})
                            messbox(G{i+1},'Extra folder')                           
   
-                           try
-                            HPC=load_open_ephys_data(['100_CH' num2str(vr(1)) '_0.continuous']);
-                           catch
-                            HPC=load_open_ephys_data(['100_CH' num2str(vr(1)) '_1.continuous']);                               
-                           end
+                           
+                            HPC=load_open_ephys_data(['100_CH' num2str(vr(1)) '_1.continuous']);
                             HPC=HPC.*(0.195);
 
                             Wn=[fs_new/fs ]; % Cutoff=fs_new/2 Hz. 
                             [b,a] = butter(3,Wn);
                             HPC=filtfilt(b,a,HPC);
                             HPC=downsample(HPC,fs/fs_new);
-                            try
-                             Cortex=load_open_ephys_data(['100_CH' num2str(vr(2)) '_0.continuous']);
-                            catch
-                             Cortex=load_open_ephys_data(['100_CH' num2str(vr(2)) '_1.continuous']);                                
-                            end
+
+                            Cortex=load_open_ephys_data(['100_CH' num2str(vr(2)) '_1.continuous']);
                             Cortex=Cortex.*(0.195);
 
                             Cortex=filtfilt(b,a,Cortex);
@@ -506,7 +519,7 @@ ripple_waveform_umap_comp=[ripple_waveform_umap_comp; ripple_waveform_umap_total
 % save(strcat('ripple_total_data_',g{j},'.mat'),'ripple_total_data')
 % save(strcat('ripple_counts_',g{j},'.mat'),'ripple_count','NREM_min')
 %xo
-current_dir=path_raw_data;
+current_dir=cd;
 cd('~/Documents/UMAP/UMAP_RGS14')
 save(strcat('ripple_waveforms_',g{j},'.mat'),'ripple_waveform_total')
 % save(strcat('ripple_waveforms_broadband_',g{j},'.mat'),'ripple_waveform_broadband_total')
