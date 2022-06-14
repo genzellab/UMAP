@@ -1,0 +1,28 @@
+function [Y]=alignripples(x)
+% Align ripples to the closest minimum nearest to the ripple peak.
+
+% Input
+% x is the cell array obtained from the GC files. Each cell is one ripple. 
+Fs=2500;
+x=cell2mat(x);
+
+x=x(2:2:end,:);
+%%
+
+xPeak=7500+1; %Ripple Peak
+ripples=x;
+Data=[];
+coil = Fs * 0.010;
+Y=[];
+for i=1:size(ripples,1)
+
+
+                [ ~, minRaw] = min( ripples(i, (xPeak-coil):(xPeak+coil)) );
+                minRaw = xPeak-coil + minRaw-1;
+%                 Data=[Data minRaw];
+%                 y=x(i, minRaw-3*Fs+coil : minRaw+3*Fs-coil );
+                y=x(i, minRaw-126/2 : minRaw+126/2 );
+
+                Y=[Y; y];
+end
+end
