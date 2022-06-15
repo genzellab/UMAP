@@ -9,9 +9,9 @@ cd('~/Documents/UMAP')
 load('OS_RGS14_UMAP_downsampling.mat')
 
 %Specify Rat number
-Rat=8;
- cd('/home/adrian/Documents/UMAP/Ripple Timestamps RGS14 /Ripple Timestamps RGS14 ')
-% cd('/home/adrian/Documents/UMAP/Ripple Timestamps RGS14 /corrections_merged')
+Rat=7;
+% cd('/home/adrian/Documents/UMAP/Ripple Timestamps RGS14 /Ripple Timestamps RGS14 ')
+ cd('/home/adrian/Documents/UMAP/Ripple Timestamps RGS14 /corrections_merged')
 %cd('/home/irene/Documents/UMAP/Ripple Timestamps RGS14 /Ripple Timestamps RGS14 ')
 
 cd(num2str(Rat))
@@ -41,7 +41,8 @@ sd_folders=cellfun(@(equis1) erase(equis1,'.mat') ,sd_folders,'UniformOutput',fa
 % cd('/media/irene/MD04_RAT_THETA/rat/Rat_OS_Ephys_RGS14/Rat_OS_Ephys_RGS14_rat6_373726')
 % cd('/media/irene/Rat9/OS_Ephys_RGS14_Rat9_378134')
 %cd('/media/irene/GL13_RAT_BURSTY/Rat_OS_Ephys_RGS14_rat4_357153')
-path_raw_data='/media/adrian/GL03_Rat_Spindle/OS_Ephys_RGS14_rat8_378133';
+%path_raw_data='/media/adrian/GL03_Rat_Spindle/OS_Ephys_RGS14_rat8_378133';
+path_raw_data='/media/adrian/GL14_RAT_FANO/Rat_OS_Ephys_RGS14_rat7_373727';
 cd(path_raw_data)
       yy = {'HPC'};       
       xx = {'PFC'};
@@ -509,16 +510,21 @@ ripple_waveform_umap_comp=[ripple_waveform_umap_comp; ripple_waveform_umap_total
 current_dir=path_raw_data;
 cd('~/Documents/UMAP/UMAP_RGS14')
 save(strcat('ripple_waveforms_',g{j},'.mat'),'ripple_waveform_total')
+clear ripple_waveform_total
 % save(strcat('ripple_waveforms_broadband_',g{j},'.mat'),'ripple_waveform_broadband_total')
 save(strcat('GC_window_ripples_',g{j},'.mat'),'GC_window_ripples_total')
+clear GC_window_ripples_total
 % save(strcat('GC_window_ripples_broadband_',g{j},'.mat'),'GC_window_ripples_broadband_total')
 save(strcat('ripple_waveforms_umap_',g{j},'.mat'),'ripple_waveform_umap_total')
+clear ripple_waveform_umap_total
 
-save(strcat('ripple_waveforms_compilation_Rat',num2str(Rat),'.mat'),'ripple_waveform_comp')
-% save(strcat('ripple_waveforms_broadband_compilation_Rat',rat_folder{k},'.mat'),'ripple_waveform_broadband_comp')
-save(strcat('GC_window_ripples_compilation_Rat',num2str(Rat),'.mat'),'GC_window_ripples_comp','-v7.3')
-% save(strcat('GC_window_ripples_broadband_compilation_Rat',rat_folder{k},'.mat'),'GC_window_ripples_broadband_comp')
-save(strcat('ripple_waveforms_umap_compilation_Rat',num2str(Rat),'.mat'),'ripple_waveform_umap_comp')
+
+% save(strcat('ripple_waveforms_compilation_Rat',num2str(Rat),'.mat'),'ripple_waveform_comp')
+% % save(strcat('ripple_waveforms_broadband_compilation_Rat',rat_folder{k},'.mat'),'ripple_waveform_broadband_comp')
+% save(strcat('GC_window_ripples_compilation_Rat',num2str(Rat),'.mat'),'GC_window_ripples_comp','-v7.3')
+% % save(strcat('GC_window_ripples_broadband_compilation_Rat',rat_folder{k},'.mat'),'GC_window_ripples_broadband_comp')
+% save(strcat('ripple_waveforms_umap_compilation_Rat',num2str(Rat),'.mat'),'ripple_waveform_umap_comp')
+
 cd(current_dir)
 % save(strcat('ripple_phases_',g{j},'.mat'),'ripple_phases')
 % save(strcat('ripple_phases_compilation_Rat',rat_folder{k},'.mat'),'ripple_phases_comp')
