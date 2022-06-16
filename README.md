@@ -39,6 +39,15 @@ for j=1:length(ou)
 end
 ```
 
+For filtering the aligned data use:
+```
+fn=2500;
+Wn1=[70/(fn/2) 400/(fn/2)]; % Cutoff=70-400 Hz
+[b,a] = butter(3,Wn1,'bandpass');
+Y_filtered=cellfun(@(x) filtfilt(b,a,x.').' , Y,'UniformOutput',false);
+```
+
+
 _**Sleep stages analysis:**_ 
   
   * filename2.m
