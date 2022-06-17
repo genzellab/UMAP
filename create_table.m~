@@ -55,10 +55,21 @@ end
 
  T=[T ripple_amp];
  T.Properties.VariableNames(6)={'Amplitude'};
+ %%
+ 
  
  %% Mean Freq
 [ripple_meanfreq]=cellfun(@(x) (compute_meanfreq(x)) ,T.Ripples,'UniformOutput',false);
+%%
 
+for j=1:length(T.Ripples)
+    compute_meanfreq(T.Ripples{j});
+end
+
+%%
  T=[T ripple_meanfreq];
- T.Properties.VariableNames(7)={'Mean frequency'};
-  
+ T.Properties.VariableNames(6)={'Mean frequency'};
+ 
+ 
+ 
+ 
