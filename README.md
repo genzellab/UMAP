@@ -47,7 +47,8 @@ Wn1=[70/(fn/2) 400/(fn/2)]; % Cutoff=70-400 Hz
 Y_filtered=cellfun(@(x) filtfilt(b,a,x.').' , Y,'UniformOutput',false);
 ```
 
-To Z-score (per day) and organize the data in a structure with nested structures:
+To Z-score (per day) and organize the data in a structure with nested structures. The same script can be used for RAW ripples, just change Y_filtered for Y and RGS for RGS_raw.
+:
 ```
 Data=[];
 for i=1:length(Y_filtered)
