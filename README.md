@@ -67,10 +67,9 @@ clearvars -except VEH RGS
 ```
 
 
-
-_**Sleep stages analysis:**_ 
+_**Organize data in a table:**_ 
   
-  * filename2.m
+  * create_table.m
  
 _**Event detection:**_ 
   
