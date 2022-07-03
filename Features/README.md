@@ -27,6 +27,7 @@ T.Properties.VariableNames(8)={'Amplitude2'};
 - Frequency (2nd method)
 ```
 [ripple_freq]=cellfun(@(x) (compute_frequency_liset(x)) ,T.Ripples,'UniformOutput',false);
+
 T=[T ripple_freq];
 T.Properties.VariableNames(9)={'Frequency'};
 ```
