@@ -15,149 +15,242 @@ import pandas as pd
 
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.colors as cl
+
 from mpl_toolkits.mplot3d import Axes3D
 import seaborn as sns
 
 import umap
+import plotly.express as px
 
 sns.set(style='white',context='poster', rc={'figure.figsize':(14,10)} )
+# %% Load whole table and split columns 
 
-# %%
-myDict = scipy.io.loadmat('AMP.mat')
+myDict = scipy.io.loadmat('Tcell.mat')
+T=myDict['Tcell'];
 
-AmpDF=pd.DataFrame.from_dict(myDict['Amp']);
+#Treatment
+treatment_np=T[:,0];
+#Rat
+rat_np=T[:,1];
+#StudyDay
+StudyDay_np=T[:,2];
+#Trial
+trial_np=T[:,3];
 
-A=AmpDF[0]; 
+#Amplitude
+amplitude_np=T[:,5];
 
+#Ripples waveforms
+Ripples=T[:,4];
 
-# %%
-myDict = scipy.io.loadmat('Ripples.mat')
-
-#trial1=myDict['Ripples'][0];
-
-#RipplesDF=pd.DataFrame.from_dict(myDict['Ripples'][0]) ##m is between 0 and (length(ripples)-1) (0-287)
-RipplesDF=pd.DataFrame.from_dict(myDict['Ripples']) ##m is between 0 and (length(ripples)-1) (0-287)
-
-
-a=RipplesDF[0]; #ripplesDF[0][0][x][y] => x and y is row and column numbers, indexing starts with 0.
-
-#data=a;
-
-# %%
-## Random data
-np.random.seed(42)
-data = np.random.rand(800, 4)
-
-
-fit = umap.UMAP()
-u = fit.fit_transform(data)
-
-
-plt.scatter(u[:,0],u[:,1],c=data)
-plt.title('UMAP embedding of random colours');
-
-
-# %% Ripples data
-b=a[0];
-fit = umap.UMAP(n_components=4)
-u = fit.fit_transform(b)
-
-
-colours=np.random.rand(b.shape[0], 1)
-plt.scatter(u[:,0],u[:,1],c=colours)
-plt.title('UMAP embedding of ripples');
-
-# %%
-a_np=RipplesDF.to_numpy();
-amp_np=A.to_numpy();
-#v1=a_np[0][0];
-#v2=a_np[1][0];
-#v3=a_np[2][0];
-#v4=np.vstack((v1,v3));
-
-
-v1=amp_np[0][0];
-v2=amp_np[1];
-v3=amp_np[2][0];
-
-
-v4=np.append(v1,v3)
+#Meanfreq
+meanfreq_np=T[:,6];
+# %% Flattening
 
 Data=[];
-for i in range(len(a_np)):
+for i in range(len(Ripples)):
     print(i)
 #    Data=np.vstack((Data,x[i][0]));
     if i==0:
-        Data=a_np[i][0];
+        Data=Ripples[i];
         continue
     try:
-        Data=np.vstack((Data,a_np[i][0]));
+        Data=np.vstack((Data,Ripples[i]));
     except ValueError:
         print('Empty cell')
         continue
 
+# %% Functions
+#Function to accumulate values from numpy arrays
+def flatcells(amplitude_np):    
+    Amp=[];
+    for i in range(len(amplitude_np)):
+        print(i);
+    #    Data=np.vstack((Data,x[i][0]));
+        if i==0:
+            Amp=amplitude_np[i][0];
+            continue
+        try:
+         Amp=np.hstack((Amp,amplitude_np[i][0]));
+        except IndexError:
+            print('Empty cell')
+            continue
+    return Amp
 
 
+#Function to compare strings with numpy arrays.
+def strcmp(treatment_np,string):
+    Amp=[];
+    for i in range(len(treatment_np)):
+        print(i);
+    #    Data=np.vstack((Data,x[i][0]));
+        if treatment_np[i][0]==string:
+            Amp.append(1)
+        else:
+            Amp.append(0)
+    A=np.array(Amp)       
+    return A
+ 
+def plot_umap(Amp,string):
+    z=Amp;
+    normalize = cl.Normalize(vmin=np.mean(z)-3*np.std(z), vmax=np.mean(z)+3*np.std(z))
     
-#Amplitude    
-Amp=[];
-for i in range(len(a_np)):
-    print(i)
-#    Data=np.vstack((Data,x[i][0]));
-    if i==0:
-        Amp=amp_np[i][0];
-        continue
-    try:
-     Amp=np.hstack((Amp,amp_np[i][0]));
-    except IndexError:
-        print('Empty cell')
-        continue
- 
+    #colormap=plt.cm.get_cmap('bwr')
+    #colors=colormap(z)
+    #sm=plt.scatter(u[:,0],u[:,1],c=z,alpha=0.6,s=0.01)g
+    sm=plt.scatter(u[:,0],u[:,1],c=z,alpha=0.6,s=1,cmap='seismic',norm=normalize)
+    #sm=plt.scatter(u[:,0],u[:,1],c=z,alpha=0.6,s=0.1,cmap='seismic')
+    
+    #sm=plt.cm.ScalarMappable(cmap=colormap)
+    
+    #sm.set_clim(vmin=np.min(z),vmax=np.max(z))
+    #sm.set_clim(vmin=np.min(z),vmax=220)
+    
+    plt.colorbar(sm)
+    plt.xlabel("UMAP1")
+    plt.ylabel("UMAP2")
+    plt.title(string)
+    plt.show()
 
-       
- 
- 
- #v4=np.vstack((v1,v3));       
-        
-        
-        
-        
-  #  except ValueError:
-  #      print('Empty cell')
-  #      continue
-  #  except IndexError:
-  #      print('Empty cell')
-  #      continue
-        
 
+def plot_umap_binary(L,string):
+    #z=Amp;
+    #normalize = cl.Normalize(vmin=np.mean(z)-3*np.std(z), vmax=np.mean(z)+3*np.std(z))
+    
+    #colormap=plt.cm.get_cmap('bwr')
+    #colors=colormap(z)
+    #sm=plt.scatter(u[:,0],u[:,1],c=z,alpha=0.6,s=0.01)g
+    #sm=plt.scatter(u[:,0],u[:,1],alpha=0.1,s=5,color="b")
+    plt.scatter(u[L,0],u[L,1],alpha=0.1,s=20,color="r")   
+    #sm=plt.scatter(u[:,0],u[:,1],c=z,alpha=0.6,s=0.1,cmap='seismic')
+    #plt.hist2d(u[L,0], u[L,1],100)
+    #sm=plt.cm.ScalarMappable(cmap=colormap)
+    
+    #sm.set_clim(vmin=np.min(z),vmax=np.max(z))
+    #sm.set_clim(vmin=np.min(z),vmax=220)
+    
+    #plt.colorbar(sm)
+    plt.xlabel("UMAP1")
+    plt.ylabel("UMAP2")
+    plt.title(string)
+    plt.show()
+    #plt.legend(['First line', 'Second line'])
+
+def plot_binary(L,string):
+    #z=Amp;
+    #normalize = cl.Normalize(vmin=np.mean(z)-3*np.std(z), vmax=np.mean(z)+3*np.std(z))
+    
+    #colormap=plt.cm.get_cmap('bwr')
+    #colors=colormap(z)
+    #sm=plt.scatter(u[:,0],u[:,1],c=z,alpha=0.6,s=0.01)g
+    #sm=plt.scatter(u[:,0],u[:,1],alpha=0.1,s=5,color="b")
+    #plt.scatter(u[L,0],u[L,1],alpha=0.1,s=20,color="r")   
+    #sm=plt.scatter(u[:,0],u[:,1],c=z,alpha=0.6,s=0.1,cmap='seismic')
+    fig, ax = plt.subplots(figsize =(10, 7))
+    plt.hist2d(u[L,0], u[L,1],100,density=1)
+    cmb=plt.colorbar()
+    cmb.mappable.set_clim(vmin=0, vmax=0.25)    
+    cmb.set_label('Density')
+    #sm=plt.cm.ScalarMappable(cmap=colormap)
+    sm=plt.cm.ScalarMappable()
+
+    #sm.set_clim(vmin=np.min(z),vmax=np.max(z))
+    sm.set_clim(vmin=0,vmax=0.2)
+    ax.set_xlabel('UMAP1') 
+    ax.set_ylabel('UMAP2') 
+    #plt.colorbar(sm)
+    #plt.xlabel("UMAP1")
+    #plt.ylabel("UMAP2")
+    plt.title(string)
+  
+    # show plot
+    plt.tight_layout() 
+    plt.show()
+    
+   
+    
+
+def binary_feature(Ripples,treatment):   
+    L=[]
+    for i in range(len(Ripples)):
+        v=Ripples[i];
+        l=v.shape[0];
+        if l==0:
+            continue
+        else:
+            L.extend([treatment[i]]*l)
+    L=np.array(L);
+    L=L==1;
+    return L
+# %%
+#Features    
+Amp=flatcells(amplitude_np);
+Meanfreq=flatcells(meanfreq_np);
+
+#Treatment
+treatment=strcmp(treatment_np, "RGS14")
+
+#Rat
+rat=strcmp(rat_np, "Rat1")
+
+#StudyDay
+studyday=strcmp(StudyDay_np, "OR")
+
+#Trials    
+trial=strcmp(trial_np,"Post1")
+# %% Ripples data
 
 fit = umap.UMAP(n_components=4)
 u = fit.fit_transform(Data)
+
+# %% RGS ripples
+string="VEH"
+treatment=strcmp(treatment_np, string)
+L=binary_feature(Ripples,treatment)
+#plot_umap_binary(L,"RGS14")
+plot_binary(L,string+" ripples")
+
+# %% Rat's ripples
+rat=strcmp(rat_np, "Rat9")
+L=binary_feature(Ripples,rat)
+plot_binary(L,"Ripples from Rat 9")
+# %% OS
+string="VEH"
+studyday=strcmp(StudyDay_np, "OR")
+st2=strcmp(StudyDay_np, "OD")
+st3=strcmp(StudyDay_np, "CON")
+treatment=strcmp(treatment_np, string)
+logicresult=studyday*treatment;
+logicresult2=st2*treatment;
+logicresult3=st3*treatment;
+
+x=logical_or(logicresult,logicresult2)
+x1=logical_or(x,logicresult3)
+
+
+L=binary_feature(Ripples,x1)
+plot_binary(L,"Ripples from " +string+ " OS")
+
+
+# %% Homecage
+string="VEH"
+
+studyday=strcmp(StudyDay_np, "HC")
+treatment=strcmp(treatment_np, string)
+logicresult=studyday*treatment;
+
+L=binary_feature(Ripples,logicresult)
+plot_binary(L,"Ripples from RGS14 HC")
+
+
 # %%
 
 
-#colours=np.random.rand(u.shape[0], 1)
 
-#z=Amp;
-#colors = plt.cm.viridis(z)
+#z=scipy.stats.zscore(Meanfreq);
+#z=(Amp);
 
-#plt.title('UMAP embedding of ripples');
-#plt.clim(np.min(scipy.stats.zscore(Amp)), np.max(scipy.stats.zscore(Amp)))
-
-
-z=scipy.stats.zscore(Amp);
-
-colormap=plt.cm.get_cmap('bwr')
-colors=colormap(z)
-sm=plt.scatter(u[:,0],u[:,1],c=colors)
-sm=plt.cm.ScalarMappable(cmap=colormap)
-sm.set_clim(vmin=np.min(z),vmax=np.max(z))
-plt.colorbar(sm)
-plt.xlabel("UMAP1")
-plt.ylabel("UMAP2")
-plt.title("UMAP embedding of ripple z-scored amplitudes")
-plt.show()
-
-
+# %%
 
 
