@@ -72,6 +72,4 @@ _**Organize data in a table:**_
   
   * create_table.m
  
-_**Event detection:**_ 
-  
-  * filename3.m
+
