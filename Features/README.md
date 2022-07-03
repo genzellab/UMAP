@@ -32,5 +32,11 @@ T=[T ripple_freq];
 T.Properties.VariableNames(9)={'Frequency'};
 ```
 - Entropy
+```
+[ripple_ent]=cellfun(@(x) (compute_entropy(x)) ,T.Ripples,'UniformOutput',false);
+
+T=[T ripple_ent];
+T.Properties.VariableNames(10)={'Entropy'};
+```
 - AUC
 - Duration
