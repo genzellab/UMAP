@@ -30,8 +30,8 @@ myDict = scipy.io.loadmat('Tcell.mat')
 T=myDict['Tcell'];
 
 
-myDict2 = scipy.io.loadmat('Tcell_ripples.mat')
-T_ripples=myDict2['Tcell_ripples'];
+# myDict2 = scipy.io.loadmat('Tcell_ripples.mat')
+# T_ripples=myDict2['Tcell_ripples'];
 
 
 #Treatment
@@ -70,7 +70,7 @@ auc_np=T[:,10];
 auc2_np=T[:,11];
 
 #Duration
-dur_np=T_ripples[:,5];
+# dur_np=T_ripples[:,5];
 
 # %% Flattening
 
@@ -86,6 +86,20 @@ for i in range(len(Ripples)):
     except ValueError:
         print('Empty cell')
         continue
+
+
+# c=[];
+# for i in range(len(Ripples)):
+#     print(i)
+#     if i==0:
+#         c=dur_np[i];
+#         continue
+#     try:
+#         c=np.vstack((c,dur_np[i]))
+#     except ValueError:
+#         print('Empty cell')
+#         continue
+
 
 # %% Functions
 def get_duration(dur_np):
