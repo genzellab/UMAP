@@ -29,6 +29,11 @@ sns.set(style='white',context='poster', rc={'figure.figsize':(14,10)} )
 myDict = scipy.io.loadmat('Tcell.mat')
 T=myDict['Tcell'];
 
+
+myDict2 = scipy.io.loadmat('Tcell_ripples.mat')
+T_ripples=myDict2['Tcell_ripples'];
+
+
 #Treatment
 treatment_np=T[:,0];
 #Rat
@@ -61,6 +66,12 @@ entropy_np=T[:,9];
 #AUC
 auc_np=T[:,10];
 
+#AUC2
+auc2_np=T[:,11];
+
+#Duration
+dur_np=T_ripples[:,5];
+
 # %% Flattening
 
 Data=[];
@@ -77,6 +88,22 @@ for i in range(len(Ripples)):
         continue
 
 # %% Functions
+def get_duration(dur_np):
+    DUR=[]
+    for i in range(len(dur_np)):
+        print(i);
+    #    Data=np.vstack((Data,x[i][0]));
+        if i==0:
+            DUR=dur_np[i];
+            continue
+        try:
+         DUR=np.vstack((DUR,dur_np[i]));
+        except ValueError:
+            print('Empty cell')
+            continue
+    return DUR
+
+
 #Function to accumulate values from numpy arrays
 def flatcells(amplitude_np):    
     Amp=[];
@@ -208,6 +235,21 @@ Freq=flatcells(freq_np);
 Entropy=flatcells(entropy_np);
 AUC=flatcells(auc_np);
 
+AUC2=flatcells(auc2_np);
+
+DUR=get_duration(dur_np);
+
+
+plot_umap(Amp,"Amplitude1 (z-scored)")
+plot_umap(Freq,"Frequency")
+
+plot_umap(Entropy,"Entropy")
+
+plot_umap(AUC,"Area under the curve")
+
+plot_umap(AUC2,"Area under the curve 2")
+
+plot_umap(DUR,"Duration (ms)")
 
 # %%
 #Treatment
