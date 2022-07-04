@@ -22,6 +22,7 @@ import seaborn as sns
 
 import umap
 import plotly.express as px
+from URC_computeIsomapDimEst import isomapDimEst
 
 sns.set(style='white',context='poster', rc={'figure.figsize':(14,10)} )
 # %% Load whole table and split columns 
@@ -99,7 +100,12 @@ for i in range(len(Ripples)):
 #     except ValueError:
 #         print('Empty cell')
 #         continue
+# %% Ripples data
+[k1,k2]=isomapDimEst(Data);
 
+
+fit = umap.UMAP(n_components=4)
+u = fit.fit_transform(Data)
 
 # %% Functions
 def get_duration(dur_np):
@@ -251,7 +257,7 @@ AUC=flatcells(auc_np);
 
 AUC2=flatcells(auc2_np);
 
-DUR=get_duration(dur_np);
+#DUR=get_duration(dur_np);
 
 
 plot_umap(Amp,"Amplitude1 (z-scored)")
@@ -277,10 +283,7 @@ studyday=strcmp(StudyDay_np, "OR")
 
 #Trials    
 trial=strcmp(trial_np,"Post1")
-# %% Ripples data
 
-fit = umap.UMAP(n_components=4)
-u = fit.fit_transform(Data)
 
 # %% RGS ripples
 string="VEH"
