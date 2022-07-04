@@ -9,8 +9,8 @@ function prefFreq = URC_compute_cleanFreq(alignedRipples, Fs)
         event = [zeros(1, nZeros) event zeros(1, nZeros)];
 
         % Compute power spectrum
-        [pS, freqs] = power_spectrum( event, true, Fs, [70,500] );
-
+        %[pS, freqs] = power_spectrum( event, true, Fs, [70,500] );
+        [pS,freqs] = pspectrum(event,Fs);
         % If maximum power is 70Hz, find if there is another maximum
         if max(pS) == pS(1)
             [~, peaks] = findpeaks(pS);

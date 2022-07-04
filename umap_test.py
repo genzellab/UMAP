@@ -46,6 +46,21 @@ Ripples=T[:,4];
 
 #Meanfreq
 meanfreq_np=T[:,6];
+
+
+#Amplitude2
+amplitude2_np=T[:,7];
+
+
+#Frequency
+freq_np=T[:,8];
+
+#Entropy
+entropy_np=T[:,9];
+
+#AUC
+auc_np=T[:,10];
+
 # %% Flattening
 
 Data=[];
@@ -188,6 +203,13 @@ def binary_feature(Ripples,treatment):
 Amp=flatcells(amplitude_np);
 Meanfreq=flatcells(meanfreq_np);
 
+Amp2=flatcells(amplitude2_np);
+Freq=flatcells(freq_np);
+Entropy=flatcells(entropy_np);
+AUC=flatcells(auc_np);
+
+
+# %%
 #Treatment
 treatment=strcmp(treatment_np, "RGS14")
 
@@ -234,14 +256,14 @@ plot_binary(L,"Ripples from " +string+ " OS")
 
 
 # %% Homecage
-string="VEH"
+string="RGS14"
 
 studyday=strcmp(StudyDay_np, "HC")
 treatment=strcmp(treatment_np, string)
 logicresult=studyday*treatment;
 
 L=binary_feature(Ripples,logicresult)
-plot_binary(L,"Ripples from RGS14 HC")
+plot_binary(L,"Ripples from "+string+" HC")
 
 
 # %%
