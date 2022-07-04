@@ -3,7 +3,7 @@
 ## Hippocampal ripples features.
 - Amplitude :heavy_check_mark:
 ```
- %% Amplitude
+ %% Amplitude 
  ripple_amp=cellfun(@(x) max(abs(hilbert(x.'))) ,T.Ripples,'UniformOutput',false);
 
  T=[T ripple_amp];
@@ -11,34 +11,34 @@
  ```
 - Mean frequency :heavy_check_mark:
 ```
- %% Mean Freq
+ %% Mean Freq 
 [ripple_meanfreq]=cellfun(@(x) (compute_meanfreq(x)) ,T.Ripples,'UniformOutput',false);
 
  T=[T ripple_meanfreq];
  T.Properties.VariableNames(7)={'Mean frequency'};
  ```
-- Amplitude (2nd method)
+- Amplitude (2nd method) :heavy_check_mark:
 ```
 [ripple_amp2]=cellfun(@(x) (compute_amplitude_liset(x)) ,T.Ripples,'UniformOutput',false);
 
 T=[T ripple_amp2];
 T.Properties.VariableNames(8)={'Amplitude2'};
 ```
-- Frequency (2nd method)
+- Frequency (2nd method) :heavy_check_mark:
 ```
 [ripple_freq]=cellfun(@(x) (compute_frequency_liset(x)) ,T.Ripples,'UniformOutput',false);
 
 T=[T ripple_freq];
 T.Properties.VariableNames(9)={'Frequency'};
 ```
-- Entropy
+- Entropy :heavy_check_mark:
 ```
 [ripple_ent]=cellfun(@(x) (compute_entropy(x)) ,T.Ripples,'UniformOutput',false);
 
 T=[T ripple_ent];
 T.Properties.VariableNames(10)={'Entropy'};
 ```
-- AUC
+- AUC :heavy_check_mark:
 ```
 [ripple_auc]=cellfun(@(x) (compute_AUC(x)) ,T.Ripples,'UniformOutput',false);
 
