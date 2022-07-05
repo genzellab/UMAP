@@ -9,6 +9,7 @@ Created on Wed Jun 29 15:54:42 2022
 import os
 import sys
 os.chdir('/mnt/genzel/Rat/OS_Ephys_RGS14_analysis/UMAP');
+#sys.path.append('/home/genzel/Documents/UMAP')
 
 import scipy.io
 import pandas as pd
@@ -101,12 +102,12 @@ for i in range(len(Ripples)):
 #         print('Empty cell')
 #         continue
 
-# K1=[];
-# for i in range(100):
-#     n=np.random.choice(Data.shape[0], 20000)
-#     data=Data[n,:];
-#     k1,k2=isomapDimEst(data)
-#     K1.append(k1);
+K1=[];
+for i in range(100):
+    n=np.random.choice(Data.shape[0], 20000)
+    data=Data[n,:];
+    k1,k2=isomapDimEst(data)
+    K1.append(k1);
 
 # K2=K1;
 # %% Ripples data
