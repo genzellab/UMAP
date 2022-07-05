@@ -103,7 +103,7 @@ for i in range(len(Ripples)):
 
 # K1=[];
 # for i in range(100):
-#     n=np.random.choice(Data.shape[0], 10000)
+#     n=np.random.choice(Data.shape[0], 20000)
 #     data=Data[n,:];
 #     k1,k2=isomapDimEst(data)
 #     K1.append(k1);
