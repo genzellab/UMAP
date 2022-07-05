@@ -7,7 +7,7 @@ Created on Wed Jun 29 15:54:42 2022
 """
 
 import os
-
+import sys
 os.chdir('/mnt/genzel/Rat/OS_Ephys_RGS14_analysis/UMAP');
 
 import scipy.io
@@ -21,7 +21,7 @@ from mpl_toolkits.mplot3d import Axes3D
 import seaborn as sns
 
 import umap
-import plotly.express as px
+#import plotly.express as px
 from URC_computeIsomapDimEst import isomapDimEst
 
 sns.set(style='white',context='poster', rc={'figure.figsize':(14,10)} )
@@ -100,6 +100,15 @@ for i in range(len(Ripples)):
 #     except ValueError:
 #         print('Empty cell')
 #         continue
+
+# K1=[];
+# for i in range(100):
+#     n=np.random.choice(Data.shape[0], 10000)
+#     data=Data[n,:];
+#     k1,k2=isomapDimEst(data)
+#     K1.append(k1);
+
+# K2=K1;
 # %% Ripples data
 [k1,k2]=isomapDimEst(Data);
 
@@ -269,7 +278,7 @@ plot_umap(AUC,"Area under the curve")
 
 plot_umap(AUC2,"Area under the curve 2")
 
-plot_umap(DUR,"Duration (ms)")
+#plot_umap(DUR,"Duration (ms)")
 
 # %%
 #Treatment
@@ -306,8 +315,8 @@ logicresult=studyday*treatment;
 logicresult2=st2*treatment;
 logicresult3=st3*treatment;
 
-x=logical_or(logicresult,logicresult2)
-x1=logical_or(x,logicresult3)
+x=np.logical_or(logicresult,logicresult2)
+x1=np.logical_or(x,logicresult3)
 
 
 L=binary_feature(Ripples,x1)
