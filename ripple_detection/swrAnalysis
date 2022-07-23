@@ -62,8 +62,8 @@ for k=1:length(rat_folder)
         nr_cohfos_pt=zeros(1,9);
         cd(g{j})
 %end
-        G=getfolder;
-                
+        #G=getfolder;
+         G=checksequence();       
 %%        
 %Get presleep
 cfold3=[];
