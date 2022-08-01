@@ -8,6 +8,7 @@ Repository for UMAP project.
 
 _**Data preprocessing:**_ 
   * downsample_os_basic.m : Downsamples channels to 2500 Hz.
+  * downsample_os_nsd.m : Downsamples channels to 2500 Hz. 
   * downsample_rgs14_2500.m : Downsamples RGS14 detections to 2500 Hz. 
   * merge.pt5.m : Merges split files of PT5 to later send to Kopal and compute the ripple timestamps. 
 I later used this script to check that the merged PT5's had the right ripple alignment:
