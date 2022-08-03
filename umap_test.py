@@ -324,6 +324,22 @@ L=binary_feature(Ripples,x1)
 plot_binary(L,"Ripples from " +string+ " OS")
 
 
+#OR
+L=binary_feature(Ripples,studyday)
+plot_binary(L,"Ripples from " +string+ " OR")
+
+
+string="VEH"
+studydayhc=strcmp(StudyDay_np, "HC")
+treatment=strcmp(treatment_np, string)
+vehhpc=studydayhc*treatment
+
+#HC
+L=binary_feature(Ripples,vehhpc)
+plot_binary(L,"Ripples from " +string+ " HC")
+
+
+
 # %% Homecage
 string="RGS14"
 
