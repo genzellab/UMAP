@@ -1,4 +1,4 @@
-function [swr_hpc,swr_pfc,s_hpc,s_pfc,V_hpc,V_pfc,signal2_hpc,signal2_pfc,sd_swr, M_multiplets, Mx_multiplets, multiplets, ripples, Mono_hpc, Mono_pfc,total_swrs,total_NREM_min, S_r, M_r, E_r] = ripple_detectionPFC(HPC,Cortex,states,ss,offset1,offset2,TT,fn) 
+function [D1,swr_hpc,swr_pfc,s_hpc,s_pfc,V_hpc,V_pfc,signal2_hpc,signal2_pfc,sd_swr, M_multiplets, Mx_multiplets, multiplets, ripples, Mono_hpc, Mono_pfc,total_swrs,total_NREM_min, S_r, M_r, E_r] = ripple_detectionPFC(HPC,Cortex,states,ss,offset1,offset2,TT,fn) 
                         if length(states)<45*60
                             states = [states nan(1,45*60-length(states))]; %Fill with NaNs.
                         else
