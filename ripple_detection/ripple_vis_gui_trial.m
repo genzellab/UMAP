@@ -83,6 +83,8 @@ global RippleSignal; global Cortex; global Hippocamp; global Hippocamp_filtered;
 global Cortex_filtered; 
 
 addpath(genpath('/home/genzel/Documents/UMAP_Basic_OS/'))
+addpath(genpath('/media/genzel/genzel1/UMAP_NSD/'))
+
 [GCName,path]=uigetfile('*.*','.mat');
 File=fullfile(path,GCName)
 GC_window_ripples_broadband=load(File);
@@ -152,15 +154,23 @@ hold on
 plot(Cortex-1.5*abs(max(Cortex_filtered)-min(Cortex_filtered))-2*abs(max(Hippocamp)-min(Hippocamp)),'k')
 text(length(Cortex),mean(Cortex-1.5*abs(max(Cortex_filtered)-min(Cortex_filtered))-2*abs(max(Hippocamp)-min(Hippocamp))),'\leftarrow Raw PFC')
 hold on
-set(gca,'XTick',0:500:15000)
-set(gca,'XTickLabel',0:0.2:6)
+a=GC_window_ripples_broadband_total{1, 9}(:,7);
+b=max(cell2mat(a));
+yl=yline(2.4*abs(max(Cortex_filtered)-min(Hippocamp_filtered))+b,'-',b);
 
-xline(startlineLoc,'--');9
-xline(peaklineLoc,'--');
+
+set(gca,'XTick',0:500:15000);
+set(gca,'XTickLabel',0:0.2:6);
+
+xline(startlineLoc,'--');
+xl=xline(peaklineLoc,'--', GC_window_ripples_broadband_total{1, m}{val, 3});
+xl.LabelVerticalAlignment = 'middle';
+xl.LabelHorizontalAlignment = 'center';
+xl.LabelOrientation = 'horizontal';
 xline(endlineLoc,'--');
 % title(['Event Number is: ' num2str(val),'. for trial' num2str(m) ' of Rat' File(38)...
 %    '-'  File(end-5:end-4)])
-xlim ([6000 9000])
+xlim ([6000 9000]);
 hold off
 
 % --- Executes during object creation, after setting all properties.
