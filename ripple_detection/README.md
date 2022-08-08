@@ -18,5 +18,5 @@ You may need to adapt the values of k and j depending on the Rat and Study day y
  - delta_visualization_gui_trial.m 
    Use this script to visualize the delta detections. 
 
- - spindle_visualization_gui_trial 
+ - spindle_visualization_gui_trial.m 
    Use this script to visualize the spindle detections. 
