@@ -16,8 +16,8 @@ close all
 addpath(genpath('/home/genzel/Documents/CorticoHippocampal'))
 addpath(genpath('/home/genzel/Documents/UMAP_Basic_OS/huseyin'))
 addpath('/home/genzel/Documents/ADRITOOLS/')
-cd('/media/genzel/genzel1/UMAP_NSD/') % Change to huseyin for new channel
-% /home/genzel/Documents/UMAP_Basic_OS
+cd('/media/genzel/genzel1/UMAP_NSD')
+% Change to huseyin for new channel
 % cd('/Volumes/Samsung_T5/Milan_DA/RGS14_Ephys_da/Data_RGS14_Downsampled')
       yy = {'HPC'};      
       xx = {'PFC'};
@@ -43,8 +43,8 @@ nr_cohfos_pt = [];
 rat_folder = getfolder;
 % rat_folder=rat_folder(1:end-1); %WHY? Because there is 'huseyin' folder.
 % for k=1:length(rat_folder)
-k=3; % Rat number
-while k<4
+k=4; % Rat number 
+while k<5
 % for k=1:length(rat_folder)
     %rat index 
     cd(rat_folder{k})    
@@ -63,8 +63,9 @@ while k<4
 
 %     for j=1:length(g) %study day index 
 %     for j = 2:length(g)  %567
-j=4;  %Study day
-    while j<5
+j=6;  %Study day
+    while j<7
+
         
         
         nr_cohfos_pt=zeros(1,9);
