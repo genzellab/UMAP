@@ -7,10 +7,6 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import umap
 
-
-
-sns.set(style='white',context='poster', rc={'figure.figsize':(14,10)} )
-
 # Load whole table and split columns 
 myDict = scipy.io.loadmat('Tcell.mat')
 T=myDict['Tcell'];
