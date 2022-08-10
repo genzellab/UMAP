@@ -1,3 +1,3 @@
 # Scripts to compute distances between centroids.
 
-- Script1.py : Use this for ....
+- Distances.py : Use this for computing the bootstrapped values per study day. 
