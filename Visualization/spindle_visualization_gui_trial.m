@@ -78,7 +78,7 @@ function pushbutton2_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton2 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-global val; global m; global spindles_waveform_broadband_total; global TotalSpindleChunks;
+global val; global m; global spindles_waveform_broadband_total_visualization; global TotalSpindleChunks;
 global SpindleSignal; global peaks; global Hippocamp; global Hippocamp_filtered; 
 global SpindleFiltered; global spindles_bout_specific_timestamps;
 
@@ -88,8 +88,8 @@ waveform=FileName(find(contains(FileName,'waveforms')));
 timestamps=FileName(find(contains(FileName,'timestamps')));
 File=fullfile(path,waveform{1,1});
 File2=fullfile(path,timestamps{1,1});
-spindles_waveform_broadband_total=load(File);
-spindles_waveform_broadband_total=spindles_waveform_broadband_total.spindles_waveform_broadband_total;
+spindles_waveform_broadband_total_visualization=load(File);
+spindles_waveform_broadband_total_visualization=spindles_waveform_broadband_total_visualization.spindles_waveform_broadband_total_visualization;
 spindles_bout_specific_timestamps=load(File2);
 spindles_bout_specific_timestamps=spindles_bout_specific_timestamps.spindles_bout_specific_timestamps;
 
@@ -99,7 +99,7 @@ definput = {'9'};
 ChosenPTforRD = inputdlg(prompt,dlgtitle,[1 80],definput); %Chosen PT for Ripple Detection
 m=str2double(ChosenPTforRD{1, 1});
 
-TotalSpindleChunks=length(spindles_waveform_broadband_total{1, m});  %find detection num
+TotalSpindleChunks=length(spindles_waveform_broadband_total_visualization{1, m});  %find detection num
 set(handles.text5,'string',TotalSpindleChunks);
 
 msgbox("---- Spindles Succesfully Loaded ---- ");
@@ -109,7 +109,7 @@ function slider2_Callback(hObject, eventdata, handles)
 % hObject    handle to slider2 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-global val; global m; global spindles_waveform_broadband_total; global TotalSpindleChunks;
+global val; global m; global spindles_waveform_broadband_total_visualization; global TotalSpindleChunks;
 global SpindleSignal; global peakss; global Hippocamp; global Hippocamp_filtered; 
 global SpindleFiltered; global spindles_bout_specific_timestamps; global starts;
 global finishes; global peaklineLoc; global startlineLoc; global endlineLoc;
@@ -124,10 +124,10 @@ set(handles.text4,'string',val);
 set(handles.slider2, 'Max', TotalSpindleChunks);
 set(handles.slider2, 'SliderStep', [1/(TotalSpindleChunks-2) , 10/(TotalSpindleChunks-2) ]);
 
-SpindleSignal=spindles_waveform_broadband_total{1, m}{val, 1}; 
+SpindleSignal=spindles_waveform_broadband_total_visualization{1, m}{val, 1}; 
 Wn1 = [9/(fn/2) 20/(fn/2)]; % 9-20Hz
 [b2,a2] = butter(3,Wn1,'bandpass'); %Filter coefficients
-SpindleFiltered=filtfilt(b2,a2,spindles_waveform_broadband_total{1, m}{val, 1});
+SpindleFiltered=filtfilt(b2,a2,spindles_waveform_broadband_total_visualization{1, m}{val, 1});
 peakss=[];
 for i=1:length(spindles_bout_specific_timestamps{1, m});
     peakss=[peakss spindles_bout_specific_timestamps{1, m}{i, 3}];
@@ -146,10 +146,10 @@ for i=1:length(spindles_bout_specific_timestamps{1, m});
 end
 finishes=finishes*2500;
 
-% searching=spindles_waveform_broadband_total{1, m}{val, 1};
-% ortalama=round(length(spindles_waveform_broadband_total{1, m}{val, 1}  )/2);
-% basla=ortalama-round(length(spindles_waveform_broadband_total{1, m}{val, 1} ))/6;
-% bitis=ortalama+round(length(spindles_waveform_broadband_total{1, m}{val, 1} ))/6;
+% searching=spindles_waveform_broadband_total_visualization{1, m}{val, 1};
+% ortalama=round(length(spindles_waveform_broadband_total_visualization{1, m}{val, 1}  )/2);
+% basla=ortalama-round(length(spindles_waveform_broadband_total_visualization{1, m}{val, 1} ))/6;
+% bitis=ortalama+round(length(spindles_waveform_broadband_total_visualization{1, m}{val, 1} ))/6;
 % peak=max(searching(basla:bitis));
 % peakpoint=find(searching==peak);
 peakpoint=7500+(peakss(val)-starts(val));
