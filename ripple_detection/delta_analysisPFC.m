@@ -43,15 +43,15 @@ delta_total_data={};
 rat_folder=getfolder;
 % rat_folder=rat_folder(1:end-1); %to get rid of 'huseyin'
 
-for k=1:length(rat_folder)
-% k = 1;
+% for k=6:length(rat_folder)
+k = 1;
     cd(rat_folder{k})    
     g=getfolder;
 delta_waveform_broadband_comp = [];
 delta_waveform_comp = [];
-% j=1;
-%     while j<2
-    for j=1:length(g)
+j=1;
+    while j<2
+%     for j=1:length(g)
     delta_waveform_broadband_total = {};
     delta_waveform_total = {};
 %     for j=3
@@ -242,7 +242,7 @@ for p=1:length(V_pfc)
     end
     V_pfc_bp=horzcat(V_pfc_bp2, V_pfc_bp);
     if length(V_pfc_bp2)>10000
-        delta = FindDeltaWavesRGS14(V_pfc_bp,k);
+        delta = FindDeltaWaves(V_pfc_bp);
         delta_total_data{j,1}{i,p} = delta;
         z=z+size(delta,1); 
      else
@@ -254,36 +254,33 @@ end
 if iscell(v_pfc) && ~isempty(delta)
     concatenated_NREM_broadband_pfc = vertcat(v_pfc{:});
     waveforms_delta_broadband={};
+    waveforms_delta_broadband_visualization={};
         for c=1:size(delta,1)
-%             if (c==1) || (c==2) ||(c==size(delta,1))  || (c==size(delta,1)-1)|| (c==size(delta,1)-2)
-            if (c==1) || (c==2) || (c==3) || (c==4)|| (c==5)|| (c==6)|| (c==7)|| (c==8)|| (c==9)||(c==size(delta,1))  || (c==size(delta,1)-1)|| (c==size(delta,1)-2)|| (c==size(delta,1)-3)|| (c==size(delta,1)-4)|| (c==size(delta,1)-5)
-%             if (c==1) || (c==2) || (c==3) || (c==4)|| (c==5)|| (c==6)|| (c==7)|| (c==8)|| (c==9)||(c==size(delta,1))  || (c==size(delta,1)-1)|| (c==size(delta,1)-2)|| (c==size(delta,1)-3)|| (c==size(delta,1)-4)|| (c==size(delta,1)-5) || (c==size(delta,1)-6) || (c==size(delta,1)-7) || (c==size(delta,1)-8)|| (c==size(delta,1)-9)
 
-                waveforms_delta_broadband{c,1}= concatenated_NREM_broadband_pfc(int32(delta(c,1)*2500+1):int32(delta(c,3)*2500+1));
-            else
-                waveforms_delta_broadband{c,1}= concatenated_NREM_broadband_pfc(int32(delta(c,1)*2500-10000):int32(delta(c,3)*2500+10000));
-            end
+            waveforms_delta_broadband{c,1}= concatenated_NREM_broadband_pfc(int32(delta(c,1)*2500+1):int32(delta(c,3)*2500+1));
+                if (int32(delta(c,1)*2500+1)>10000) && ((int32(delta(c,3)*2500+1)< (length(concatenated_NREM_broadband_pfc)-10001)))
+                    waveforms_delta_broadband_visualization{c,1}= concatenated_NREM_broadband_pfc(int32(delta(c,1)*2500-10000):int32(delta(c,3)*2500+10000));
+                else
+                    waveforms_delta_broadband_visualization{c,1}= concatenated_NREM_broadband_pfc(int32(delta(c,1)*2500+1):int32(delta(c,3)*2500+1));
+                end
         end
+        
 else
         waveforms_delta_broadband = NaN;
+        waveforms_delta_broadband_visualization= NaN;
 end
 if iscell(V_pfc) && ~isempty(delta)
     concatenated_NREM_pfc = vertcat(V_pfc{:});
     waveforms_delta={};
         for c=1:size(delta,1)
-%             if (c==1) || (c==2) || (c==size(delta,1))  || (c==size(delta,1)-1)|| (c==size(delta,1)-2)
-%             if (c==1) || (c==2) || (c==3) || (c==4)|| (c==5)|| (c==6)|| (c==7)|| (c==8)|| (c==9)||(c==size(delta,1))  || (c==size(delta,1)-1)|| (c==size(delta,1)-2)|| (c==size(delta,1)-3)|| (c==size(delta,1)-4)|| (c==size(delta,1)-5) || (c==size(delta,1)-6) || (c==size(delta,1)-7) || (c==size(delta,1)-8)|| (c==size(delta,1)-9)
-
-            if (c==1) || (c==2) || (c==3) || (c==4)|| (c==5)|| (c==6)|| (c==7)|| (c==8)|| (c==9)||(c==size(delta,1))  || (c==size(delta,1)-1)|| (c==size(delta,1)-2)|| (c==size(delta,1)-3)|| (c==size(delta,1)-4)|| (c==size(delta,1)-5)
                 waveforms_delta{c,1}= concatenated_NREM_pfc(int32(delta(c,1)*2500+1):int32(delta(c,3)*2500+1));
-            else
-                waveforms_delta{c,1}= concatenated_NREM_pfc(int32(delta(c,1)*2500-10000):int32(delta(c,3)*2500+10000));
-            end
+            
         end
 else
         waveforms_delta = NaN;
 end
 delta_waveform_broadband_total{i} = waveforms_delta_broadband;
+delta_waveform_broadband_total_visualization{i} = waveforms_delta_broadband_visualization;
 delta_waveform_total{i} = waveforms_delta;  
 total_delta(j,i)=z;
 stage_count = sum(states(:)==ss);
@@ -408,7 +405,7 @@ for p=1:length(V_pfc)
     end
     V_pfc_bp=horzcat(V_pfc_bp2, V_pfc_bp);
     if length(V_pfc_bp2)>10000
-        delta = FindDeltaWavesRGS14(V_pfc_bp,k);
+        delta = FindDeltaWaves(V_pfc_bp);
         delta_total_data{j,1}{i,p} = delta;
         z=z+size(delta,1); 
      else
@@ -419,32 +416,31 @@ end
 if iscell(v_pfc) && ~isempty(delta)
     concatenated_NREM_broadband_pfc = vertcat(v_pfc{:});
     waveforms_delta_broadband={};
+    waveforms_delta_broadband_visualization={};
         for c=1:size(delta,1)
-            if (c==1) || (c==2) || (c==3) || (c==4)|| (c==5)|| (c==6)|| (c==7)|| (c==8)|| (c==9)||(c==size(delta,1))  || (c==size(delta,1)-1)|| (c==size(delta,1)-2)|| (c==size(delta,1)-3)|| (c==size(delta,1)-4)|| (c==size(delta,1)-5)
-%             if (c==1) || (c==2) ||(c==size(delta,1))  || (c==size(delta,1)-1)|| (c==size(delta,1)-2)
-                waveforms_delta_broadband{c,1}= concatenated_NREM_broadband_pfc(int32(delta(c,1)*2500+1):int32(delta(c,3)*2500+1));
+            waveforms_delta_broadband{c,1}= concatenated_NREM_broadband_pfc(int32(delta(c,1)*2500+1):int32(delta(c,3)*2500+1));
+            if (int32(delta(c,1)*2500+1)>10000) && ((int32(delta(c,3)*2500+1)< (length(concatenated_NREM_broadband_pfc)-10001)))
+                waveforms_delta_broadband_visualization{c,1}= concatenated_NREM_broadband_pfc(int32(delta(c,1)*2500-10000):int32(delta(c,3)*2500+10000));
             else
-                waveforms_delta_broadband{c,1}= concatenated_NREM_broadband_pfc(int32(delta(c,1)*2500-10000):int32(delta(c,3)*2500+10000));
+                waveforms_delta_broadband_visualization{c,1}= concatenated_NREM_broadband_pfc(int32(delta(c,1)*2500+1):int32(delta(c,3)*2500+1));
             end
         end
-    else
+        
+else
         waveforms_delta_broadband = NaN;
+        waveforms_delta_broadband_visualization= NaN;
 end
 if iscell(V_pfc) && ~isempty(delta)
     concatenated_NREM_pfc = vertcat(V_pfc{:});
     waveforms_delta={};
         for c=1:size(delta,1)
-            if (c==1) || (c==2) || (c==3) || (c==4)|| (c==5)|| (c==6)|| (c==7)|| (c==8)|| (c==9)||(c==size(delta,1))  || (c==size(delta,1)-1)|| (c==size(delta,1)-2)|| (c==size(delta,1)-3)|| (c==size(delta,1)-4)|| (c==size(delta,1)-5)
-%             if (c==1) || (c==2) ||(c==size(delta,1))  || (c==size(delta,1)-1)|| (c==size(delta,1)-2)
                 waveforms_delta{c,1}= concatenated_NREM_pfc(int32(delta(c,1)*2500+1):int32(delta(c,3)*2500+1));
-            else
-                waveforms_delta{c,1}= concatenated_NREM_pfc(int32(delta(c,1)*2500-10000):int32(delta(c,3)*2500+10000));
-            end
         end
 else
         waveforms_delta = NaN;
 end
 delta_waveform_broadband_total{i} = waveforms_delta_broadband; 
+delta_waveform_broadband_total_visualization{i} = waveforms_delta_broadband_visualization;
 delta_waveform_total{i} = waveforms_delta;
 total_delta(j,i) = z;
 stage_count = sum(states1(:)==ss);
@@ -521,7 +517,7 @@ for p=1:length(V_pfc)
     end
     V_pfc_bp=horzcat(V_pfc_bp2, V_pfc_bp);
     if length(V_pfc_bp2)>10000
-        delta = FindDeltaWavesRGS14(V_pfc_bp,k);
+        delta = FindDeltaWaves(V_pfc_bp);
         delta_total_data{j,1}{i+1,p} = delta;
         z=z+size(delta,1);      
    else
@@ -532,33 +528,32 @@ end
 if iscell(v_pfc) && ~isempty(delta)
     concatenated_NREM_broadband_pfc = vertcat(v_pfc{:});
     waveforms_delta_broadband={};
+    waveforms_delta_broadband_visualization={};
         for c=1:size(delta,1)
-            if (c==1) || (c==2) || (c==3) || (c==4)|| (c==5)|| (c==6)|| (c==7)|| (c==8)|| (c==9)||(c==size(delta,1))  || (c==size(delta,1)-1)|| (c==size(delta,1)-2)|| (c==size(delta,1)-3)|| (c==size(delta,1)-4)|| (c==size(delta,1)-5)
-%             if (c==1) || (c==2) ||(c==3) || (c==size(delta,1))  || (c==size(delta,1)-1)|| (c==size(delta,1)-2)
-                waveforms_delta_broadband{c,1}= concatenated_NREM_broadband_pfc(int32(delta(c,1)*2500+1):int32(delta(c,3)*2500+1));
+            waveforms_delta_broadband{c,1}= concatenated_NREM_broadband_pfc(int32(delta(c,1)*2500+1):int32(delta(c,3)*2500+1));
+            if (int32(delta(c,1)*2500+1)>10000) && ((int32(delta(c,3)*2500+1)< (length(concatenated_NREM_broadband_pfc)-10001)))
+                waveforms_delta_broadband_visualization{c,1}= concatenated_NREM_broadband_pfc(int32(delta(c,1)*2500-10000):int32(delta(c,3)*2500+10000));
             else
-                waveforms_delta_broadband{c,1}= concatenated_NREM_broadband_pfc(int32(delta(c,1)*2500-10000):int32(delta(c,3)*2500+10000));
+                waveforms_delta_broadband_visualization{c,1}= concatenated_NREM_broadband_pfc(int32(delta(c,1)*2500+1):int32(delta(c,3)*2500+1));
             end
         end
-    else
+        
+else
         waveforms_delta_broadband = NaN;
+        waveforms_delta_broadband_visualization= NaN;
 end
 if iscell(V_pfc) && ~isempty(delta)
     concatenated_NREM_pfc = vertcat(V_pfc{:});
     waveforms_delta={};
         for c=1:size(delta,1)
-            if (c==1) || (c==2) || (c==3) || (c==4)|| (c==5)|| (c==6)|| (c==7)|| (c==8)|| (c==9)||(c==size(delta,1))  || (c==size(delta,1)-1)|| (c==size(delta,1)-2)|| (c==size(delta,1)-3)|| (c==size(delta,1)-4)|| (c==size(delta,1)-5)
-%             if (c==1) || (c==2) ||(c==3) ||(c==size(delta,1))  || (c==size(delta,1)-1)|| (c==size(delta,1)-2)
                 waveforms_delta{c,1}= concatenated_NREM_pfc(int32(delta(c,1)*2500+1):int32(delta(c,3)*2500+1));
-            else
-                waveforms_delta{c,1}= concatenated_NREM_pfc(int32(delta(c,1)*2500-10000):int32(delta(c,3)*2500+10000));
-            end
         end
 else
         waveforms_delta = NaN;
 end
 
 delta_waveform_broadband_total{i+1} = waveforms_delta_broadband;
+delta_waveform_broadband_total_visualization{i+1} = waveforms_delta_broadband_visualization;
 delta_waveform_total{i+1}  = waveforms_delta;
 total_delta(j,i+1)=z;
 stage_count = sum(states2(:)==ss);
@@ -633,7 +628,7 @@ for p=1:length(V_pfc)
     end
     V_pfc_bp=horzcat(V_pfc_bp2, V_pfc_bp);
     if length(V_pfc_bp2)>10000
-        delta = FindDeltaWavesRGS14(V_pfc_bp,k);
+        delta = FindDeltaWaves(V_pfc_bp);
         delta_total_data{j,1}{i+2,p} = delta;
         z=z+size(delta,1);
     else
@@ -644,32 +639,31 @@ end
 if iscell(v_pfc) && ~isempty(delta)
     concatenated_NREM_broadband_pfc = vertcat(v_pfc{:});
     waveforms_delta_broadband={};
+    waveforms_delta_broadband_visualization={};
         for c=1:size(delta,1)
-            if (c==1) || (c==2) || (c==3) || (c==4)|| (c==5)|| (c==6)|| (c==7)|| (c==8)|| (c==9)||(c==size(delta,1))  || (c==size(delta,1)-1)|| (c==size(delta,1)-2)|| (c==size(delta,1)-3)|| (c==size(delta,1)-4)|| (c==size(delta,1)-5)
-%             if (c==1) || (c==2) || (c==3) || (c==size(delta,1))  || (c==size(delta,1)-1)|| (c==size(delta,1)-2)
-                waveforms_delta_broadband{c,1}= concatenated_NREM_broadband_pfc(int32(delta(c,1)*2500+1):int32(delta(c,3)*2500+1));
+            waveforms_delta_broadband{c,1}= concatenated_NREM_broadband_pfc(int32(delta(c,1)*2500+1):int32(delta(c,3)*2500+1));
+            if (int32(delta(c,1)*2500+1)>10000) && ((int32(delta(c,3)*2500+1)< (length(concatenated_NREM_broadband_pfc)-10001)))
+                waveforms_delta_broadband_visualization{c,1}= concatenated_NREM_broadband_pfc(int32(delta(c,1)*2500-10000):int32(delta(c,3)*2500+10000));
             else
-                waveforms_delta_broadband{c,1}= concatenated_NREM_broadband_pfc(int32(delta(c,1)*2500-10000):int32(delta(c,3)*2500+10000));
+                waveforms_delta_broadband_visualization{c,1}= concatenated_NREM_broadband_pfc(int32(delta(c,1)*2500+1):int32(delta(c,3)*2500+1));
             end
         end
-    else
+        
+else
         waveforms_delta_broadband = NaN;
+        waveforms_delta_broadband_visualization= NaN;
 end
 if iscell(V_pfc) && ~isempty(delta)
     concatenated_NREM_pfc = vertcat(V_pfc{:});
     waveforms_delta={};
         for c=1:size(delta,1)
-            if (c==1) || (c==2) || (c==3) || (c==4)|| (c==5)|| (c==6)|| (c==7)|| (c==8)|| (c==9)||(c==size(delta,1))  || (c==size(delta,1)-1)|| (c==size(delta,1)-2)|| (c==size(delta,1)-3)|| (c==size(delta,1)-4)|| (c==size(delta,1)-5)
-%             if (c==1) || (c==2) ||(c==3) || (c==size(delta,1))  || (c==size(delta,1)-1)|| (c==size(delta,1)-2)
                 waveforms_delta{c,1}= concatenated_NREM_pfc(int32(delta(c,1)*2500+1):int32(delta(c,3)*2500+1));
-            else
-                waveforms_delta{c,1}= concatenated_NREM_pfc(int32(delta(c,1)*2500-10000):int32(delta(c,3)*2500+10000));
-            end
         end
 else
         waveforms_delta = NaN;
 end
 delta_waveform_broadband_total{i+2} = waveforms_delta_broadband;
+delta_waveform_broadband_total_visualization{i+2} = waveforms_delta_broadband_visualization;
 delta_waveform_total{i+2} = waveforms_delta;
 total_delta(j,i+2)=z;
 stage_count = sum(states3(:)==ss);
@@ -745,7 +739,7 @@ for p=1:length(V_pfc)
     end
     V_pfc_bp=horzcat(V_pfc_bp2, V_pfc_bp);
     if length(V_pfc_bp2)>10000
-        delta = FindDeltaWavesRGS14(V_pfc_bp,k);
+        delta = FindDeltaWaves(V_pfc_bp);
         delta_total_data{j,1}{i+3,p} = delta;
         z=z+size(delta,1); 
     else
@@ -756,32 +750,31 @@ end
 if iscell(v_pfc) && ~isempty(delta)
     concatenated_NREM_broadband_pfc = vertcat(v_pfc{:});
     waveforms_delta_broadband={};
+    waveforms_delta_broadband_visualization={};
         for c=1:size(delta,1)
-            if (c==1) || (c==2) || (c==3) || (c==4)|| (c==5)|| (c==6)|| (c==7)|| (c==8)|| (c==9)||(c==size(delta,1))  || (c==size(delta,1)-1)|| (c==size(delta,1)-2)|| (c==size(delta,1)-3)|| (c==size(delta,1)-4)|| (c==size(delta,1)-5)
-%             if (c==1) || (c==2) ||(c==3) ||(c==size(delta,1))  || (c==size(delta,1)-1)|| (c==size(delta,1)-2)
-                waveforms_delta_broadband{c,1}= concatenated_NREM_broadband_pfc(int32(delta(c,1)*2500+1):int32(delta(c,3)*2500+1));
+            waveforms_delta_broadband{c,1}= concatenated_NREM_broadband_pfc(int32(delta(c,1)*2500+1):int32(delta(c,3)*2500+1));
+            if (int32(delta(c,1)*2500+1)>10000) && ((int32(delta(c,3)*2500+1)< (length(concatenated_NREM_broadband_pfc)-10001)))
+                waveforms_delta_broadband_visualization{c,1}= concatenated_NREM_broadband_pfc(int32(delta(c,1)*2500-10000):int32(delta(c,3)*2500+10000));
             else
-                waveforms_delta_broadband{c,1}= concatenated_NREM_broadband_pfc(int32(delta(c,1)*2500-10000):int32(delta(c,3)*2500+10000));
+                waveforms_delta_broadband_visualization{c,1}= concatenated_NREM_broadband_pfc(int32(delta(c,1)*2500+1):int32(delta(c,3)*2500+1));
             end
         end
-    else
+        
+else
         waveforms_delta_broadband = NaN;
+        waveforms_delta_broadband_visualization= NaN;
 end
 if iscell(V_pfc) && ~isempty(delta)
     concatenated_NREM_pfc = vertcat(V_pfc{:});
     waveforms_delta={};
         for c=1:size(delta,1)
-            if (c==1) || (c==2) || (c==3) || (c==4)|| (c==5)|| (c==6)|| (c==7)|| (c==8)|| (c==9)||(c==size(delta,1))  || (c==size(delta,1)-1)|| (c==size(delta,1)-2)|| (c==size(delta,1)-3)|| (c==size(delta,1)-4)|| (c==size(delta,1)-5)
-%             if (c==1) || (c==2) ||(c==3) || (c==size(delta,1))  || (c==size(delta,1)-1)|| (c==size(delta,1)-2)
                 waveforms_delta{c,1}= concatenated_NREM_pfc(int32(delta(c,1)*2500+1):int32(delta(c,3)*2500+1));
-            else
-                waveforms_delta{c,1}= concatenated_NREM_pfc(int32(delta(c,1)*2500-10000):int32(delta(c,3)*2500+10000));
-            end
         end
 else
         waveforms_delta = NaN;
 end
 delta_waveform_broadband_total{i+3} = waveforms_delta_broadband; 
+delta_waveform_broadband_total_visualization{i+3} = waveforms_delta_broadband_visualization;
 delta_waveform_total{i+3} = waveforms_delta; 
 total_delta(j,i+3)=z;
 stage_count = sum(states4(:)==ss);
@@ -804,6 +797,7 @@ clear V_pfc v_pfc V_pfc_bp V_pfc_bp2 v_values vec_bin VV_pfc v2 v_index NC2 NC
             end
         end
         cd ..
+  save(strcat('delta_waveform_broadband_visualization_',g{j},'.mat'),'delta_waveform_broadband_total_visualization','-v7.3')
   save(strcat('delta_waveform_broadband_',g{j},'.mat'),'delta_waveform_broadband_total','-v7.3')
   save(strcat('delta_waveform_',g{j},'.mat'),'delta_waveform_total','-v7.3')
   delta_timestamps_SD =  delta_total_data{j}.';
@@ -820,7 +814,7 @@ clear V_pfc v_pfc V_pfc_bp V_pfc_bp2 v_values vec_bin VV_pfc v2 v_index NC2 NC
   delta_waveform_comp = [delta_waveform_comp;delta_waveform_total];
 %   save(strcat('delta_waveform_broadband_compilation_Rat',rat_folder{k},'.mat'),'delta_waveform_broadband_comp','-v7.3')
 %   save(strcat('delta_waveform_compilation_Rat',rat_folder{k},'.mat'),'delta_waveform_comp','-v7.3')
-%     j=j+1;
+    j=j+1;
     end
     cd ..
-end
+% end
