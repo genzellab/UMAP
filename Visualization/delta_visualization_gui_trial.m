@@ -78,7 +78,7 @@ function pushbutton2_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton2 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-global val; global m; global delta_waveform_broadband_total; global TotalDeltaChunks;
+global val; global m; global delta_waveform_broadband_total_visualization; global TotalDeltaChunks;
 global DeltaSignal; global peaks; global Hippocamp; global Hippocamp_filtered; 
 global DeltaFiltered; global delta_timestamps_SD;
 
@@ -88,8 +88,8 @@ waveform=FileName(find(contains(FileName,'waveform')));
 timestamps=FileName(find(contains(FileName,'timestamps')));
 File=fullfile(path,waveform{1,1});
 File2=fullfile(path,timestamps{1,1});
-delta_waveform_broadband_total=load(File);
-delta_waveform_broadband_total=delta_waveform_broadband_total.delta_waveform_broadband_total;
+delta_waveform_broadband_total_visualization=load(File);
+delta_waveform_broadband_total_visualization=delta_waveform_broadband_total_visualization.delta_waveform_broadband_total_visualization;
 delta_timestamps_SD=load(File2);
 delta_timestamps_SD=delta_timestamps_SD.delta_timestamps_SD;
 
@@ -99,7 +99,7 @@ definput = {'9'};
 ChosenPTforRD = inputdlg(prompt,dlgtitle,[1 80],definput); %Chosen PT for Ripple Detection
 m=str2double(ChosenPTforRD{1, 1});
 
-TotalDeltaChunks=length(delta_waveform_broadband_total{1, m});  %find detection num
+TotalDeltaChunks=length(delta_waveform_broadband_total_visualization{1, m});  %find detection num
 set(handles.text5,'string',TotalDeltaChunks);
 
 msgbox("---- Deltas Succesfully Loaded ---- ");
@@ -113,7 +113,7 @@ function slider2_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
-global val; global m; global delta_waveform_broadband_total; global TotalDeltaChunks;
+global val; global m; global delta_waveform_broadband_total_visualization; global TotalDeltaChunks;
 global DeltaSignal; global peakss; global Hippocamp; global Hippocamp_filtered; 
 global DeltaFiltered; global delta_timestamps_SD; global starts;
 global finishes; global peaklineLoc; global startlineLoc; global endlineLoc;
@@ -131,10 +131,10 @@ if TotalDeltaChunks>10
 else
     set(handles.slider2, 'SliderStep', [0.1/TotalDeltaChunks , 1/TotalDeltaChunks]);
 end
-DeltaSignal=delta_waveform_broadband_total{1, m}{val, 1}; 
+DeltaSignal=delta_waveform_broadband_total_visualization{1, m}{val, 1}; 
 Wn1 = [1/(fn/2) 6/(fn/2)]; % 1-6 Hz
 [b2,a2] = butter(3,Wn1,'bandpass'); %Filter coefficients
-DeltaFiltered=filtfilt(b2,a2,delta_waveform_broadband_total{1, m}{val, 1});
+DeltaFiltered=filtfilt(b2,a2,delta_waveform_broadband_total_visualization{1, m}{val, 1});
 peakss=[];
 uzunluk=size(delta_timestamps_SD{1, m});
 for i=1:uzunluk(1)
