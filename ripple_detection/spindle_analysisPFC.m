@@ -4,8 +4,8 @@ close all
 addpath(genpath('/home/genzel/Documents/CorticoHippocampal'))
 addpath(genpath('/home/genzel/Documents/UMAP_Basic_OS/huseyin'))
 addpath('/home/genzel/Documents/ADRITOOLS/')
-cd('/home/genzel/Documents/UMAP_Basic_OS/')
-
+% cd('/home/genzel/Documents/UMAP_Basic_OS/')
+cd('/media/genzel/genzel1/UMAP_Basic_OS/')
 % to do
 % 1- adapt NREM_min to counts!
 % 2- raw and filtered in spindle (9-20) gui.
@@ -56,7 +56,7 @@ rat_folder=rat_folder(1:end-1); %to get rid of 'huseyin'
 %     dlgtitle = 'Rat Index';
 %     % opts.Interpreter = 'tex';
 %   k = str2double(inputdlg(prompt,dlgtitle));
-k=6;
+k=1;
 % for k=1 % rat index 
     cd(rat_folder{k})    
     g=getfolder;
@@ -222,25 +222,10 @@ Wn1=[320/(fn/2)]; % Cutoff=320 Hz
    if iscell(V_pfc) && ~isempty(spindles)
     concatenated_NREM_pfc = vertcat(V_pfc{:});
     waveforms_spindles={};
-    try
         for c=1:size(spindles,1)
-            if (c==1) || (c==2) || (c==size(spindles,1)) || (c==size(spindles,1)-1)
                waveforms_spindles{c,1}= concatenated_NREM_pfc(int32(spindles(c,6)*2500+1):int32(spindles(c,8)*2500+1));
-            else
-                waveforms_spindles{c,1}= concatenated_NREM_pfc(int32(spindles(c,6)*2500-7500):int32(spindles(c,8)*2500+7500));
-        
-            end
         end
-    catch
-         for c=1:size(spindles,1)
-            if (c==1) || (c==2) || (c==3) ||(c==size(spindles,1)) || (c==size(spindles,1)-1)
-               waveforms_spindles{c,1}= concatenated_NREM_pfc(int32(spindles(c,6)*2500+1):int32(spindles(c,8)*2500+1));
-            else
-                waveforms_spindles{c,1}= concatenated_NREM_pfc(int32(spindles(c,6)*2500-7500):int32(spindles(c,8)*2500+7500));
-        
-            end
-         end  
-    end
+    
    else
         waveforms_spindles = NaN;
    end 
@@ -248,29 +233,21 @@ Wn1=[320/(fn/2)]; % Cutoff=320 Hz
    if iscell(v_pfc) && ~isempty(spindles)
     concatenated_NREM_broadband_pfc = vertcat(v_pfc{:});
     waveforms_spindles_broadband={};
-    try
+    waveforms_spindles_broadband_visualization={};
         for c=1:size(spindles,1)
-            if (c==1) || (c==2) || (c==size(spindles,1)) || (c==size(spindles,1)-1)
-                waveforms_spindles_broadband{c,1}= concatenated_NREM_broadband_pfc(int32(spindles(c,6)*2500+1):int32(spindles(c,8)*2500+1));
+            waveforms_spindles_broadband{c,1}= concatenated_NREM_broadband_pfc(int32(spindles(c,6)*2500+1):int32(spindles(c,8)*2500+1));
+            if (int32(spindles(c,6)*2500+1)>7500) && ((int32(spindles(c,8)*2500+1)< (length(concatenated_NREM_broadband_pfc)-7501)))
+                waveforms_spindles_broadband_visualization{c,1}= concatenated_NREM_broadband_pfc(int32(spindles(c,6)*2500-7500):int32(spindles(c,8)*2500+7500));
             else
-                waveforms_spindles_broadband{c,1}= concatenated_NREM_broadband_pfc(int32(spindles(c,6)*2500-7500):int32(spindles(c,8)*2500+7500));
-        
+                waveforms_spindles_broadband_visualization{c,1}= concatenated_NREM_broadband_pfc(int32(spindles(c,6)*2500+1):int32(spindles(c,8)*2500+1));
             end
         end
-    catch
-        for c=1:size(spindles,1)
-            if (c==1) || (c==2) ||(c==3) || (c==size(spindles,1)) || (c==size(spindles,1)-1)
-                waveforms_spindles_broadband{c,1}= concatenated_NREM_broadband_pfc(int32(spindles(c,6)*2500+1):int32(spindles(c,8)*2500+1));
-            else
-                waveforms_spindles_broadband{c,1}= concatenated_NREM_broadband_pfc(int32(spindles(c,6)*2500-7500):int32(spindles(c,8)*2500+7500));
-        
-            end
-        end
-    end
     else
         waveforms_spindles_broadband = NaN;
+        waveforms_spindles_broadband_visualization = NaN;
    end 
    spindles_waveform_broadband_total{i} = waveforms_spindles_broadband;
+   spindles_waveform_broadband_total_visualization{i} = waveforms_spindles_broadband_visualization;
    spindles_waveform_total{i} = waveforms_spindles;
    spindles_complete{j,i} = spindles;
    spindles_bout_specific_timestamps{i} = BST;
@@ -335,25 +312,11 @@ clear V_pfc v_pfc V_pfc_bp V_pfc_bp2 v_values vec_bin VV_pfc v2 v_index NC2 NC3 
                                    if iscell(V_pfc) && ~isempty(spindles)
                                     concatenated_NREM_pfc = vertcat(V_pfc{:});
                                     waveforms_spindles = {};
-                                    try
                                         for c = 1:size(spindles,1)
-                                           if (c==1) || (c==size(spindles,1))  || (c==size(spindles,1)-1)
                                                 waveforms_spindles{c,1} = concatenated_NREM_pfc(int32(spindles(c,6)*2500+1):int32(spindles(c,8)*2500+1));
-                                           else
-                                                waveforms_spindles{c,1} = concatenated_NREM_pfc(int32(spindles(c,6)*2500-7500):int32(spindles(c,8)*2500+7500));
-                                        
-                                           end
+                                      
                                         end
-                                    catch
-                                        for c = 1:size(spindles,1)
-                                           if (c==1) || (c==2) || (c==size(spindles,1))  || (c==size(spindles,1)-1)
-                                                waveforms_spindles{c,1} = concatenated_NREM_pfc(int32(spindles(c,6)*2500+1):int32(spindles(c,8)*2500+1));
-                                           else
-                                                waveforms_spindles{c,1} = concatenated_NREM_pfc(int32(spindles(c,6)*2500-7500):int32(spindles(c,8)*2500+7500));
-                                        
-                                           end
-                                        end
-                                    end
+                                    
                                           
                                     else
                                         waveforms_spindles = NaN;
@@ -361,31 +324,21 @@ clear V_pfc v_pfc V_pfc_bp V_pfc_bp2 v_values vec_bin VV_pfc v2 v_index NC2 NC3 
                                    if iscell(v_pfc) && ~isempty(spindles)
                                     concatenated_NREM_broadband_pfc = vertcat(v_pfc{:});
                                     waveforms_spindles_broadband = {};
-                                    try
-                                        for c = 1:size(spindles,1)
-                                            if (c==1) || (c==size(spindles,1))  || (c==size(spindles,1)-1)
-                                                waveforms_spindles_broadband{c,1} = concatenated_NREM_broadband_pfc(int32(spindles(c,6)*2500+1):int32(spindles(c,8)*2500+1));
+                                    waveforms_spindles_broadband_visualization={};
+                                        for c=1:size(spindles,1)
+                                            waveforms_spindles_broadband{c,1}= concatenated_NREM_broadband_pfc(int32(spindles(c,6)*2500+1):int32(spindles(c,8)*2500+1));
+                                            if (int32(spindles(c,6)*2500+1)>7500) && ((int32(spindles(c,8)*2500+1)< (length(concatenated_NREM_broadband_pfc)-7501)))
+                                                waveforms_spindles_broadband_visualization{c,1}= concatenated_NREM_broadband_pfc(int32(spindles(c,6)*2500-7500):int32(spindles(c,8)*2500+7500));
                                             else
-                                                waveforms_spindles_broadband{c,1} = concatenated_NREM_broadband_pfc(int32(spindles(c,6)*2500-7500):int32(spindles(c,8)*2500+7500));
-                                        
+                                                waveforms_spindles_broadband_visualization{c,1}= concatenated_NREM_broadband_pfc(int32(spindles(c,6)*2500+1):int32(spindles(c,8)*2500+1));
                                             end
                                         end
-                                    catch
-                                        for c = 1:size(spindles,1)
-                                            if (c==1) || (c==2) ||(c==3) || (c==size(spindles,1))  || (c==size(spindles,1)-1)
-                                                waveforms_spindles_broadband{c,1} = concatenated_NREM_broadband_pfc(int32(spindles(c,6)*2500+1):int32(spindles(c,8)*2500+1));
-                                            else
-                                                waveforms_spindles_broadband{c,1} = concatenated_NREM_broadband_pfc(int32(spindles(c,6)*2500-7500):int32(spindles(c,8)*2500+7500));
-                                        
-                                            end
-                                        end
-                                    end
-
                                     else
                                         waveforms_spindles_broadband = NaN;
+                                        waveforms_spindles_broadband_visualization = NaN;
                                    end 
-                                   spindles_waveform_broadband_total{i+jj-1}=waveforms_spindles_broadband;
-                                   spindles_waveform_total{i+jj-1}=waveforms_spindles;
+                                   spindles_waveform_broadband_total{i+jj-1} = waveforms_spindles_broadband;
+                                   spindles_waveform_broadband_total_visualization{i+jj-1} = waveforms_spindles_broadband_visualization;
                                    spindles_complete{j,i+jj-1}= spindles;
                                    spindles_bout_specific_timestamps{i+jj-1}= BST;
                                    phase_total_complete{j,1}{i+jj-1,1} = phase_total;
@@ -419,7 +372,7 @@ clear V_pfc v_pfc V_pfc_bp V_pfc_bp2 v_values vec_bin VV_pfc v2 v_index NC2 NC3
         
         save(strcat('spindles_waveforms_',g{j},'.mat'),'spindles_waveform_total','-v7.3')
         save(strcat('spindles_waveforms_broadband_',g{j},'.mat'),'spindles_waveform_broadband_total','-v7.3')
-        
+        save(strcat('spindles_waveforms_broadband_visualization_',g{j},'.mat'),'spindles_waveform_broadband_total_visualization','-v7.3')
         save(strcat('spindles_count_',g{j},'.mat'),'spindles_count')
 
         save(strcat('spindles_phase_',g{j},'.mat'),'phase_total')
