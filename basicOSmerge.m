@@ -76,9 +76,9 @@ PFC2_timeonseconds=length(pfc2_)/2500
 HPC2_timeonminutes=length(hpc2_)/2500/60
 PFC2_timeonminutes=length(pfc2_)/2500/60
 
-HPC=[hpc1.(f1{1});hpc2.(f2{1})];
+HPC=[hpc1_;hpc2_];
 save post_trial5_HPC_merged HPC;
-PFC=[pfc1.(f3{1});pfc2.(f4{1})];
+PFC=[pfc1_;pfc2_];
 save post_trial5_PFC_merged PFC;
 
 %% IF THERE IS 3 SPLIT 
