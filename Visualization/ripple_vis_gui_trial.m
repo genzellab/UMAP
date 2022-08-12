@@ -154,7 +154,7 @@ hold on
 plot(Cortex-1.5*abs(max(Cortex_filtered)-min(Cortex_filtered))-2*abs(max(Hippocamp)-min(Hippocamp)),'k')
 text(length(Cortex),mean(Cortex-1.5*abs(max(Cortex_filtered)-min(Cortex_filtered))-2*abs(max(Hippocamp)-min(Hippocamp))),'\leftarrow Raw PFC')
 hold on
-a=GC_window_ripples_broadband_total{1, 9}(:,7);
+a=GC_window_ripples_broadband_total{1, m}(:,7);
 b=max(cell2mat(a));
 yl=yline(2.4*abs(max(Cortex_filtered)-min(Hippocamp_filtered))+b,'-',b);
 
