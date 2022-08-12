@@ -2,6 +2,7 @@ clearvars; clc;
 addpath(genpath('/home/genzel/Documents/'))
 addpath(genpath('/home/genzel/Documents/CorticoHippocampal'))
 addpath(genpath('/home/genzel/Documents/UMAP_Basic_OS/huseyin'))
+addpath(genpath('/media/genzel/genzel1/'))
 addpath('/home/genzel/Documents/ADRITOOLS/')
 
 [Split1,path1]=uigetfile('*.*','.mat','MultiSelect','on');
@@ -32,7 +33,7 @@ if length(hpc1_)~= length(pfc1_)
     warning('Length mismatch')
     %Truncate
     if length(hpc1_)>length(pfc1_) 
-        hpc1_=hpc1.HPC(1:length(pfc1_));  
+        hpc1_=hpc1_(1:length(pfc1_));  
     else
         pfc1_=pfc1_(1:length(hpc1_));
     end
@@ -62,6 +63,11 @@ pfc2_=pfc2.PFC;
 
 if length(hpc2_)~= length(pfc2_)   
     warning('Length mismatch')
+    if length(hpc2_)>length(pfc2_) 
+        hpc2_=hpc2_(1:length(pfc2_));  
+    else
+        pfc2_=pfc2_(1:length(hpc2_));
+    end
 end
 
 HPC2_timeonseconds=length(hpc2_)/2500
