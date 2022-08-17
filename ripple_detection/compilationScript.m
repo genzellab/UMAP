@@ -18,7 +18,6 @@ cd(rat_folder{ratindex})
 daysnumber=getfolder;
 ripple_waveform_broadband_compilation_variable=[];
 
-
 for i=1:length(daysnumber)
     
     [Filename,path]=uigetfile('ripple_waveforms_broadband*.mat');
