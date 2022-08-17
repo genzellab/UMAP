@@ -5,7 +5,10 @@ addpath(genpath('/home/genzel/Documents/CorticoHippocampal'))
 addpath(genpath('/home/genzel/Documents/UMAP_Basic_OS/huseyin'))
 addpath('/home/genzel/Documents/ADRITOOLS/')
 % cd('/home/genzel/Documents/UMAP_Basic_OS/')
-cd('/media/genzel/genzel1/UMAP_Basic_OS/')
+% cd('/media/genzel/genzel1/UMAP_Basic_OS/')
+cd('/media/genzel/genzel1/UMAP_NSD/')
+% cd('/media/genzel/genzel1/RGS14_NSD/RGS_Rats/')
+
 % to do
 % 1- adapt NREM_min to counts!
 % 2- raw and filtered in spindle (9-20) gui.
@@ -56,7 +59,7 @@ rat_folder=getfolder;
 %     dlgtitle = 'Rat Index';
 %     % opts.Interpreter = 'tex';
 %   k = str2double(inputdlg(prompt,dlgtitle));
-k=1;
+k=2;
 % for k=1 % rat index 
     cd(rat_folder{k})    
     g=getfolder;
@@ -390,4 +393,4 @@ clear V_pfc v_pfc V_pfc_bp V_pfc_bp2 v_values vec_bin VV_pfc v2 v_index NC2 NC3
     end 
 j=j+1;
 end 
-
+cd ..
