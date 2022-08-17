@@ -7,6 +7,8 @@ addpath(genpath('/home/genzel/Documents/UMAP_Basic_OS/huseyin'))
 addpath('/home/genzel/Documents/ADRITOOLS/')
 % cd('/home/genzel/Documents/UMAP_Basic_OS/huseyin')
 cd('/media/genzel/genzel1/UMAP_Basic_OS')
+% cd('/media/genzel/genzel1/UMAP_NSD/')
+% cd('/media/genzel/genzel1/RGS14_NSD/RGS_Rats/')
 
 % cd('/media/genzel/Data/Milan_DA/RGS14_Ephys_da/Data_RGS14_Downsampled')
 % cd('/home/adrian/Documents/new_OS_downsampled_2020')
@@ -50,7 +52,7 @@ k = 1;
 delta_waveform_broadband_comp = [];
 delta_waveform_comp = [];
 j=1;
-    while j<2
+    while j<=length(g)
 %     for j=1:length(g)
     delta_waveform_broadband_total = {};
     delta_waveform_total = {};
@@ -812,8 +814,8 @@ clear V_pfc v_pfc V_pfc_bp V_pfc_bp2 v_values vec_bin VV_pfc v2 v_index NC2 NC
   save(strcat('delta_count_',g{j},'.mat'),'delta_count','-v7.3')
   delta_waveform_broadband_comp = [delta_waveform_broadband_comp;delta_waveform_broadband_total];
   delta_waveform_comp = [delta_waveform_comp;delta_waveform_total];
-%   save(strcat('delta_waveform_broadband_compilation_Rat',rat_folder{k},'.mat'),'delta_waveform_broadband_comp','-v7.3')
-%   save(strcat('delta_waveform_compilation_Rat',rat_folder{k},'.mat'),'delta_waveform_comp','-v7.3')
+  save(strcat('delta_waveform_broadband_compilation_Rat',rat_folder{k},'.mat'),'delta_waveform_broadband_comp','-v7.3')
+  save(strcat('delta_waveform_compilation_Rat',rat_folder{k},'.mat'),'delta_waveform_comp','-v7.3')
     j=j+1;
     end
     cd ..
