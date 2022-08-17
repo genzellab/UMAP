@@ -30,3 +30,4 @@ end
 ripple_waveform_broadband_comp=ripple_waveform_broadband_compilation_variable;
 
 save(strcat('ripple_waveforms_broadband_compilation_Rat',rat_folder{ratindex},'.mat'),'ripple_waveform_broadband_comp','-v7.3')
+ 
