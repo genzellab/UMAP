@@ -83,9 +83,8 @@ global RippleSignal; global Cortex; global Hippocamp; global Hippocamp_filtered;
 global Cortex_filtered; 
 
 addpath(genpath('/home/genzel/Documents/UMAP_Basic_OS/'))
-addpath(genpath('/media/genzel/genzel1/UMAP_NSD/'))
 
-[GCName,path]=uigetfile('*.*','.mat');
+[GCName,path]=uigetfile('GC_window_ripples_broadband*.mat');
 File=fullfile(path,GCName)
 GC_window_ripples_broadband=load(File);
 GC_window_ripples_broadband_total=GC_window_ripples_broadband.GC_window_ripples_broadband_total;
