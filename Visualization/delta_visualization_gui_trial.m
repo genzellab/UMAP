@@ -83,7 +83,7 @@ global DeltaSignal; global peaks; global Hippocamp; global Hippocamp_filtered;
 global DeltaFiltered; global delta_timestamps_SD;
 
 addpath(genpath('/home/genzel/Documents/UMAP_Basic_OS/'))
-[FileName,path]=uigetfile('*.*','.mat','MultiSelect','on');
+[FileName,path]=uigetfile('delta*.mat','MultiSelect','on');
 waveform=FileName(find(contains(FileName,'waveform')));
 timestamps=FileName(find(contains(FileName,'timestamps')));
 File=fullfile(path,waveform{1,1});
