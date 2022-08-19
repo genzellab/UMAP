@@ -25,6 +25,7 @@ function varargout = spindle_visualization_gui_trial(varargin)
 % Last Modified by GUIDE v2.5 27-Jul-2022 13:28:57
 
 % Begin initialization code - DO NOT EDIT
+
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
                    'gui_Singleton',  gui_Singleton, ...
@@ -42,7 +43,6 @@ else
     gui_mainfcn(gui_State, varargin{:});
 end
 % End initialization code - DO NOT EDIT
-
 
 % --- Executes just before spindle_visualization_gui_trial is made visible.
 function spindle_visualization_gui_trial_OpeningFcn(hObject, eventdata, handles, varargin)
@@ -83,7 +83,7 @@ global SpindleSignal; global peaks; global Hippocamp; global Hippocamp_filtered;
 global SpindleFiltered; global spindles_bout_specific_timestamps;
 
 addpath(genpath('/home/genzel/Documents/UMAP_Basic_OS/'))
-[FileName,path]=uigetfile('*.*','.mat','MultiSelect','on');
+[FileName,path]=uigetfile('spindles*.mat','MultiSelect','on');
 waveform=FileName(find(contains(FileName,'waveforms')));
 timestamps=FileName(find(contains(FileName,'timestamps')));
 File=fullfile(path,waveform{1,1});
@@ -159,7 +159,7 @@ endlineLoc=peakpoint+(finishes(val)-peakss(val));
 
 axes(handles.axes2);
 cla;
-
+%  cla(handles.axes2,'reset');
 plot(SpindleFiltered*2.5+1.5*abs(max(SpindleSignal)-min(SpindleFiltered)),'k')
 text(length(SpindleFiltered),mean(SpindleFiltered*2.5+1.5*abs(max(SpindleSignal)-min(SpindleFiltered))),'\leftarrow Filtered')
 hold on
