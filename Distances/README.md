@@ -4,5 +4,5 @@
 
 - imageToGIF.py : Convert specific images to a GIF
 
-- centroids_perTreatment.py : Compute centroids of the conditions using np.mean() function
-NOTE: More elegant and practical script will be released soon...
+- centroids_perTreatment.py : Compute centroids of the conditions using np.mean() function.
+  NOTE: More elegant and practical script will be released soon...
