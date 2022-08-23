@@ -12,4 +12,4 @@
 
   NOTE: More elegant and practical script will be released soon
 
-- find_diValue.py : Find discrimination index of a specific ratxdayxtrial(e.g. Rat1 OR Trial1)
+- find_diValue.py : Find discrimination index of a specific rat X day X trial (e.g. Rat1 OR Trial1)
