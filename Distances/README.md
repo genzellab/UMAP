@@ -11,3 +11,5 @@
 - meanDistances_perTreatment.py : Find distances of treatments' OR, OD, and CON to HC and compute mean of these values.
 
   NOTE: More elegant and practical script will be released soon
+
+- find_diValue.py : Find discrimination index of a specific ratxdayxtrial(e.g. Rat1 OR Trial1)
