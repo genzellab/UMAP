@@ -3,7 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt 
 
 
-df = pd.read_excel("/home/irene/Documents/UMAP/latest_data.xlsx", usecols="C,D,E,F,G,H,I")
+df = pd.read_excel("/home/irene/Documents/UMAP/latest_data.xlsx", usecols="B:G")
 
 
 def value_cmp(string,value):
@@ -28,7 +28,7 @@ ratsArray=[value_cmp("subject", 1),value_cmp("subject", 2),value_cmp("subject", 
 
 daysArray=[value_cmp("condition.1", "or"),value_cmp("condition.1", "od"),value_cmp("condition.1", "con")]
 
-arrayDI=[df.loc[:,"DI_5min"],df.loc[:,"DI_10min"]]
+arrayDI=[df.loc[:,"DI_5min"]]
 
 def find_logic(rat, day, trial):
     K=[]
@@ -48,10 +48,7 @@ def outputDI():
     for i in range(144):
         for j in range(144):
             if (logicresult[i][j]==1):
-                if (j < 120):
-                    result = arrayDI[0][j]
-                else:
-                    result = arrayDI[1][j]
+                result = arrayDI[0][j]
                 res.append(result)
     return res
 
