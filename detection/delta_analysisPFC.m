@@ -56,6 +56,7 @@ j=1;
 %     for j=1:length(g)
     delta_waveform_broadband_total = {};
     delta_waveform_total = {};
+    delta_waveform_broadband_total_visualization = {};    
 %     for j=3
 
         cd(g{j})
@@ -451,6 +452,7 @@ else
       delta_total_data{j,1}{i,p} = NaN;
       delta_waveform_broadband_total{i} = [];
       delta_waveform_total{i} = [];
+      delta_waveform_broadband_total_visualization{i} = [];      
    end
     
 clear V_pfc v_pfc V_pfc_bp V_pfc_bp2 v_values vec_bin VV_pfc v2 v_index NC2 NC
@@ -564,6 +566,7 @@ total_delta_minute(j,i+1)=(total_delta(j,i+1)/stage_count*60);
       delta_total_data{j,1}{i+1,p} = NaN;
       delta_waveform_broadband_total{i+1} = [];
       delta_waveform_total{i+1} = [];
+      delta_waveform_broadband_total_visualization{i+1} = [];      
     end
 clear V_pfc v_pfc V_pfc_bp V_pfc_bp2 v_values vec_bin VV_pfc v2 v_index NC2 NC
 
@@ -674,6 +677,7 @@ total_delta_minute(j,i+2)=(total_delta(j,i+2)/stage_count*60);
       delta_total_data{j,1}{i+2,p} = NaN;
       delta_waveform_broadband_total{i+2} =[];
       delta_waveform_total{i+2} = [];
+      delta_waveform_broadband_total_visualization{i+2} = [];
     end
 clear V_pfc v_pfc V_pfc_bp V_pfc_bp2 v_values vec_bin VV_pfc v2 v_index NC2 NC
 
@@ -785,6 +789,7 @@ total_delta_minute(j,i+3)=(total_delta(j,i+3)/stage_count*60);
       delta_total_data{j,1}{i+3,p} = NaN;
       delta_waveform_broadband_total{i+3} = [];
       delta_waveform_total{i+3} =[];
+      delta_waveform_broadband_total_visualization{i+3} = [];      
     end
 clear V_pfc v_pfc V_pfc_bp V_pfc_bp2 v_values vec_bin VV_pfc v2 v_index NC2 NC
                     end
