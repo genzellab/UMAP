@@ -14,7 +14,7 @@ cd('/media/genzel/genzel1/UMAP_Basic_OS/13')
 % ChosenPT = inputdlg(prompt,dlgtitle,[1 80],definput); %Chosen PT for Characteristics
 % m=str2double(ChosenPT{1, 1});
 
-m=1;
+m=1;% 1(presleep)-2(PT1)-3(PT2)-4(PT3)-5(PT4)-6(PT5.1)-7(PT5.2)-8(PT5.3)-9(PT5.4)
 
 % % OR 
 % [OR,path]=uigetfile('ripple_waveforms_broadband*.mat','Select OR');
