@@ -1,4 +1,6 @@
-  * alignripples.m : Shifts ripple traces to align them always on the minimum closest to the peak. You might encounter some dimension errors which are due to either extra samples from GC files or empty arrays. You can fix with this script:
+# Preprocessing for UMAP
+
+* alignripples.m : Shifts ripple traces to align them always on the minimum closest to the peak. You might encounter some dimension errors which are due to either extra samples from GC files or empty arrays. You can fix with this script:
 
 ```
 Y= cellfun(@(x) alignripples(x),GC_window_ripples_total,'UniformOutput',false);
