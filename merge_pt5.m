@@ -1,4 +1,4 @@
-Rat=6;
+Rat=8;
 cd('~/Documents/UMAP')
 load('OS_RGS14_UMAP_downsampling.mat')
 
@@ -6,7 +6,9 @@ vr=getfield(channels,strcat('Rat',num2str(Rat)));%Electrode channels.
 %%
 
 % cd('/media/irene/MD04_RAT_THETA/rat/Rat_OS_Ephys_RGS14/Rat_OS_Ephys_RGS14_rat6_373726/Rat_OS_Ephys_RGS14_rat6_373726_SD2_OR_06-07_02_2020')
-cd('/media/irene/MD04_RAT_THETA/rat/Rat_OS_Ephys_RGS14/Rat_OS_Ephys_RGS14_rat6_373726/Rat_OS_Ephys_RGS14_rat6_373726_SD4_OD_15-16_02_2020')
+% cd('/media/irene/MD04_RAT_THETA/rat/Rat_OS_Ephys_RGS14/Rat_OS_Ephys_RGS14_rat6_373726/Rat_OS_Ephys_RGS14_rat6_373726_SD4_OD_15-16_02_2020')
+% cd('/media/adrian/GL14_RAT_FANO/Rat_OS_Ephys_RGS14_rat7_373727/Rat_OS_Ephys_RGS14_rat7_373727_SD3_CON_08_09_02_2020')
+cd('/media/adrian/GL03_Rat_Spindle/OS_Ephys_RGS14_rat8_378133/OS_Ephys_RGS14_Rat8_378133_SD3_OR_27-28_04_2020')
 %%
 fs_new=1000;
 fs=30000;
@@ -53,5 +55,5 @@ PFC_2=downsample(PFC_2,fs/fs_new);
        HPC=[HPC_1; HPC_2];
        PFC=[PFC_1; PFC_2];
 %%
- save(['HPC_100_' ['CH' num2str(vr(1)) '_0_SD4.continuous'] '.mat'],'HPC')
- save(['PFC_100_' ['CH' num2str(vr(2)) '_0_SD4.continuous'] '.mat'],'PFC')
+ save(['HPC_100_' ['CH' num2str(vr(1)) '_0_SD3.continuous'] '.mat'],'HPC')
+ save(['PFC_100_' ['CH' num2str(vr(2)) '_0_SD3.continuous'] '.mat'],'PFC')
