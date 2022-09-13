@@ -1,5 +1,5 @@
 import sys
-sys.path.append('/media/enrique/Disk1/Proyectos/UnsupervisedRippleClassification/Code/Python')
+#sys.path.append('/media/enrique/Disk1/Proyectos/UnsupervisedRippleClassification/Code/Python')
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy import sparse, linalg
@@ -8,7 +8,7 @@ from sklearn.cluster import SpectralClustering
 from sklearn.neighbors import kneighbors_graph, NearestNeighbors
 from sklearn.metrics import pairwise_distances
 from sklearn.manifold import Isomap
-import URC_get_data_contour
+#import URC_get_data_contour
 
 
 def filter_noisy_outliers(data):
