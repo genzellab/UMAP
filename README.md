@@ -10,4 +10,4 @@ Repository for UMAP project.
 * detection : Detection of ripple events. 
 * preprocessing: Ripple extraction, alignment, filtering, normalization and organization in a table. 
 
-For the following steps, one needs to switch to python. Create a umap environment using the [environment.yml](https://github.com/genzellab/UMAP/environment.yml) file.
+For the following steps, one needs to switch to python. Create a umap environment using the [environment.yml](https://github.com/genzellab/UMAP/blob/main/environment.yml) file.
