@@ -8,4 +8,4 @@ Repository for UMAP project.
 
 * downsample : Downsampling of HPC and PFC signals to 2500 Hz. 
 * detection : Detection of ripple events. 
-* preprocessing: Ripple extraction, alignment, filtering and normalization. 
+* preprocessing: Ripple extraction, alignment, filtering, normalization and organization in a table. 
