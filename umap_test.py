@@ -75,6 +75,7 @@ auc2_np=T[:,11];
 # dur_np=T_ripples[:,5];
 
 # %% Flattening
+# Data will be a matrix X by 127, where X is the pooled amount of ripples across all trials. 
 
 Data=[];
 for i in range(len(Ripples)):
@@ -101,7 +102,7 @@ for i in range(len(Ripples)):
 #     except ValueError:
 #         print('Empty cell')
 #         continue
-
+# %%
 K1=[];
 for i in range(100):
     n=np.random.choice(Data.shape[0], 20000)
