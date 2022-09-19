@@ -112,11 +112,12 @@ for i in range(len(Ripples)):
 
 # K2=K1;
 # %% Ripples data
-[k1,k2]=isomapDimEst(Data);
+# [k1,k2]=isomapDimEst(Data);
 
 
-fit = umap.UMAP(n_components=4)
-u = fit.fit_transform(Data)
+# fit = umap.UMAP(n_components=4)
+# u = fit.fit_transform(Data)
+u=np.load('u.npy');
 
 # %% Functions
 def get_duration(dur_np):
