@@ -188,28 +188,47 @@ def plot_umap(Amp,string):
     plt.show()
 
 
-def plot_umap_binary(L,string):
-    #z=Amp;
-    #normalize = cl.Normalize(vmin=np.mean(z)-3*np.std(z), vmax=np.mean(z)+3*np.std(z))
+def plot_umap_3D(Amp,string)
+    z=Amp;
+    normalize = cl.Normalize(vmin=np.mean(z)-3*np.std(z), vmax=np.mean(z)+3*np.std(z))
     
-    #colormap=plt.cm.get_cmap('bwr')
-    #colors=colormap(z)
-    #sm=plt.scatter(u[:,0],u[:,1],c=z,alpha=0.6,s=0.01)g
-    #sm=plt.scatter(u[:,0],u[:,1],alpha=0.1,s=5,color="b")
-    plt.scatter(u[L,0],u[L,1],alpha=0.1,s=20,color="r")   
-    #sm=plt.scatter(u[:,0],u[:,1],c=z,alpha=0.6,s=0.1,cmap='seismic')
-    #plt.hist2d(u[L,0], u[L,1],100)
-    #sm=plt.cm.ScalarMappable(cmap=colormap)
+    fig = plt.figure(figsize=(12, 12))
+    ax = fig.add_subplot(projection='3d')
+
+    sm=ax.scatter(list(u[:,0]), list(u[:,1]), list(u[:,3]),c=z,alpha=0.6,s=1,cmap='seismic',norm=normalize)
     
-    #sm.set_clim(vmin=np.min(z),vmax=np.max(z))
-    #sm.set_clim(vmin=np.min(z),vmax=220)
-    
-    #plt.colorbar(sm)
-    plt.xlabel("UMAP1")
-    plt.ylabel("UMAP2")
+    plt.colorbar(sm)
+    ax.set_xlabel('UMAP1')
+    ax.set_ylabel('UMAP2')
+    ax.set_zlabel('UMAP4')
     plt.title(string)
+
     plt.show()
-    #plt.legend(['First line', 'Second line'])
+
+
+
+# def plot_umap_binary(L,string):
+#     #z=Amp;
+#     #normalize = cl.Normalize(vmin=np.mean(z)-3*np.std(z), vmax=np.mean(z)+3*np.std(z))
+    
+#     #colormap=plt.cm.get_cmap('bwr')
+#     #colors=colormap(z)
+#     #sm=plt.scatter(u[:,0],u[:,1],c=z,alpha=0.6,s=0.01)g
+#     #sm=plt.scatter(u[:,0],u[:,1],alpha=0.1,s=5,color="b")
+#     plt.scatter(u[L,0],u[L,1],alpha=0.1,s=20,color="r")   
+#     #sm=plt.scatter(u[:,0],u[:,1],c=z,alpha=0.6,s=0.1,cmap='seismic')
+#     #plt.hist2d(u[L,0], u[L,1],100)
+#     #sm=plt.cm.ScalarMappable(cmap=colormap)
+    
+#     #sm.set_clim(vmin=np.min(z),vmax=np.max(z))
+#     #sm.set_clim(vmin=np.min(z),vmax=220)
+    
+#     #plt.colorbar(sm)
+#     plt.xlabel("UMAP1")
+#     plt.ylabel("UMAP2")
+#     plt.title(string)
+#     plt.show()
+#     #plt.legend(['First line', 'Second line'])
 
 def plot_binary(L,string):
     #z=Amp;
