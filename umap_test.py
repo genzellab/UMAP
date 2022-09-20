@@ -258,7 +258,7 @@ def binary_feature(Ripples,treatment):
     L=L==1;
     return L
 # %%
-#Features    
+#Features per ripple    
 Amp=flatcells(amplitude_np);
 Meanfreq=flatcells(meanfreq_np);
 
