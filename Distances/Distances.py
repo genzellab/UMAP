@@ -74,7 +74,7 @@ def binary_feature(Ripples,treatment):
     return L
 
 
-
+# Bootstrapping
 def sample_ripples(ratString, trialString, dayString):
     M = []
 
@@ -107,6 +107,41 @@ def sample_ripples(ratString, trialString, dayString):
                     break
             M.append(K)
         
+    return M
+
+# Shuffling
+def sample_random_ripples(ratString, trialString, dayString):
+    M = []
+
+    i = 0
+    
+    #Rat
+    rat=strcmp(rat_np, ratString)
+    
+
+    #Trial
+    trial = strcmp(trial_np, trialString) & strcmp(StudyDay_np, dayString)
+    
+
+    logicresult=trial*rat;
+
+    L=binary_feature(Ripples,logicresult)
+    
+    if any(L):
+        for i in range(100):
+            L_permuted=np.random.permutation(L);
+            t=(u[L_permuted, :2]);
+            np.random.shuffle(t)
+            
+            K = []
+            j=0
+            for j in range(50):
+                K.append(t[j])
+                
+                if j+1 == L[L==True].shape[0]: 
+                    break
+            M.append(K)
+            
     return M
 
 
