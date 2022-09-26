@@ -188,7 +188,7 @@ def plot_umap(Amp,string):
     plt.show()
 
 
-def plot_umap_3D(Amp,string)
+def plot_umap_3D(Amp,string):
     z=Amp;
     normalize = cl.Normalize(vmin=np.mean(z)-3*np.std(z), vmax=np.mean(z)+3*np.std(z))
     
@@ -276,6 +276,114 @@ def binary_feature(Ripples,treatment):
     L=np.array(L);
     L=L==1;
     return L
+
+def plot3Ddensity(x,y,z, bins = 100):
+    X = np.linspace(x.min(), x.max(), num=bins+1)
+    Y = np.linspace(y.min(), y.max(), num=bins+1)
+    Z = np.linspace(z.min(), z.max(), num=bins+1)
+    data = []
+    for xi in range(1,bins+1):
+        for yi in range(1,bins+1):
+            for zi in range(1,bins+1):
+                tx = np.logical_and(x < X[xi], x >= X[xi-1])
+                ty = np.logical_and(y < Y[yi], y >= Y[yi-1])
+                tz = np.logical_and(z < Z[zi], z >= Z[zi-1])
+                assert(tx.shape == ty.shape)
+                assert(ty.shape == tz.shape)
+                t = np.logical_and(tx,ty)
+                t = np.logical_and(t,tz)
+                data.append([X[xi-1], Y[yi-1], Z[zi-1], x[t].sum() + y[t].sum() + z[t].sum()] )
+    data = np.array(data)
+    datap = data[:,3]>0.0
+    print(data.shape, datap.shape)
+    data = data[datap]
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+    print(type(data[:,3]),data[0,3])
+    p3d = ax.scatter(data[:,0], data[:,1], data[:,2], s=30, c=data[:,3].tolist(),linewidths=0.5)
+    ax.set_xlabel('umap1')
+    ax.set_ylabel('umap2')
+    ax.set_zlabel('umap4')
+    plt.show()
+    
+# %%    
+def significant_pixels(ratString, dayString,binning,p_val):
+# Determines which pixels have a significant density compared to
+# a permuted control.
+#PARAMETERS:
+#ratString
+#dayString
+#binning: Suggested: 100. It gives a 100x100 density matrix. 
+#p_val: P-value. Suggested: 0.001    
+    
+    #ratString='Rat1'
+    #dayString='CON'
+    
+    #Rat
+    rat=strcmp(rat_np, ratString)
+    
+
+    #Trial
+    trial =  strcmp(StudyDay_np, dayString)
+    
+
+    logicresult=trial*rat;
+
+    L=binary_feature(Ripples,logicresult)
+    
+    t_unshuffled=(u[L, :2]);
+    
+    a=plt.hist2d(u[L,0], u[L,1],binning,density=1);
+    a0=a[0];
+    a1=a[1];
+    a2=a[2];
+    #a3=a[3];
+    #B=np.zeros([100,100]);
+    B=[];
+    for i in range(1000):    
+        L_permuted=np.random.permutation(L);  # This line
+        b=plt.hist2d(u[L_permuted,0], u[L_permuted,1],binning,density=1);
+        b0=b[0];
+        b0=np.ndarray.flatten(b0)
+        #B = array([B,b0])
+        #B.append(b0);
+        if i==0:
+            B=b0;
+        else:
+            B=np.vstack((B,b0))
+    a0=np.ndarray.flatten(a0)     
+
+    #p-value calculation (Plusmaze method)   
+    D0=[]
+    for i in range(a0.size):
+        #max(B[:,i])
+        distribution=B[:,i];
+        #m_d=np.mean(distribution)
+        d0=(1+np.sum(distribution >=a0[i]))/(len(distribution)+1) ;
+        if i==0:
+            D0=d0;
+        else:
+            D0=np.vstack((D0,d0))
+               
+    D=D0<=p_val;         
+            
+                         
+    D1=np.reshape(D,(binning,binning))     
+    return D1
+    
+    
+# %% 3D density plot
+
+condition = ["CON", "OD", "OR", "HC"]
+# scipy.io.savemat(f'{ROOT_DIR}/u.mat',{'umap1':u[:,0], 'umap2':u[:,1], 'umap3':u[:,2], 'umap4':u[:,3],})
+for con in ["CON"]:
+    for i in range(8,9):
+        rat=strcmp(rat_np, f"Rat{i}")
+        studyday=strcmp(StudyDay_np, con)
+        res = rat*studyday
+        L=binary_feature(Ripples,res)
+        plot3Ddensity(u[L,0],u[L,1],u[L,3])
+
 # %%
 #Features per ripple    
 Amp=flatcells(amplitude_np);
