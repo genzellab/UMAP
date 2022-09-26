@@ -11,4 +11,4 @@ ab = ab*255
 ab = ab.astype(np.uint8)
 im = Image.fromarray(ab)
 image = im.filter(ImageFilter.GaussianBlur)
-plt.imshow(image,cmap='gray')
+plt.imshow(image,cmap='jet')
