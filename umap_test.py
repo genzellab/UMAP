@@ -329,7 +329,7 @@ def smooth_image_custom(ab):
                         [1,3,1] ])
     kernel1 = kernel1 / kernel1.sum()
     image = cv2.filter2D(src=ab, ddepth=-1, kernel=kernel1)
-    #image = cv2.filter2D(src=image, ddepth=-1, kernel=kernel1)    
+    image = cv2.filter2D(src=image, ddepth=-1, kernel=kernel1)    
     image=np.asarray(image);
     image=image.astype('float64');
 
