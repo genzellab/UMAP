@@ -305,7 +305,36 @@ def plot3Ddensity(x,y,z, bins = 100):
     ax.set_ylabel('umap2')
     ax.set_zlabel('umap4')
     plt.show()
+# %%
+
+def smooth_image(ab):
+    from PIL import Image, ImageFilter
+    #ab =np.load(f'{ROOT_DIR}/array_bool2_rat8.npy')
+    ab = ab*255
+    ab = ab.astype(np.uint8)
+    im = Image.fromarray(ab)
+    image = im.filter(ImageFilter.GaussianBlur)
+    image=np.asarray(image);
+    image=image.astype('float64');
+
+    return image
+#    plt.imshow(image,cmap='jet')
     
+# %%
+def smooth_image_custom(ab):
+    ab = ab*255
+    ab = ab.astype(np.uint8)
+    kernel1 = np.array([ [1,3,1],
+                        [3,5,3],
+                        [1,3,1] ])
+    kernel1 = kernel1 / kernel1.sum()
+    image = cv2.filter2D(src=ab, ddepth=-1, kernel=kernel1)
+    #image = cv2.filter2D(src=image, ddepth=-1, kernel=kernel1)    
+    image=np.asarray(image);
+    image=image.astype('float64');
+
+    return image
+
 # %%    
 def significant_pixels(ratString, dayString,binning,p_val):
 # Determines which pixels have a significant density compared to
@@ -369,6 +398,63 @@ def significant_pixels(ratString, dayString,binning,p_val):
             
                          
     D1=np.reshape(D,(binning,binning))     
+    return D1
+# %%
+def significant_pixels_smooth(ratString, dayString,binning,p_val):
+
+    rat=strcmp(rat_np, ratString)
+    
+    
+    #Trial
+    trial =  strcmp(StudyDay_np, dayString)
+    
+    
+    logicresult=trial*rat;
+    
+    L=binary_feature(Ripples,logicresult)
+    
+    t_unshuffled=(u[L, :2]);
+    
+    a=plt.hist2d(u[L,0], u[L,1],binning,density=1);
+    a0=a[0];
+    
+    # a0 contains binned density. 
+    # Need to smooth
+    
+    I=smooth_image_custom(a0);
+
+    
+    B=[];
+    for i in range(1000):    
+        L_permuted=np.random.permutation(L);  # This line
+        b=plt.hist2d(u[L_permuted,0], u[L_permuted,1],binning,density=1);
+        b0=b[0];
+        b0=smooth_image_custom(b0)  
+        b0=np.ndarray.flatten(b0)
+        #B = array([B,b0])
+        #B.append(b0);
+        if i==0:
+            B=b0;
+        else:
+            B=np.vstack((B,b0))
+    I=np.ndarray.flatten(I)     
+    
+    #p-value calculation (Plusmaze method)   
+    D0=[]
+    for i in range(I.size):
+        #max(B[:,i])
+        distribution=B[:,i];
+        #m_d=np.mean(distribution)
+        d0=(1+np.sum(distribution >=I[i]))/(len(distribution)+1) ;
+        if i==0:
+            D0=d0;
+        else:
+            D0=np.vstack((D0,d0))
+               
+    D=D0<=p_val;         
+            
+                         
+    D1=np.reshape(D,(binning,binning))  
     return D1
     
     
