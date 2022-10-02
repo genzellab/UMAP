@@ -6,7 +6,7 @@ import matplotlib.colors as cl
 from matplotlib import cm
 import seaborn as sns
 import cv2 as cv2
-# import utils.processing_helpers as hproc
+import utils.processing_helpers as hproc
 from mpl_toolkits.mplot3d import Axes3D
 from tqdm import tqdm
 
@@ -79,7 +79,7 @@ def plot_umap(x,y,z=None, feature = None, title:str = '', is3d = False,figsize=(
     plt.show()
 
 
-def plot_density(x, y = None,bins = 100, title= 'Figure',window_title='-',xlabel:str = '', ylabel:str='', density=1, figsize=(10,7),vmin=0,vmax=0.2):
+def plot_density(x, y = None,bins = 100, title= 'Figure',window_title='-', xlabel:str = 'Umap 1', ylabel:str='Umap 2', density=1, figsize=(10,7),vmin=0,vmax=0.2):
     '''
         Either give only x to plot 1-D Density plot
         Or give x and y to plot 2d Density plot
@@ -134,7 +134,7 @@ def getIndex(A, a, n):
     return bs(A,a,0,n-1)
 
 
-def plot3Ddensity(x,y,z, bins = 100, xlabel:str = 'umap 1', ylabel:str='umap 2', zlabel:str = 'umap 4',s=30,linewidths=0.5,cmap='hot',marker='.'):
+def plot3Ddensity(x,y,z, bins = 100, xlabel:str = 'umap 1', ylabel:str='umap 2', zlabel:str = 'umap 4',s=30,linewidths=0.5,cmap='hot',marker=None):
     ''' 
         Plots 3d histogram for x, y and z
     '''
@@ -166,7 +166,7 @@ def plot3Ddensity(x,y,z, bins = 100, xlabel:str = 'umap 1', ylabel:str='umap 2',
     plt.show()
 
 
-def plotZfeatureOnDensities(x,y, z_feature,bins = 100, plot = True, behaviour = lambda x: x.mean(), xlabel:str = '', ylabel:str='', featureLabel:str = '',s=30,linewidths=0.5,cmap='hot',marker='.'):
+def plotZfeatureOnDensities(x,y, z_feature,bins = 100, plot = True, behaviour = lambda x: x.mean(), figsize=(12,12), xlabel:str = 'Umap 1', ylabel:str='Umap 2', featureLabel:str = '',s=30,linewidths=1,cmap='hot',marker=None):
     '''
     
         For 2-D density plot of X,Y
@@ -201,7 +201,7 @@ def plotZfeatureOnDensities(x,y, z_feature,bins = 100, plot = True, behaviour = 
     # data = data[:,2]
     # plt.hist(data, bins=100)
     if plot:
-        fig = plt.figure()
+        fig = plt.figure(figsize=figsize)
         ax = fig.add_subplot(111,)
         p3d = ax.scatter(data[:,0], data[:,1], s=s, c=data[:,2].tolist(),linewidths=linewidths,cmap=cmap,marker=marker)
         cb = fig.colorbar(p3d)
@@ -214,7 +214,7 @@ def plotZfeatureOnDensities(x,y, z_feature,bins = 100, plot = True, behaviour = 
 
 
 
-def significant_pixels(x,y,z,bins=100, iter=100, pval = 0.5, smooth= False):
+def significant_pixels(x,y,z,bins=100, iter=100, pval = 0.5, smooth= False, plot=True, figsize=(12,12), xlabel:str = 'Umap 1', ylabel:str='Umap 2', featureLabel:str = '',s=30,linewidths=1,cmap='hot',marker=None,pbar=True):
     ''' 
         x = u[:,0]
         y = u[:,1]
@@ -237,7 +237,7 @@ def significant_pixels(x,y,z,bins=100, iter=100, pval = 0.5, smooth= False):
     
     #Rat
 
-    image,_,_=plotZfeatureOnDensities(x,y, z,bins = bins)
+    image,_,_=plotZfeatureOnDensities(x,y, z,bins = bins, xlabel=xlabel,ylabel=ylabel,featureLabel=featureLabel,s=s,linewidths=linewidths,cmap=cmap,marker=marker,figsize=figsize)
     image = (image / image.max())*255
 
     if smooth:
@@ -247,7 +247,7 @@ def significant_pixels(x,y,z,bins=100, iter=100, pval = 0.5, smooth= False):
 
     L=z
     B=[]
-    for i in tqdm(range(iter)):    #Takes several minutes
+    for i in tqdm(range(iter)) if pbar else range(iter):    #Takes several minutes
         # L_permuted=np.random.permutation(L)  # This line
         L_permuted = L.copy()
         np.random.shuffle(L_permuted)
@@ -279,10 +279,21 @@ def significant_pixels(x,y,z,bins=100, iter=100, pval = 0.5, smooth= False):
     D = np.reshape(D,(bins,bins))
 
     new_image = np.zeros((bins,bins),dtype=np.uint8)
-    for xi, xv in enumerate(D == False):
+    data = []
+    for xi, xv in enumerate(D):
         for yi,yv in enumerate(xv):
             if yv:
                 new_image[xi][yi] = image[xi][yi]
-    
+                data.append([xi,yi,image[xi][yi]])
+    data = np.array(data)
+    if plot:
+        fig = plt.figure(figsize=figsize)
+        ax = fig.add_subplot(111,)
+        p3d = ax.scatter(data[:,0], data[:,1], s=s, c=data[:,2].tolist(),linewidths=linewidths,cmap=cmap,marker=marker)
+        cb = fig.colorbar(p3d)
+        cb.set_label(featureLabel + ' Significant')
+        ax.set_xlabel(xlabel)
+        ax.set_ylabel(ylabel)
+        plt.show()
     return new_image
 

@@ -21,7 +21,7 @@ import matplotlib.colors as cl
 
 from mpl_toolkits.mplot3d import Axes3D
 import seaborn as sns
-
+import cv2
 import umap
 #import plotly.express as px
 from URC_computeIsomapDimEst import isomapDimEst
@@ -248,33 +248,33 @@ def significant_pixels_smooth(ratString, dayString,binning,p_val):
 condition = ["CON", "OD", "OR", "HC"]
 # scipy.io.savemat(f'{ROOT_DIR}/u.mat',{'umap1':u[:,0], 'umap2':u[:,1], 'umap3':u[:,2], 'umap4':u[:,3],})
 
-for con in ["CON"]:                                             # supply condition to loop over all conditions
-    for i in range(8,9):                                        # use range(10) to loop over all rats
-        rat=hproc.strcmp(rat_np, f"Rat{i}")
-        studyday=hproc.strcmp(StudyDay_np, con)
-        res = rat*studyday
-        L=hproc.binary_feature(Ripples,res)
-        hplt.plot3Ddensity(u[L,0],u[L,1],u[L,3],s=30)
+# TODO: Uncomment this
+# for con in ["CON"]:                                             # supply condition to loop over all conditions
+#     for i in range(8,9):                                        # use range(10) to loop over all rats
+#         rat=hproc.strcmp(rat_np, f"Rat{i}")
+#         studyday=hproc.strcmp(StudyDay_np, con)
+#         res = rat*studyday
+#         L=hproc.binary_feature(Ripples,res)
+#         hplt.plot3Ddensity(u[L,0],u[L,1],u[L,3],s=30)
 
 # %%
 #Features per ripple    
-Amp=hproc.h_stack(amplitude_np);
-Meanfreq=hproc.h_stack(meanfreq_np);
-
-Amp2=hproc.h_stack(amplitude2_np);
-Freq=hproc.h_stack(freq_np);
-Entropy=hproc.h_stack(entropy_np);
-AUC=hproc.h_stack(auc_np);
-
-AUC2=hproc.h_stack(auc2_np);
+Amp=hproc.h_stack(amplitude_np)
+Meanfreq=hproc.h_stack(meanfreq_np)
+Amp2=hproc.h_stack(amplitude2_np)
+Freq=hproc.h_stack(freq_np)
+Entropy=hproc.h_stack(entropy_np)
+AUC=hproc.h_stack(auc_np)
+AUC2=hproc.h_stack(auc2_np)
 
 
 #DUR=get_duration(dur_np);
-hplt.plot_umap(u[:,0],u[:,1],feature= Amp,title="Amplitude1 (z-scored)",s=1)
-hplt.plot_umap(u[:,0],u[:,1],feature= Freq,title="Frequency",s=1)
-hplt.plot_umap(u[:,0],u[:,1],feature= Entropy,title="Entropy",s=1)
-hplt.plot_umap(u[:,0],u[:,1],feature= AUC,title="Area under the curve",s=1)
-hplt.plot_umap(u[:,0],u[:,1],feature= AUC2,title="Area under the curve 2",s=1)
+# TODO: Uncomment this
+# hplt.plot_umap(u[:,0],u[:,1],feature= Amp,title="Amplitude1 (z-scored)",s=1)
+# hplt.plot_umap(u[:,0],u[:,1],feature= Freq,title="Frequency",s=1)
+# hplt.plot_umap(u[:,0],u[:,1],feature= Entropy,title="Entropy",s=1)
+# hplt.plot_umap(u[:,0],u[:,1],feature= AUC,title="Area under the curve",s=1)
+# hplt.plot_umap(u[:,0],u[:,1],feature= AUC2,title="Area under the curve 2",s=1)
 
 
 #plot_umap(DUR,"Duration (ms)")
@@ -299,13 +299,15 @@ string="VEH"
 treatment=hproc.strcmp(treatment_np, string)
 L=hproc.binary_feature(Ripples,treatment)
 #plot_umap_binary(L,"RGS14")
-hplt.plot_density(u[L,0],u[L,1],title=string+" ripples",figsize =(10, 7),vmax=0.25)
+# TODO: Uncomment this
+# hplt.plot_density(u[L,0],u[L,1],title=string+" ripples",figsize =(10, 7),vmax=0.25)
 
 # %% Rat's ripples
 rat=hproc.strcmp(rat_np, "Rat9")
 L=hproc.binary_feature(Ripples,rat)
 
-hplt.plot_density(u[L,0], u[L,1],title="Ripples from Rat 9",figsize =(10, 7),vmax=0.25)
+# TODO: Uncomment this
+# hplt.plot_density(u[L,0], u[L,1],title="Ripples from Rat 9",figsize =(10, 7),vmax=0.25)
 # %% OS
 string="VEH"
 studyday=hproc.strcmp(StudyDay_np, "OR")
@@ -321,11 +323,13 @@ x1=np.logical_or(x,logicresult3)
 
 
 L=hproc.binary_feature(Ripples,x1)
-hplt.plot_density(u[L,0],u[L,1],title="Ripples from " +string+ " OS",figsize =(10, 7),vmax=0.25)
+# TODO: Uncomment this
+# hplt.plot_density(u[L,0],u[L,1],title="Ripples from " +string+ " OS",figsize =(10, 7),vmax=0.25)
 
 #OR
 L=hproc.binary_feature(Ripples,studyday)
-hplt.plot_density(u[L,0],u[L,1],title="Ripples from " +string+ " OR",figsize =(10, 7),vmax=0.25)
+# TODO: Uncomment this
+# hplt.plot_density(u[L,0],u[L,1],title="Ripples from " +string+ " OR",figsize =(10, 7),vmax=0.25)
 
 string="VEH"
 studydayhc=hproc.strcmp(StudyDay_np, "HC")
@@ -334,7 +338,8 @@ vehhpc=studydayhc*treatment
 
 #HC
 L=hproc.binary_feature(Ripples,vehhpc)
-hplt.plot_density(u[L,0],u[L,1],title="Ripples from " +string+ " HC",figsize =(10, 7),vmax=0.25)
+# TODO: Uncomment this
+# hplt.plot_density(u[L,0],u[L,1],title="Ripples from " +string+ " HC",figsize =(10, 7),vmax=0.25)
 
 
 
@@ -346,13 +351,15 @@ treatment=hproc.strcmp(treatment_np, string)
 logicresult=studyday*treatment
 
 L=hproc.binary_feature(Ripples,logicresult)
-hplt.plot_density(u[L,0],u[L,1],title="Ripples from "+string+" HC",figsize =(10, 7),vmax=0.25)
+# TODO: Uncomment this
+# hplt.plot_density(u[L,0],u[L,1],title="Ripples from "+string+" HC",figsize =(10, 7),vmax=0.25)
 
 
 # %% Significant clusters 
 
+features = [Meanfreq, Amp, Amp2, Freq, Entropy, AUC, AUC2]
+labels = ['Mean Frequency', 'Amp', 'Amp2', 'Frequency', 'Entropy', 'AUC', 'AUC2']
 x = u[:,0] # between -10 and 4, log-gamma of an svc
 y = u[:,1]
-z= Meanfreq
-nimg = hplt.significant_pixels(x,y,z,iter=100)
-plt.imshow(nimg)
+for z,l in zip(features,labels):
+    img = hplt.significant_pixels(x,y,z,iter=1000,featureLabel=l ,s=20)
