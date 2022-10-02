@@ -206,7 +206,7 @@ def significant_pixels_smooth(ratString, dayString,binning,p_val):
     # a0 contains binned density. 
     # Need to smooth
     
-    I=smooth_image_custom(a0);
+    I=hproc.smooth_image_custom(a0);
 
     
     B=[];
@@ -214,7 +214,7 @@ def significant_pixels_smooth(ratString, dayString,binning,p_val):
         L_permuted=np.random.permutation(L);  # This line
         b=plt.hist2d(u[L_permuted,0], u[L_permuted,1],binning,density=1);
         b0=b[0];
-        b0=smooth_image_custom(b0)  
+        b0=hproc.smooth_image_custom(b0)  
         b0=np.ndarray.flatten(b0)
         #B = array([B,b0])
         #B.append(b0);
