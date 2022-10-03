@@ -1,3 +1,4 @@
+from array import array
 import pandas as pd
 
 import numpy as np
@@ -166,50 +167,80 @@ def plot3Ddensity(x,y,z, bins = 100, xlabel:str = 'umap 1', ylabel:str='umap 2',
     plt.show()
 
 
-def plotZfeatureOnDensities(x,y, z_feature,bins = 100, plot = True, behaviour = lambda x: x.mean(), figsize=(12,12), xlabel:str = 'Umap 1', ylabel:str='Umap 2', featureLabel:str = '',s=30,linewidths=1,cmap='hot',marker=None):
+def plotZfeatureOnDensities(x,y, z_feature,bins = 100, plot = True, behaviour = lambda x, axis: np.mean(x,axis = axis), figsize=(12,12), xlabel:str = 'Umap 1', ylabel:str='Umap 2', featureLabel:str = '',s=30,linewidths=1,cmap='hot',marker=None):
     '''
     
         For 2-D density plot of X,Y
         Plot feature Z over the bins
         By default it's mean of all points
         Can change the behaviour 
+        eg:
+            behaviour = 
     
     '''
+    multiple = z_feature[0] is not int
 
     X = np.linspace(x.min(), x.max(), num=bins+1)
     Y = np.linspace(y.min(), y.max(), num=bins+1)
-    image = np.zeros((bins,bins))
+
+    if multiple :
+        m = len(z_feature)
+        z_feature = [[*z] for z in zip(*z_feature)]
+    else:
+        m = 1
+        z_feature = [z_feature]
+        featureLabel = [featureLabel]
+
+    images = [np.zeros((bins,bins)) for _ in range(m)] 
+
     data = {}
-    for xv,yv,zv in zip(x,y,z_feature):
+    for i, (xv,yv) in enumerate(zip(x,y)):
         xi,yi = getIndex(X,xv,bins+1),getIndex(Y,yv,bins+1)
         xi -= 1
         yi -= 1
+
         if (xi,yi) in data:
-            data[(xi,yi)].append(zv)
+           for zi, zv in enumerate(z_feature[i]):
+                data[(xi,yi)][zi].append(zv)
+
         else:
-            data[(xi,yi)] = [zv]
+            data[(xi,yi)] = []
+            for zv in z_feature[i]:
+                data[(xi,yi)].append([zv])
+
 
     data = [[k[0], k[1], v] for k,v in data.items()]
-    for item in data:
+
+    for index,item in enumerate(data):
         res = np.array(item[2])
-        item[2] = behaviour(res) if behaviour is not None else res.mean()
-        image[item[0]][item[1]] = item[2]
+        res = behaviour(res,axis=1) 
+        data[index] = [item[0], item[1],*res]
+        
+
+    for i , img  in enumerate(images):
+        for d in data:
+            img[d[0]][d[1]] = d[2+i]
+        images[i] = img
+
 
     data = np.array(data)
+
+    # print(data.shape)
     # datap = data[:,2]>0.0
     # data = data[datap]
     # data = data[:,2]
     # plt.hist(data, bins=100)
     if plot:
-        fig = plt.figure(figsize=figsize)
-        ax = fig.add_subplot(111,)
-        p3d = ax.scatter(data[:,0], data[:,1], s=s, c=data[:,2].tolist(),linewidths=linewidths,cmap=cmap,marker=marker)
-        cb = fig.colorbar(p3d)
-        cb.set_label(featureLabel)
-        ax.set_xlabel(xlabel)
-        ax.set_ylabel(ylabel)
-        plt.show()
-    return image, X[1:], Y[1:]
+        for i in range(m):
+            fig = plt.figure(figsize=figsize)
+            ax = fig.add_subplot(111,)
+            p3d = ax.scatter(data[:,0], data[:,1], s=s, c=data[:,2+i],linewidths=linewidths,cmap=cmap,marker=marker)
+            cb = fig.colorbar(p3d)
+            cb.set_label(featureLabel[i])
+            ax.set_xlabel(xlabel)
+            ax.set_ylabel(ylabel)
+            plt.show()
+    return images, X[1:], Y[1:]
 
 
 
@@ -237,63 +268,110 @@ def significant_pixels(x,y,z,bins=100, iter=100, pval = 0.5, smooth= False, plot
     
     #Rat
 
-    image,_,_=plotZfeatureOnDensities(x,y, z,bins = bins, xlabel=xlabel,ylabel=ylabel,featureLabel=featureLabel,s=s,linewidths=linewidths,cmap=cmap,marker=marker,figsize=figsize)
-    image = (image / image.max())*255
 
-    if smooth:
-            image = hproc.smooth_image_custom(image)
+    images,_,_=plotZfeatureOnDensities(x,y, z,bins = bins, xlabel=xlabel,ylabel=ylabel,featureLabel=featureLabel,s=s,linewidths=linewidths,cmap=cmap,marker=marker,figsize=figsize)
 
-    # %% permuting 2D density maps
-
-    L=z
-    B=[]
-    for i in tqdm(range(iter)) if pbar else range(iter):    #Takes several minutes
-        # L_permuted=np.random.permutation(L)  # This line
-        L_permuted = L.copy()
-        np.random.shuffle(L_permuted)
-        image_perm,_,_ = plotZfeatureOnDensities(x,y, L_permuted,bins = bins, plot=False)
+    for i,  img in enumerate(images):
         if smooth:
-            image_perm = hproc.smooth_image_custom(image_perm)
-        image_perm=np.ndarray.flatten(image_perm)
-        B.append(image_perm)
+            img = hproc.smooth_image_custom(img)
+        images[i] = img.flatten()
+        
+    # %% permuting 2D density maps
+    multiple = z[0] is not int
 
-    B=np.vstack(B)        
+    if not multiple:
+        z = [z]
+        featureLabel = [featureLabel]
+        
 
-    a0=np.ndarray.flatten(image)     
+    m = len(images)
+    B=[[] for _ in range(m)] 
+    
+    for _ in tqdm(range(iter)) if pbar else range(iter):    #Takes several minutes
+        # L_permuted=np.random.permutation(L)  # This line
+        
+        features = z
+        for i,feature in enumerate(features):
+            np.random.shuffle(feature)
+            features[i] = feature
+
+        image_perms,_,_ = plotZfeatureOnDensities(x,y, features, bins = bins, plot=False)
+        assert(len(features) == len(image_perms))
+
+        for i , imgp in enumerate(image_perms):
+            if smooth:
+                imgp = hproc.smooth_image_custom(imgp)
+            image_perms[i] = imgp.flatten()
+        
+        for i,_ in enumerate(B):
+            B[i].append(image_perms[i])
+
+    for i,b in enumerate(B):
+        B[i]=np.vstack(b)        
+
+    for img,b in zip(images, B):
+        assert(img.shape[0] == b.shape[1])
 
     #p-value calculation (Plusmaze method)   
-    D0=[]
-    for i in range(a0.size):
-        #max(B[:,i])
-        distribution=B[:,i]
-        #m_d=np.mean(distribution)
-        d0=(1+np.sum(distribution >=a0[i]))/(len(distribution)+1) 
-        if i==0:
-            D0=d0
-        else:
-            D0=np.vstack((D0,d0))
-    # D0 = np.vstack()
-               
-    D = D0 <= pval         
+    D=[[] for _ in range(m)] 
+    
+    for id , (img, b) in enumerate(zip(images,B)):
+        
+        for i in range(img.size):
+            #max(B[:,i])
+            distribution = b[:,i]
+            #m_d=np.mean(distribution)
+            d0=(1+np.sum(distribution >=img[i]))/(len(distribution)+1) 
+            if i==0:
+                D[id]=d0
+            else:
+                D[id]=np.vstack((D[id],d0))
+        
+    
+    for i , (d,img) in enumerate(zip(D,images)):
+        d = d <= pval   
+        d = np.reshape(d, (bins,bins))
+        D[i] = d
+        img = np.reshape(img,(bins,bins))
+        images[i] = img
+        
                         
-    D = np.reshape(D,(bins,bins))
 
-    new_image = np.zeros((bins,bins),dtype=np.uint8)
+    new_images = []
+
     data = []
-    for xi, xv in enumerate(D):
-        for yi,yv in enumerate(xv):
-            if yv:
-                new_image[xi][yi] = image[xi][yi]
-                data.append([xi,yi,image[xi][yi]])
-    data = np.array(data)
-    if plot:
-        fig = plt.figure(figsize=figsize)
-        ax = fig.add_subplot(111,)
-        p3d = ax.scatter(data[:,0], data[:,1], s=s, c=data[:,2].tolist(),linewidths=linewidths,cmap=cmap,marker=marker)
-        cb = fig.colorbar(p3d)
-        cb.set_label(featureLabel + ' Significant')
-        ax.set_xlabel(xlabel)
-        ax.set_ylabel(ylabel)
-        plt.show()
-    return new_image
 
+    for i,(d, img) in enumerate(zip(D,images)):
+        
+        nimg = img * d
+        temp = [] 
+        for index,v in np.ndenumerate(nimg):
+            if v > 0.0:
+                temp.append([index[0],index[1],v])
+        data.append(np.array(temp))
+        new_images.append(nimg)
+    
+
+    if plot:
+        for d,f in zip(data,featureLabel):
+            fig = plt.figure(figsize=figsize)
+            ax = fig.add_subplot(111,)
+            p3d = ax.scatter(d[:,0], d[:,1], s=s, c=d[:,2].tolist(),linewidths=linewidths,cmap=cmap,marker=marker)
+            cb = fig.colorbar(p3d)
+            cb.set_label(f + ' Significant')
+            ax.set_xlabel(xlabel)
+            ax.set_ylabel(ylabel)
+            plt.show()
+    return new_images
+
+
+def plot_scatter_form_image(img):
+    t = []
+    for indx , v in np.ndenumerate(img):
+        t.append([indx[0], indx[1],v])
+    t = np.array(t)
+    fig = plt.figure(figsize=(12,12))
+    ax = fig.add_subplot(111,)
+    p3d = ax.scatter(t[:,0], t[:,1], c=t[:,2].tolist())
+    cb = fig.colorbar(p3d)
+    plt.show()

@@ -359,7 +359,11 @@ L=hproc.binary_feature(Ripples,logicresult)
 
 features = [Meanfreq, Amp, Amp2, Freq, Entropy, AUC, AUC2]
 labels = ['Mean Frequency', 'Amp', 'Amp2', 'Frequency', 'Entropy', 'AUC', 'AUC2']
+
+# features = [Meanfreq]
+# labels = ['Mean Frequency']
 x = u[:,0] # between -10 and 4, log-gamma of an svc
 y = u[:,1]
-for z,l in zip(features,labels):
-    img = hplt.significant_pixels(x,y,z,iter=1000,featureLabel=l ,s=20)
+img = hplt.significant_pixels(x,y,features,iter=1000,featureLabel=labels ,s=25)
+
+# hplt.plotZfeatureOnDensities(x,y,features, featureLabel=labels)
