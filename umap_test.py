@@ -143,7 +143,7 @@ AUC2=hproc.h_stack(auc2_np)
 
 #DUR=get_duration(dur_np);
 # TODO: Uncomment this
-# hplt.plot_umap(u[:,0],u[:,1],feature= Amp,title="Amplitude1 (z-scored)",s=1)
+hplt.plot_umap(u[:,0],u[:,1],feature= Amp,clipmax= 100,title="Amplitude1 (z-scored)",s=1)
 # hplt.plot_umap(u[:,0],u[:,1],feature= Freq,title="Frequency",s=1)
 # hplt.plot_umap(u[:,0],u[:,1],feature= Entropy,title="Entropy",s=1)
 # hplt.plot_umap(u[:,0],u[:,1],feature= AUC,title="Area under the curve",s=1)
@@ -238,8 +238,7 @@ labels = ['Mean Frequency']
 x = u[:,0] # between -10 and 4, log-gamma of an svc
 y = u[:,1]
 # TODO: Uncomment this
-img, sig_ind = hplt.significant_pixels(x,y,features,iter=2,featureLabel=labels ,s=25)
+# img, sig_ind = hplt.significant_pixels(x,y,features,iter=2,featureLabel=labels ,s=25)
 
 # hplt.plotZfeatureOnDensities(x,y,features, featureLabel=labels)
 
-print(Data.shape,u.shape, Meanfreq.shape, len(sig_ind[0]))
