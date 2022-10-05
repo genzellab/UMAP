@@ -58,8 +58,8 @@ def plot_umap(x,y,z=None, feature = None, clipmin=None,clipmax=None, title:str =
     #colormap=plt.cm.get_cmap('bwr')
     #colors=colormap(z)
     #sm=plt.scatter(u[:,0],u[:,1],c=z,alpha=0.6,s=0.01)g
-    cmin = np.min(feature)
-    cmax = np.max(feature)
+    cmin = np.mean(feature)-3*np.std(feature)
+    cmax = np.mean(feature)+3*np.std(feature)
 
     if clipmax is not None or clipmin is not None:
         t = None
