@@ -143,8 +143,8 @@ AUC2=hproc.h_stack(auc2_np)
 
 #DUR=get_duration(dur_np);
 # TODO: Uncomment this
-hplt.plot_umap(u[:,0],u[:,1],feature= Amp,clipmax= 100,title="Amplitude1 (z-scored)",s=1)
-# hplt.plot_umap(u[:,0],u[:,1],feature= Freq,title="Frequency",s=1)
+# hplt.plot_umap(u[:,0],u[:,1],feature= Amp,clipmin= 10,title="Amplitude1 (z-scored)",s=1)
+hplt.plot_umap(u[:,0],u[:,1],feature= Freq,clipmax=120,title="Frequency",s=1)
 # hplt.plot_umap(u[:,0],u[:,1],feature= Entropy,title="Entropy",s=1)
 # hplt.plot_umap(u[:,0],u[:,1],feature= AUC,title="Area under the curve",s=1)
 # hplt.plot_umap(u[:,0],u[:,1],feature= AUC2,title="Area under the curve 2",s=1)
