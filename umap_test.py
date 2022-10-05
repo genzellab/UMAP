@@ -85,7 +85,7 @@ auc2_np=T[:,11]
 # dur_np=T_ripples[:,5];
 
 
-Data= hproc.v_stack(Ripples)
+Data = hproc.v_stack(Ripples)
 
 ### -
 
@@ -114,135 +114,7 @@ Data= hproc.v_stack(Ripples)
 
 # fit = umap.UMAP(n_components=4)
 # u = fit.fit_transform(Data)
-
-
-
-
-# %%  
   
-def significant_pixels(ratString, dayString,binning,p_val):
-# Determines which pixels have a significant density compared to
-# a permuted control.
-#PARAMETERS:
-#ratString
-#dayString
-#binning: Suggested: 100. It gives a 100x100 density matrix. 
-#p_val: P-value. Suggested: 0.001    
-    
-    #ratString='Rat1'
-    #dayString='CON'
-    
-    #Rat
-    rat=hproc.strcmp(rat_np, ratString)
-    
-
-    #Trial
-    trial =  hproc.strcmp(StudyDay_np, dayString)
-    
-
-    logicresult=trial*rat;
-
-    L=hproc.binary_feature(Ripples,logicresult)
-    
-    t_unshuffled=(u[L, :2]);
-    
-    a=plt.hist2d(u[L,0], u[L,1],binning,density=1);
-    a0=a[0];
-    a1=a[1];
-    a2=a[2];
-    #a3=a[3];
-    #B=np.zeros([100,100]);
-    B=[];
-    for i in range(1000):    
-        L_permuted=np.random.permutation(L);  # This line
-        b=plt.hist2d(u[L_permuted,0], u[L_permuted,1],binning,density=1);
-        b0=b[0];
-        b0=np.ndarray.flatten(b0)
-        #B = array([B,b0])
-        #B.append(b0);
-        if i==0:
-            B=b0;
-        else:
-            B=np.vstack((B,b0))
-    a0=np.ndarray.flatten(a0)     
-
-    #p-value calculation (Plusmaze method)   
-
-    D0=[]
-    for i in range(a0.size):
-        #max(B[:,i])
-        distribution=B[:,i];
-        #m_d=np.mean(distribution)
-        d0=(1+np.sum(distribution >=a0[i]))/(len(distribution)+1) ;
-        if i==0:
-            D0=d0;
-        else:
-            D0=np.vstack((D0,d0))
-               
-    D=D0<=p_val;         
-            
-                         
-    D1=np.reshape(D,(binning,binning))     
-    return D1
-# %%
-def significant_pixels_smooth(ratString, dayString,binning,p_val):
-
-    rat=hproc.strcmp(rat_np, ratString)
-    
-    
-    #Trial
-    trial =  hproc.strcmp(StudyDay_np, dayString)
-    
-    
-    logicresult=trial*rat;
-    
-    L=hproc.binary_feature(Ripples,logicresult)
-    
-    t_unshuffled=(u[L, :2]);
-    
-    a=plt.hist2d(u[L,0], u[L,1],binning,density=1);
-    a0=a[0];
-    
-    # a0 contains binned density. 
-    # Need to smooth
-    
-    I=hproc.smooth_image_custom(a0);
-
-    
-    B=[];
-    for i in range(1000):    
-        L_permuted=np.random.permutation(L);  # This line
-        b=plt.hist2d(u[L_permuted,0], u[L_permuted,1],binning,density=1);
-        b0=b[0];
-        b0=hproc.smooth_image_custom(b0)  
-        b0=np.ndarray.flatten(b0)
-        #B = array([B,b0])
-        #B.append(b0);
-        if i==0:
-            B=b0;
-        else:
-            B=np.vstack((B,b0))
-    I=np.ndarray.flatten(I)     
-    
-    #p-value calculation (Plusmaze method)   
-    D0=[]
-    for i in range(I.size):
-        #max(B[:,i])
-        distribution=B[:,i];
-        #m_d=np.mean(distribution)
-        d0=(1+np.sum(distribution >=I[i]))/(len(distribution)+1) ;
-        if i==0:
-            D0=d0;
-        else:
-            D0=np.vstack((D0,d0))
-               
-    D=D0<=p_val;         
-            
-                         
-    D1=np.reshape(D,(binning,binning))  
-    return D1
-    
-    
 # %% 3D density plot
 
 condition = ["CON", "OD", "OR", "HC"]
@@ -357,13 +229,16 @@ L=hproc.binary_feature(Ripples,logicresult)
 
 # %% Significant clusters 
 
-features = [Meanfreq, Amp, Amp2, Freq, Entropy, AUC, AUC2]
-labels = ['Mean Frequency', 'Amp', 'Amp2', 'Frequency', 'Entropy', 'AUC', 'AUC2']
+# features = [Meanfreq, Amp, Amp2, Freq, Entropy, AUC, AUC2]
+# labels = ['Mean Frequency', 'Amp', 'Amp2', 'Frequency', 'Entropy', 'AUC', 'AUC2']
 
-# features = [Meanfreq]
-# labels = ['Mean Frequency']
+features = [Meanfreq]
+labels = ['Mean Frequency']
 x = u[:,0] # between -10 and 4, log-gamma of an svc
 y = u[:,1]
-img = hplt.significant_pixels(x,y,features,iter=1000,featureLabel=labels ,s=25)
+# TODO: Uncomment this
+img, sig_ind = hplt.significant_pixels(x,y,features,iter=2,featureLabel=labels ,s=25)
 
 # hplt.plotZfeatureOnDensities(x,y,features, featureLabel=labels)
+
+print(Data.shape,u.shape, Meanfreq.shape, len(sig_ind[0]))

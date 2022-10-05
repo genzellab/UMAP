@@ -167,7 +167,7 @@ def plot3Ddensity(x,y,z, bins = 100, xlabel:str = 'umap 1', ylabel:str='umap 2',
     plt.show()
 
 
-def plotZfeatureOnDensities(x,y, z_feature,bins = 100, plot = True, behaviour = lambda x, axis: np.mean(x,axis = axis), figsize=(12,12), xlabel:str = 'Umap 1', ylabel:str='Umap 2', featureLabel:str = '',s=30,linewidths=1,cmap='hot',marker=None):
+def plotZfeatureOnDensities(x,y, z_feature,bins = 100, plot = True, behaviour = lambda x, axis: np.mean(x,axis = axis), figsize=(12,12), xlabel:str = 'Umap 1', ylabel:str='Umap 2', featureLabel:str = '',s=30,linewidths=1,cmap='hot',marker=None,indices = False):
     '''
     
         For 2-D density plot of X,Y
@@ -179,7 +179,8 @@ def plotZfeatureOnDensities(x,y, z_feature,bins = 100, plot = True, behaviour = 
     
     '''
     multiple = z_feature[0] is not int
-
+    if indices:
+        sig_indices = {}
     X = np.linspace(x.min(), x.max(), num=bins+1)
     Y = np.linspace(y.min(), y.max(), num=bins+1)
 
@@ -198,7 +199,12 @@ def plotZfeatureOnDensities(x,y, z_feature,bins = 100, plot = True, behaviour = 
         xi,yi = getIndex(X,xv,bins+1),getIndex(Y,yv,bins+1)
         xi -= 1
         yi -= 1
-
+        if indices :
+            if (xi,yi) in sig_indices:
+                sig_indices[(xi,yi)].append(i)
+            else:
+                sig_indices[(xi,yi)] = [i]
+     
         if (xi,yi) in data:
            for zi, zv in enumerate(z_feature[i]):
                 data[(xi,yi)][zi].append(zv)
@@ -240,7 +246,10 @@ def plotZfeatureOnDensities(x,y, z_feature,bins = 100, plot = True, behaviour = 
             ax.set_xlabel(xlabel)
             ax.set_ylabel(ylabel)
             plt.show()
-    return images, X[1:], Y[1:]
+    if indices:
+        return images, X[1:], Y[1:], sig_indices 
+    else:
+        return images, X[1:], Y[1:]
 
 
 
@@ -269,7 +278,7 @@ def significant_pixels(x,y,z,bins=100, iter=100, pval = 0.5, smooth= False, plot
     #Rat
 
 
-    images,_,_=plotZfeatureOnDensities(x,y, z,bins = bins, xlabel=xlabel,ylabel=ylabel,featureLabel=featureLabel,s=s,linewidths=linewidths,cmap=cmap,marker=marker,figsize=figsize)
+    images, _,  _, indices=plotZfeatureOnDensities(x,y, z,bins = bins, xlabel=xlabel,ylabel=ylabel,featureLabel=featureLabel,s=s,linewidths=linewidths,cmap=cmap,marker=marker,figsize=figsize,indices=True)
 
     for i,  img in enumerate(images):
         if smooth:
@@ -338,11 +347,13 @@ def significant_pixels(x,y,z,bins=100, iter=100, pval = 0.5, smooth= False, plot
                         
 
     new_images = []
-
+    significant_indices = [[]] * m
     data = []
 
     for i,(d, img) in enumerate(zip(D,images)):
-        
+        for id, v in np.ndenumerate(d):
+            if v:
+                significant_indices[i].extend(indices[id])        
         nimg = img * d
         temp = [] 
         for index,v in np.ndenumerate(nimg):
@@ -362,7 +373,7 @@ def significant_pixels(x,y,z,bins=100, iter=100, pval = 0.5, smooth= False, plot
             ax.set_xlabel(xlabel)
             ax.set_ylabel(ylabel)
             plt.show()
-    return new_images
+    return new_images, significant_indices
 
 
 def plot_scatter_form_image(img):
