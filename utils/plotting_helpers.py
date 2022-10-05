@@ -43,11 +43,14 @@ def plot_binary(x,y,title:str, xlabel:str = '', ylabel:str='', color = 'r', alph
 
     #plt.legend(['First line', 'Second line'])
 
-def plot_umap(x,y,z=None, feature = None, title:str = '', is3d = False,figsize=(12, 12), xlabel:str = 'Umap 1', ylabel:str='Umap 2', zlabel:str='Umap 4', cmap='seismic',alpha = 0.6, s = 20):
+def plot_umap(x,y,z=None, feature = None, clipmin=None,clipmax=None, title:str = '', figsize=(12, 12), xlabel:str = 'Umap 1', ylabel:str='Umap 2', zlabel:str='Umap 4', cmap='seismic',alpha = 0.6, s = 20):
     ''' 
         x = u[L,0]
         y = u[L,1]
-        z = Amp
+        z = u[L,3]  if given, will plot a 3d scattter plot
+        feature = Amp
+        clipmin = plots points with feature value greater than clipmin
+        clipmax = plots points with feature value less than clipmax
     '''
 
     normalize = cl.Normalize(vmin=np.mean(feature)-3*np.std(feature), vmax=np.mean(feature)+3*np.std(feature))
@@ -55,8 +58,24 @@ def plot_umap(x,y,z=None, feature = None, title:str = '', is3d = False,figsize=(
     #colormap=plt.cm.get_cmap('bwr')
     #colors=colormap(z)
     #sm=plt.scatter(u[:,0],u[:,1],c=z,alpha=0.6,s=0.01)g
+    cmin = np.min(feature)
+    cmax = np.max(feature)
+
+    if clipmax is not None or clipmin is not None:
+        t = None
+        if clipmax is not None:
+            t = feature < clipmax
+        if clipmin is not None:
+            if t is None:
+                t = feature > clipmin
+            else:
+                t = np.logical_and(t, feature > clipmin)
+        x, y, feature = x[t], y[t], feature[t]
+        if z is not None:
+            z = z[t]
+    
     fig = plt.figure(figsize=figsize)
-    if is3d:
+    if z is not None:
         ax = fig.add_subplot(projection='3d')
         sm=ax.scatter(x, y, z,c=feature,alpha=alpha,s=s,cmap=cmap,norm=normalize)
     else:
@@ -71,10 +90,11 @@ def plot_umap(x,y,z=None, feature = None, title:str = '', is3d = False,figsize=(
     #sm.set_clim(vmin=np.min(z),vmax=220)
     
     plt.colorbar(sm)
+    plt.clim(cmin,cmax)
 
     ax.set_xlabel(xlabel)
     ax.set_ylabel(ylabel)
-    if is3d:
+    if z is not None:
         ax.set_zlabel(zlabel)
     plt.title(title)
     plt.show()
