@@ -175,7 +175,12 @@ def plotZfeatureOnDensities(x,y, z_feature,bins = 100, plot = True, behaviour = 
         By default it's mean of all points
         Can change the behaviour 
         eg:
-            behaviour = 
+            behaviour = Editor: Line Numbers
+        Returns:
+            list of 2d arrays of plots for each feature
+            1-D array of bins for X and Y
+            if indices is true: 
+                list of list of indices of datapoints for each bin 
     
     '''
     multiple = z_feature[0] is not int
@@ -263,6 +268,9 @@ def significant_pixels(x,y,z,bins=100, iter=100, pval = 0.5, smooth= False, plot
         iter = iterations
         pval = P-value. Suggested: 0.001    
         smooth = True to smooth the image
+        Returns:
+            list of 2-d arrays of significant pixels for each feature
+            list of indices of significant datapoints for each feature
     '''
     # Determines which pixels have a significant density compared to
     # a permuted control.
@@ -377,6 +385,9 @@ def significant_pixels(x,y,z,bins=100, iter=100, pval = 0.5, smooth= False, plot
 
 
 def plot_scatter_form_image(img):
+    ''' 
+    Plots a scatter plot of a 2d matrix 
+    '''
     t = []
     for indx , v in np.ndenumerate(img):
         t.append([indx[0], indx[1],v])
