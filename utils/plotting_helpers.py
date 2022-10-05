@@ -61,8 +61,8 @@ def plot_umap(x,y,z=None, feature = None, clipmin=None,clipmax=None, title:str =
     cmin = np.mean(feature)-3*np.std(feature)
     cmax = np.mean(feature)+3*np.std(feature)
 
+    t = None
     if clipmax is not None or clipmin is not None:
-        t = None
         if clipmax is not None:
             t = feature < clipmax
         if clipmin is not None:
@@ -98,6 +98,7 @@ def plot_umap(x,y,z=None, feature = None, clipmin=None,clipmax=None, title:str =
         ax.set_zlabel(zlabel)
     plt.title(title)
     plt.show()
+    return t
 
 
 def plot_density(x, y = None,bins = 100, title= 'Figure',window_title='-', xlabel:str = 'Umap 1', ylabel:str='Umap 2', density=1, figsize=(10,7),vmin=0,vmax=0.2):
