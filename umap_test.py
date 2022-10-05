@@ -8,6 +8,7 @@ Created on Wed Jun 29 15:54:42 2022
 
 import os
 import sys
+# TODO: Select path wrt your system
 # os.chdir('/mnt/genzel/Rat/OS_Ephys_RGS14_analysis/UMAP');
 os.chdir('/home/blazkowiz47/work/UMAP/dataset');
 # sys.path.append('/home/genzel/Documents/UMAP')
