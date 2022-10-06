@@ -61,8 +61,8 @@ def plot_umap(x,y,z=None, feature = None, clipmin=None,clipmax=None, title:str =
     cmin = np.mean(feature)-3*np.std(feature)
     cmax = np.mean(feature)+3*np.std(feature)
 
+    t = None
     if clipmax is not None or clipmin is not None:
-        t = None
         if clipmax is not None:
             t = feature < clipmax
         if clipmin is not None:
@@ -98,6 +98,7 @@ def plot_umap(x,y,z=None, feature = None, clipmin=None,clipmax=None, title:str =
         ax.set_zlabel(zlabel)
     plt.title(title)
     plt.show()
+    return t
 
 
 def plot_density(x, y = None,bins = 100, title= 'Figure',window_title='-', xlabel:str = 'Umap 1', ylabel:str='Umap 2', density=1, figsize=(10,7),vmin=0,vmax=0.2):
@@ -381,7 +382,12 @@ def significant_pixels(x,y,z,bins=100, iter=100, pval = 0.5, smooth= False, plot
     for i,(d, img) in enumerate(zip(D,images)):
         for id, v in np.ndenumerate(d):
             if v:
-                significant_indices[i].extend(indices[id])        
+                try:
+                    significant_indices[i].extend(indices[id]) 
+                except KeyError:
+                    ...
+                except IndexError:
+                    ... 
         nimg = img * d
         temp = [] 
         for index,v in np.ndenumerate(nimg):
