@@ -7,3 +7,8 @@
 •	_plot_density_ (formerly plot_binary) Takes as an input a binary vector indicating if the ripples meet some criteria. For example, do the ripples belong to Rat 9? The output is a density plot in the UMAP embedding. 
 
 •	_significant_pixels_: list of 2-d arrays of significant pixels for each feature. list of indices of significant datapoints for each feature
+
+•	_strcmp_: Function to compare strings with numpy arrays. Output is a binary vector with 1 if the string matches.
+
+•	_binary_feature_: Returns a vector with True or False values indicating if a ripple meets some criteria. Usually used after strcmp. 
+
