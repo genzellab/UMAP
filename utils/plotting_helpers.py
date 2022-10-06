@@ -204,7 +204,9 @@ def plotZfeatureOnDensities(x,y, z_feature,bins = 100, plot = True, behaviour = 
                 list of list of indices of datapoints for each bin 
     
     '''
-    multiple = z_feature[0] is not int
+    multiple = len(z_feature[0].shape) > 0
+   
+
     if indices:
         sig_indices = {}
     X = np.linspace(x.min(), x.max(), num=bins+1)
@@ -280,7 +282,7 @@ def plotZfeatureOnDensities(x,y, z_feature,bins = 100, plot = True, behaviour = 
 
 
 
-def significant_pixels(x,y,z,bins=100, iter=100, pval = 0.5, smooth= False, plot=True, figsize=(12,12), xlabel:str = 'Umap 1', ylabel:str='Umap 2', featureLabel:str = '',s=30,linewidths=1,cmap='hot',marker=None,pbar=True):
+def significant_pixels(x,y,features,bins=100, iter=100, pval = 0.5, smooth= False, plot=True, figsize=(12,12), xlabel:str = 'Umap 1', ylabel:str='Umap 2', featureLabel:str = '',s=30,linewidths=1,cmap='hot',marker=None,pbar=True):
     ''' 
         x = u[:,0]
         y = u[:,1]
@@ -305,9 +307,18 @@ def significant_pixels(x,y,z,bins=100, iter=100, pval = 0.5, smooth= False, plot
     #dayString='CON'
     
     #Rat
+    
+    multiple = len(features[0].shape) > 0  
+    if not multiple:
+        features = [features]
+        featureLabel = [featureLabel]
+        assert features[0].shape[0] == x.shape[0], "features must be of same dimensions as x and y"        
+    else:
+        for i,feature in enumerate(features):
+            assert feature.shape[0] == x.shape[0], f"feature {i} must be of same dimensions as x and y"        
 
 
-    images, _,  _, indices=plotZfeatureOnDensities(x,y, z,bins = bins, xlabel=xlabel,ylabel=ylabel,featureLabel=featureLabel,s=s,linewidths=linewidths,cmap=cmap,marker=marker,figsize=figsize,indices=True)
+    images, _,  _, indices=plotZfeatureOnDensities(x,y, features,bins = bins, xlabel=xlabel,ylabel=ylabel,featureLabel=featureLabel,s=s,linewidths=linewidths,cmap=cmap,marker=marker,figsize=figsize,indices=True)
 
     for i,  img in enumerate(images):
         if smooth:
@@ -315,20 +326,13 @@ def significant_pixels(x,y,z,bins=100, iter=100, pval = 0.5, smooth= False, plot
         images[i] = img.flatten()
         
     # %% permuting 2D density maps
-    multiple = z[0] is not int
-
-    if not multiple:
-        z = [z]
-        featureLabel = [featureLabel]
-        
-
     m = len(images)
     B=[[] for _ in range(m)] 
     
     for _ in tqdm(range(iter)) if pbar else range(iter):    #Takes several minutes
         # L_permuted=np.random.permutation(L)  # This line
         
-        features = z
+        features = features
         for i,feature in enumerate(features):
             np.random.shuffle(feature)
             features[i] = feature
