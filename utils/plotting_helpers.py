@@ -382,7 +382,12 @@ def significant_pixels(x,y,z,bins=100, iter=100, pval = 0.5, smooth= False, plot
     for i,(d, img) in enumerate(zip(D,images)):
         for id, v in np.ndenumerate(d):
             if v:
-                significant_indices[i].extend(indices[id])        
+                try:
+                    significant_indices[i].extend(indices[id]) 
+                except KeyError:
+                    ...
+                except IndexError:
+                    ... 
         nimg = img * d
         temp = [] 
         for index,v in np.ndenumerate(nimg):
