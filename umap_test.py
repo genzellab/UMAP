@@ -247,15 +247,18 @@ L=hproc.binary_feature(Ripples,logicresult)
 
 # %% Significant clusters 
 
-features = [Meanfreq, Amp, Amp2, Freq, Entropy, AUC, AUC2]
-labels = ['Mean Frequency', 'Amp', 'Amp2', 'Frequency', 'Entropy', 'AUC', 'AUC2']
+# features = [Meanfreq, Amp, Amp2, Freq, Entropy, AUC, AUC2]
+# labels = ['Mean Frequency', 'Amp', 'Amp2', 'Frequency', 'Entropy', 'AUC', 'AUC2']
 
-# features = [Meanfreq]
-# labels = ['Mean Frequency']
+features = [Meanfreq]
+labels = ['Mean Frequency']
 x = u[:,0] # between -10 and 4, log-gamma of an svc
 y = u[:,1]
 # TODO: Uncomment this
-img, sig_ind = hplt.significant_pixels(x,y,features,iter=50,featureLabel=labels ,s=25)
-
+print(x.shape[0],len(features[0][:-2].shape) != 0,features[0][:-2][0].shape)
+img, sig_ind = hplt.significant_pixels(x,y,features,iter=1000,featureLabel=labels ,s=25,pval=0.05)
+# sig_ind = np.array(sig_ind)
+# np.save('sig_ind.npy',sig_ind)
 # hplt.plotZfeatureOnDensities(x,y,features, featureLabel=labels)
+sig_ind = np.load('sig_ind.npy')
 
