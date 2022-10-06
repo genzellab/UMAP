@@ -313,6 +313,51 @@ def significant_pixels(x,y,z,bins=100, iter=100, pval = 0.5, smooth= False, plot
         if smooth:
             img = hproc.smooth_image_custom(img)
         images[i] = img.flatten()
+
+
+def plot_umap_binary(x,y,z=None,   title:str = '', figsize=(12, 12), xlabel:str = 'Umap 1', ylabel:str='Umap 2', zlabel:str='Umap 4', cmap='Greys', s = 20):
+    ''' 
+        x = u[L,0]
+        y = u[L,1]
+        z = u[L,3]  if given, will plot a 3d scattter plot
+        feature = Amp
+        clipmin = plots points with feature value greater than clipmin
+        clipmax = plots points with feature value less than clipmax
+    '''
+
+    #normalize = cl.Normalize(vmin=np.min(feature), vmax=np.max(feature))
+    
+    #colormap=plt.cm.get_cmap('bwr')
+    #colors=colormap(z)
+    #sm=plt.scatter(u[:,0],u[:,1],c=z,alpha=0.6,s=0.01)g
+    #cmin = np.min(feature);
+    #cmax = np.max(feature);
+
+   
+    
+    fig = plt.figure(figsize=figsize)
+    if z is not None:
+        ax = fig.add_subplot(projection='3d')
+        sm=ax.scatter(x, y, z,s=s,cmap=cmap)
+    else:
+        ax = fig.add_subplot()
+        sm=plt.scatter(x,y,s=s,cmap=cmap,alpha=1,c='0')
+
+    #sm=plt.scatter(u[:,0],u[:,1],c=z,alpha=0.6,s=0.1,cmap='seismic')
+    
+    #sm=plt.cm.ScalarMappable(cmap=colormap)
+    
+    #sm.set_clim(vmin=np.min(z),vmax=np.max(z))
+    #sm.set_clim(vmin=np.min(z),vmax=220)
+    
+    #plt.clim(cmin,cmax)
+
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+    if z is not None:
+        ax.set_zlabel(zlabel)
+    plt.title(title)
+    plt.show()
         
     # %% permuting 2D density maps
     multiple = z[0] is not int

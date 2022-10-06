@@ -9,8 +9,8 @@ Created on Wed Jun 29 15:54:42 2022
 import os
 import sys
 # TODO: Select path wrt your system
-# os.chdir('/mnt/genzel/Rat/OS_Ephys_RGS14_analysis/UMAP');
-os.chdir('/home/blazkowiz47/work/UMAP/dataset');
+os.chdir('/mnt/genzel/Rat/OS_Ephys_RGS14_analysis/UMAP');
+#os.chdir('/home/blazkowiz47/work/UMAP/dataset');
 # sys.path.append('/home/genzel/Documents/UMAP')
 
 import scipy.io
@@ -151,6 +151,23 @@ AUC2=hproc.h_stack(auc2_np)
 
 
 #plot_umap(DUR,"Duration (ms)")
+# %% Look for features ranges and their overlap.
+
+
+t_freq=hplt.plot_umap(u[:,0],u[:,1],feature= Freq,title="Frequency",s=1)
+t_amp=hplt.plot_umap(u[:,0],u[:,1],feature= Amp,title="Amplitude",s=1)
+t_ent=hplt.plot_umap(u[:,0],u[:,1],feature= Entropy,title="Entropy",s=1)
+
+
+t_freq=hplt.plot_umap(u[:,0],u[:,1],feature= Freq,clipmin=160,title="Frequency",s=1)
+t_amp=hplt.plot_umap(u[:,0],u[:,1],feature= Amp,clipmax=2,title="Amplitude",s=1)
+t_ent=hplt.plot_umap(u[:,0],u[:,1],feature= Entropy,clipmin=3.75,title="Entropy",s=1)
+
+
+x=np.logical_and(t_freq,t_amp);
+x1=np.logical_and(x,t_ent);
+
+hplt.plot_umap_binary(u[x1,0],u[x1,1] ,title="Overlap",s=1)
 
 # %%
 
