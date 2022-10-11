@@ -51,6 +51,7 @@ def plot_umap(x,y,z=None, feature = None, clipmin=None,clipmax=None, title:str =
         feature = Amp
         clipmin = plots points with feature value greater than clipmin
         clipmax = plots points with feature value less than clipmax
+        Returns: Bool vector of features in-between clipmin and clippmax
     '''
     if feature is not None:
         normalize = cl.Normalize(vmin=np.mean(feature)-3*np.std(feature), vmax=np.mean(feature)+3*np.std(feature))
@@ -62,6 +63,9 @@ def plot_umap(x,y,z=None, feature = None, clipmin=None,clipmax=None, title:str =
         cmax = np.mean(feature)+3*np.std(feature)
     else:
         normalize = None
+        cmin = None
+        cmax = None
+        
     t = None
     if clipmax is not None or clipmin is not None:
         if clipmax is not None:
@@ -143,6 +147,7 @@ def plot_density(x, y = None,bins = 100, title= 'Figure',window_title='-', xlabe
     plt.tight_layout() 
     plt.show()
 
+
 def bs(A,a,st,ed):
     if st > ed :
         return st
@@ -153,6 +158,7 @@ def bs(A,a,st,ed):
         return bs(A,a,st , mid-1)
     else:
         return bs(A,a,mid+1,ed)
+
 
 def getIndex(A, a, n):
     return bs(A,a,0,n-1)
@@ -280,8 +286,6 @@ def plotZfeatureOnDensities(x,y, z_feature,bins = 100, plot = True, behaviour = 
         return images, X[1:], Y[1:], sig_indices 
     else:
         return images, X[1:], Y[1:]
-
-
 
 
 def significant_pixels(x,y,features,bins=100, iter=100, pval = 0.5, smooth= False, plot=True, figsize=(12,12), xlabel:str = 'Umap 1', ylabel:str='Umap 2', featureLabel:str = '',s=30,linewidths=1,cmap='hot',marker=None,pbar=True):

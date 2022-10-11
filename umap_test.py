@@ -9,8 +9,8 @@ Created on Wed Jun 29 15:54:42 2022
 import os
 import sys
 # TODO: Select path wrt your system
-os.chdir('/mnt/genzel/Rat/OS_Ephys_RGS14_analysis/UMAP');
-#os.chdir('/home/blazkowiz47/work/UMAP/dataset');
+# os.chdir('/mnt/genzel/Rat/OS_Ephys_RGS14_analysis/UMAP');
+os.chdir('/home/blazkowiz47/work/UMAP/dataset');
 # sys.path.append('/home/genzel/Documents/UMAP')
 
 import scipy.io
@@ -259,10 +259,9 @@ y = u[:,1]
 # img, sig_ind = hplt.significant_pixels(x,y,features,iter=1000,featureLabel=labels ,s=25,pval=0.05)
 
 # np.savez('sig_ind.npz', *sig_ind)
+# TODO: For plotting significant pixels uncomment this
+# sig_ind = np.load('sig_ind.npz')
+# sig_ind = [(sig_ind[k]).astype(int) for k in sig_ind]
 
-sig_ind = np.load('sig_ind.npz')
-sig_ind = [(sig_ind[k]).astype(int) for k in sig_ind]
-print(sig_ind[0].dtype)
-
-hplt.plotZfeatureOnDensities(x[sig_ind[0]],y[sig_ind[0]],[f[sig_ind[0]] for f in features],featureLabel=labels)
+# hplt.plotZfeatureOnDensities(x[sig_ind[0]],y[sig_ind[0]],[f[sig_ind[0]] for f in features],featureLabel=labels)
 
