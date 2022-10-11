@@ -43,7 +43,7 @@ def plot_binary(x,y,title:str, xlabel:str = '', ylabel:str='', color = 'r', alph
 
     #plt.legend(['First line', 'Second line'])
 
-def plot_umap(x,y,z=None, feature = None, clipmin=None,clipmax=None, title:str = '', figsize=(12, 12), xlabel:str = 'Umap 1', ylabel:str='Umap 2', zlabel:str='Umap 4', cmap='seismic',alpha = 0.6, s = 20):
+def plot_umap(x,y,z=None, feature = None, plot = True, clipmin=None,clipmax=None, title:str = '', figsize=(12, 12), xlabel:str = 'Umap 1', ylabel:str='Umap 2', zlabel:str='Umap 4', cmap='seismic',alpha = 0.6, s = 20):
     ''' 
         x = u[L,0]
         y = u[L,1]
@@ -78,14 +78,14 @@ def plot_umap(x,y,z=None, feature = None, clipmin=None,clipmax=None, title:str =
         x, y, feature = x[t], y[t], feature[t]
         if z is not None:
             z = z[t]
-    
-    fig = plt.figure(figsize=figsize)
-    if z is not None:
-        ax = fig.add_subplot(projection='3d')
-        sm=ax.scatter(x, y, z,c=feature,alpha=alpha,s=s,cmap=cmap,norm=normalize)
-    else:
-        ax = fig.add_subplot()
-        sm=plt.scatter(x,y,c=feature,alpha=alpha,s=s,cmap=cmap,norm=normalize)
+    if plot: 
+        fig = plt.figure(figsize=figsize)
+        if z is not None:
+            ax = fig.add_subplot(projection='3d')
+            sm=ax.scatter(x, y, z,c=feature,alpha=alpha,s=s,cmap=cmap,norm=normalize)
+        else:
+            ax = fig.add_subplot()
+            sm=plt.scatter(x,y,c=feature,alpha=alpha,s=s,cmap=cmap,norm=normalize)
 
     #sm=plt.scatter(u[:,0],u[:,1],c=z,alpha=0.6,s=0.1,cmap='seismic')
     
@@ -94,16 +94,16 @@ def plot_umap(x,y,z=None, feature = None, clipmin=None,clipmax=None, title:str =
     #sm.set_clim(vmin=np.min(z),vmax=np.max(z))
     #sm.set_clim(vmin=np.min(z),vmax=220)
     
-    plt.colorbar(sm)
-    if cmin is not None and cmax is not None:
-        plt.clim(cmin,cmax)
+        plt.colorbar(sm)
+        if cmin is not None and cmax is not None:
+            plt.clim(cmin,cmax)
 
-    ax.set_xlabel(xlabel)
-    ax.set_ylabel(ylabel)
-    if z is not None:
-        ax.set_zlabel(zlabel)
-    plt.title(title)
-    plt.show()
+        ax.set_xlabel(xlabel)
+        ax.set_ylabel(ylabel)
+        if z is not None:
+            ax.set_zlabel(zlabel)
+        plt.title(title)
+        plt.show()
     return t
 
 
@@ -200,7 +200,8 @@ def plotZfeatureOnDensities(x,y, z_feature,bins = 100, plot = True, behaviour = 
     '''
     
         For 2-D density plot of X,Y
-        Plot feature Z over the bins
+        Plot feature Z over the bins features must be list eg: [Amp]
+        labels must also be a list eg: ['Amplitude']
         By default it's mean of all points
         Can change the behaviour 
         eg:
@@ -212,21 +213,14 @@ def plotZfeatureOnDensities(x,y, z_feature,bins = 100, plot = True, behaviour = 
                 list of list of indices of datapoints for each bin 
     
     '''
-    multiple = len(z_feature[0].shape) > 0
-   
 
     if indices:
         sig_indices = {}
     X = np.linspace(x.min(), x.max(), num=bins+1)
     Y = np.linspace(y.min(), y.max(), num=bins+1)
 
-    if multiple :
-        m = len(z_feature)
-        z_feature = [[*z] for z in zip(*z_feature)]
-    else:
-        m = 1
-        z_feature = [z_feature]
-        featureLabel = [featureLabel]
+    m = len(z_feature)
+    z_feature = [[*z] for z in zip(*z_feature)]
 
     images = [np.zeros((bins,bins)) for _ in range(m)] 
 
