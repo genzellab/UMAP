@@ -10,7 +10,7 @@ import os
 import sys
 # TODO: Select path wrt your system
 # os.chdir('/mnt/genzel/Rat/OS_Ephys_RGS14_analysis/UMAP');
-os.chdir('/home/blazkowiz47/work/UMAP/dataset');
+os.chdir('F:/UMAP/dataset');
 # sys.path.append('/home/genzel/Documents/UMAP')
 
 import scipy.io
@@ -151,6 +151,23 @@ AUC2=hproc.h_stack(auc2_np)
 
 
 #plot_umap(DUR,"Duration (ms)")
+# %% Look for features ranges and their overlap.
+
+
+t_freq=hplt.plot_umap(u[:,0],u[:,1],feature= Freq,title="Frequency",s=1,plot= False)
+t_amp=hplt.plot_umap(u[:,0],u[:,1],feature= Amp,title="Amplitude",s=1,plot= False)
+t_ent=hplt.plot_umap(u[:,0],u[:,1],feature= Entropy,title="Entropy",s=1,plot= False)
+
+
+t_freq=hplt.plot_umap(u[:,0],u[:,1],feature= Freq,clipmin=160,title="Frequency",s=1,plot= False)
+t_amp=hplt.plot_umap(u[:,0],u[:,1],feature= Amp,clipmax=2,title="Amplitude",s=1,plot= False)
+t_ent=hplt.plot_umap(u[:,0],u[:,1],feature= Entropy,clipmin=3.75,title="Entropy",s=1,plot= False)
+
+
+x=np.logical_and(t_freq,t_amp)
+x1=np.logical_and(x,t_ent)
+
+hplt.plot_umap_binary(u[x1,0],u[x1,1] ,title="Overlap",s=1)
 
 # %%
 
@@ -238,10 +255,13 @@ labels = ['Mean Frequency', 'Amp', 'Amp2', 'Frequency', 'Entropy', 'AUC', 'AUC2'
 x = u[:,0] # between -10 and 4, log-gamma of an svc
 y = u[:,1]
 # TODO: Uncomment this
-print(x.shape[0],len(features[0][:-2].shape) != 0,features[0][:-2][0].shape)
-img, sig_ind = hplt.significant_pixels(x,y,features,iter=1000,featureLabel=labels ,s=25,pval=0.05)
-# sig_ind = np.array(sig_ind)
-# np.save('sig_ind.npy',sig_ind)
-# hplt.plotZfeatureOnDensities(x,y,features, featureLabel=labels)
-sig_ind = np.load('sig_ind.npy')
+# print(x.shape[0],len(features[0][:-2].shape) != 0,features[0][:-2][0].shape)
+# img, sig_ind = hplt.significant_pixels(x,y,features,iter=1000,featureLabel=labels ,s=25,pval=0.05)
+
+# np.savez('sig_ind.npz', *sig_ind)
+# TODO: For plotting significant pixels uncomment this
+sig_ind = np.load('sig_ind.npz')
+sig_ind = [(sig_ind[k]).astype(int) for k in sig_ind]
+for i,sig in enumerate(sig_ind):
+    hplt.plotZfeatureOnDensities(x[sig],y[sig],[features[i][sig]],featureLabel=[labels[i]])
 
