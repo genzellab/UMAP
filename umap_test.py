@@ -15,6 +15,7 @@ os.chdir('F:/UMAP/dataset');
 
 import scipy.io
 import pandas as pd
+from scipy import stats
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -22,6 +23,7 @@ import matplotlib.colors as cl
 
 from mpl_toolkits.mplot3d import Axes3D
 import seaborn as sns
+from seaborn import kdeplot
 import cv2
 import umap
 #import plotly.express as px
@@ -209,7 +211,7 @@ logicresult2=st2*treatment;
 logicresult3=st3*treatment;
 
 x=np.logical_or(logicresult,logicresult2)
-x1=np.logical_or(x,logicresult3)
+x2=np.logical_or(x,logicresult3)
 
 
 L=hproc.binary_feature(Ripples,x1)
@@ -260,8 +262,59 @@ y = u[:,1]
 
 # np.savez('sig_ind.npz', *sig_ind)
 # TODO: For plotting significant pixels uncomment this
-sig_ind = np.load('sig_ind.npz')
-sig_ind = [(sig_ind[k]).astype(int) for k in sig_ind]
-for i,sig in enumerate(sig_ind):
-    hplt.plotZfeatureOnDensities(x[sig],y[sig],[features[i][sig]],featureLabel=[labels[i]])
+# sig_ind = np.load('sig_ind.npz')
+# sig_ind = [(sig_ind[k]).astype(int) for k in sig_ind]
+# for i,sig in enumerate(sig_ind):
+    # hplt.plotZfeatureOnDensities(x[sig],y[sig],[features[i][sig]],featureLabel=[labels[i]])
 
+
+def density_estimation(m1, m2):
+    X, Y = np.mgrid[xmin:xmax:100j, ymin:ymax:100j]                                                     
+    positions = np.vstack([X.ravel(), Y.ravel()])                                                       
+    values = np.vstack([m1, m2])                                                                        
+    kernel = stats.gaussian_kde(values)                                                                 
+    Z = np.reshape(kernel(positions).T, X.shape)
+    return X, Y, Z
+
+
+x=u[x1,0]
+y=u[x1,1] 
+
+xmin = x.min()
+xmax = x.max()
+ymin = y.min()
+ymax = y.max()
+
+X, Y, Z = density_estimation(x,y)
+fig, ax = plt.subplots()                   
+
+# Show density 
+# Add contour lines
+plt.contour(X, Y, Z)                                                                           
+
+ax.plot(x,y, 'k.', markersize=2)    
+
+plt.show()
+
+kde=kdeplot(x,y)
+# plot(x,y, 'k.', markersize=2)    
+
+# plt.show()
+
+data = []
+for i in kde.get_children():
+    if i.__class__.__name__ == 'PathCollection':
+        data.append(i.get_paths())
+
+
+
+# Here I get the vertices information for each axis
+p = kde.collections[2].get_paths()[0]
+v = p.vertices
+#lx = [v[r][0] for r in range(len(v))]
+#ly = [v[r][1] for r in range(len(v))]
+# figure(2)
+plt.plot(v[:,0],v[:,1])
+plt.plot(x,y, 'k.', markersize=2)    
+
+plt.show()
