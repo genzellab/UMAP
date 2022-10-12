@@ -267,54 +267,50 @@ y = u[:,1]
 # for i,sig in enumerate(sig_ind):
     # hplt.plotZfeatureOnDensities(x[sig],y[sig],[features[i][sig]],featureLabel=[labels[i]])
 
+# Computing indexes x1,x2,x3 per ripple category:
+t_freq=hplt.plot_umap(u[:,0], u[:,1], feature= Freq,clipmin=160,title="Frequency",s=1,plot=False)
+t_amp=hplt.plot_umap(u[:,0],u[:,1],feature= Amp,clipmax=2,title="Amplitude",s=1,plot=False)
+t_ent=hplt.plot_umap(u[:,0],u[:,1],feature= Entropy,clipmin=3.75,title="Entropy",s=1,plot=False)
+x=np.logical_and(t_freq,t_amp);
+x1=np.logical_and(x,t_ent);
 
-def density_estimation(m1, m2):
-    X, Y = np.mgrid[xmin:xmax:100j, ymin:ymax:100j]                                                     
-    positions = np.vstack([X.ravel(), Y.ravel()])                                                       
-    values = np.vstack([m1, m2])                                                                        
-    kernel = stats.gaussian_kde(values)                                                                 
-    Z = np.reshape(kernel(positions).T, X.shape)
-    return X, Y, Z
+t_freq=hplt.plot_umap(u[:,0],u[:,1],feature= Freq,clipmin=120, clipmax=160,title="Frequency",s=1,plot=False)
+t_amp=hplt.plot_umap(u[:,0],u[:,1],feature= Amp,clipmin=4,title="Amplitude",s=1,plot=False)
+t_ent=hplt.plot_umap(u[:,0],u[:,1],feature= Entropy,clipmax=2.75,title="Entropy",s=1,plot=False)
+x=np.logical_and(t_freq,t_amp);
+x2=np.logical_and(x,t_ent);
 
+t_freq=hplt.plot_umap(u[:,0],u[:,1],feature= Freq,clipmin=80, clipmax=120,title="Frequency",s=1,plot=False)
+t_amp=hplt.plot_umap(u[:,0],u[:,1],feature= Amp,clipmax=2,title="Amplitude",s=1,plot=False)
+x3=np.logical_and(t_freq,t_amp);
 
-x=u[x1,0]
-y=u[x1,1] 
+def get_kde_contour(x, y, level_index=7,levels=10 ):
+    kde=kdeplot(x,y)
+    p = kde.collections[level_index].get_paths()[0]
+    v = p.vertices
+    return v
 
-xmin = x.min()
-xmax = x.max()
-ymin = y.min()
-ymax = y.max()
+v1=get_kde_contour(x=u[x1,0], y=u[x1,1])
+# close()
+v2=get_kde_contour(x=u[x2,0], y=u[x2,1])
+# close()
+v3=get_kde_contour(x=u[x3,0], y=u[x3,1])
+# close()
 
-X, Y, Z = density_estimation(x,y)
-fig, ax = plt.subplots()                   
-
-# Show density 
-# Add contour lines
-plt.contour(X, Y, Z)                                                                           
-
-ax.plot(x,y, 'k.', markersize=2)    
-
+plt.plot(v1[:,0],v1[:,1])
+plt.plot(u[x1,0],u[x1,1], 'k.', markersize=2)
 plt.show()
 
-kde=kdeplot(x,y)
-# plot(x,y, 'k.', markersize=2)    
-
-# plt.show()
-
-data = []
-for i in kde.get_children():
-    if i.__class__.__name__ == 'PathCollection':
-        data.append(i.get_paths())
-
-
-
-# Here I get the vertices information for each axis
-p = kde.collections[2].get_paths()[0]
-v = p.vertices
-#lx = [v[r][0] for r in range(len(v))]
-#ly = [v[r][1] for r in range(len(v))]
-# figure(2)
-plt.plot(v[:,0],v[:,1])
-plt.plot(x,y, 'k.', markersize=2)    
-
+plt.plot(v2[:,0],v2[:,1])
+plt.plot(u[x2,0],u[x2,1], 'k.', markersize=2)
 plt.show()
+
+plt.plot(v3[:,0],v3[:,1])
+plt.plot(u[x3,0],u[x3,1], 'k.', markersize=2)
+plt.show()
+# from shapely.geometry import Point
+# from shapely.geometry.polygon import Polygon
+
+# point = Point(0.5, 0.5)
+# polygon = Polygon([(0, 0), (0, 1), (1, 1), (1, 0)])
+# print(polygon.contains(point))
