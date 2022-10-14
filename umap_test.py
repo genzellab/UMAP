@@ -284,7 +284,7 @@ t_amp=hplt.plot_umap(u[:,0],u[:,1],feature= Amp,clipmax=2,title="Amplitude",s=1,
 x3=np.logical_and(t_freq,t_amp);
 
 
-v = hplt.get_kde_contours(u[x1,0],u[x1,1])
+v = hplt.get_kde_contours(u[x1,0],u[x1,1])                  # Get countours 
 
 # for vc in v:
 #     for t in vc:
