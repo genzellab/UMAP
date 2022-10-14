@@ -476,3 +476,11 @@ def get_kde_contours(x,y):
     v = [[np.array(t.vertices) for t in p] for p in v ]
     plt.clf()
     return v
+
+
+def get_centroids(polygons):
+    centroids = []
+    for polygon in polygons:
+        polygon = Polygon(polygon)
+        centroids.append(polygon.centroid)
+    return centroids

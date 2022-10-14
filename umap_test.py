@@ -286,18 +286,38 @@ x3=np.logical_and(t_freq,t_amp);
 
 v = hplt.get_kde_contours(u[x1,0],u[x1,1])
 
-for vc in v:
-    for t in vc:
-        plt.scatter(t[:,0], t[:,1], c='blue',alpha=0.8,s=1)
-    # plt.show()
-    t = map(lambda x: hplt.is_inside(vc, x) , zip(u[:,0], u[:,1]))
-    t = np.array(list(t))
-    x4 = np.logical_and(t,x1)
-    x = u[x4,0]
-    y = u[x4,1]
-    plt.scatter(x,y, c = 'red', alpha=1,s=1)
-    plt.scatter(u[x1,0],u[x1,1], c='black', alpha=0.1,s=1)
-    plt.show()
+# for vc in v:
+#     for t in vc:
+#         plt.scatter(t[:,0], t[:,1], c='blue',alpha=0.8,s=1)
+#     # plt.show()
+#     t = map(lambda x: hplt.is_inside(vc, x) , zip(u[:,0], u[:,1]))
+#     t = np.array(list(t))
+#     x4 = np.logical_and(t,x1)
+#     x = u[x4,0]
+#     y = u[x4,1]
+#     plt.scatter(x,y, c = 'red', alpha=1,s=1)
+#     plt.scatter(u[x1,0],u[x1,1], c='black', alpha=0.1,s=1)
+#     plt.show()
+
+vc = v[-2]                                                  # Select a countour
+centroids = hplt.get_centroids(vc)                          # get centroids of the countour (might be multiple countours so multiple centroids)
+for t in vc:
+    plt.scatter(t[:,0],t[:,1],c='blue',alpha = 0.8,s=1)     # plot countour
+t = map(lambda x: hplt.is_inside(vc,x),zip(u[:,0],u[:,1]))  # check whether each point the the data is inside the countour
+t = np.array(list(t))
+x4 = np.logical_and(t,x1)                                   # Select points inside the countour from data and also overlapping
+
+plt.scatter(u[x4,0],u[x4,1], c = 'red', alpha=0.8,s=1)        # Plot significant data points
+plt.scatter(u[x1,0],u[x1,1], c='black', alpha=0.2,s=1)      # Plot all data points
+for centroid in centroids:
+    plt.scatter(centroid.x,centroid.y, c='green',s=10)       # Plot centroids
+plt.show()
+
+rip = Data[x4]
+for r in rip:
+    plt.plot(r,c='lightblue')
+
+plt.show()
 
 # close()
 # v2,c2=get_kde_contour(x=u[x2,0], y=u[x2,1])
