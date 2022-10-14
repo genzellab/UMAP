@@ -23,7 +23,6 @@ import matplotlib.colors as cl
 
 from mpl_toolkits.mplot3d import Axes3D
 import seaborn as sns
-from seaborn import kdeplot
 import cv2
 import umap
 #import plotly.express as px
@@ -284,33 +283,43 @@ t_freq=hplt.plot_umap(u[:,0],u[:,1],feature= Freq,clipmin=80, clipmax=120,title=
 t_amp=hplt.plot_umap(u[:,0],u[:,1],feature= Amp,clipmax=2,title="Amplitude",s=1,plot=False)
 x3=np.logical_and(t_freq,t_amp);
 
-def get_kde_contour(x, y, level_index=7,levels=10 ):
-    kde=kdeplot(x,y)
-    p = kde.collections[level_index].get_paths()[0]
-    v = p.vertices
-    return v
 
-v1=get_kde_contour(x=u[x1,0], y=u[x1,1])
+v = hplt.get_kde_contours(u[x1,0],u[x1,1])
+
+for vc in v:
+    for t in vc:
+        plt.scatter(t[:,0], t[:,1], c='blue',alpha=0.8,s=1)
+    # plt.show()
+    t = map(lambda x: hplt.is_inside(vc, x) , zip(u[:,0], u[:,1]))
+    t = np.array(list(t))
+    x4 = np.logical_and(t,x1)
+    x = u[x4,0]
+    y = u[x4,1]
+    plt.scatter(x,y, c = 'red', alpha=1,s=1)
+    plt.scatter(u[x1,0],u[x1,1], c='black', alpha=0.1,s=1)
+    plt.show()
+
 # close()
-v2=get_kde_contour(x=u[x2,0], y=u[x2,1])
+# v2,c2=get_kde_contour(x=u[x2,0], y=u[x2,1])
 # close()
-v3=get_kde_contour(x=u[x3,0], y=u[x3,1])
+# v3,c3=get_kde_contour(x=u[x3,0], y=u[x3,1])
 # close()
+# plt.show()
+# plt.plot(v1[:,0],v1[:,1])
+# # plt.plot(u[x1,0],u[x1,1], 'k.', markersize=2)
+# plt.show()
 
-plt.plot(v1[:,0],v1[:,1])
-plt.plot(u[x1,0],u[x1,1], 'k.', markersize=2)
-plt.show()
+# plt.plot(v2[:,0],v2[:,1])
+# # plt.plot(u[x2,0],u[x2,1], 'k.', markersize=2)
+# plt.show()
 
-plt.plot(v2[:,0],v2[:,1])
-plt.plot(u[x2,0],u[x2,1], 'k.', markersize=2)
-plt.show()
-
-plt.plot(v3[:,0],v3[:,1])
-plt.plot(u[x3,0],u[x3,1], 'k.', markersize=2)
-plt.show()
+# plt.plot(v3[:,0],v3[:,1])
+# # plt.plot(u[x3,0],u[x3,1], 'k.', markersize=2)
+# plt.show()
 # from shapely.geometry import Point
 # from shapely.geometry.polygon import Polygon
 
 # point = Point(0.5, 0.5)
 # polygon = Polygon([(0, 0), (0, 1), (1, 1), (1, 0)])
 # print(polygon.contains(point))
+

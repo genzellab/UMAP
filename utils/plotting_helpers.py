@@ -4,6 +4,8 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.colors as cl
+from shapely.geometry import Point
+from shapely.geometry.polygon import Polygon
 from matplotlib import cm
 import seaborn as sns
 import cv2 as cv2
@@ -13,6 +15,7 @@ from tqdm import tqdm
 
 
 sns.set(style='white',context='poster', rc={'figure.figsize':(14,10)} )
+
 
 def plot_binary(x,y,title:str, xlabel:str = '', ylabel:str='', color = 'r', alpha = 0.1, s = 20):
     '''
@@ -456,4 +459,20 @@ def plot_umap_binary(x,y,z=None,   title:str = '', figsize=(12, 12), xlabel:str 
         ax.set_zlabel(zlabel)
     plt.title(title)
     plt.show()    
-    
+
+
+def is_inside(polygons, point):
+    point = Point(*point)
+    for polygon in polygons:
+        polygon = Polygon(polygon)
+        if polygon.contains(point):
+            return True
+    return False
+
+
+def get_kde_contours(x,y):
+    kde = sns.kdeplot(x,y)
+    v = [ t.get_paths() for t in kde.collections]
+    v = [[np.array(t.vertices) for t in p] for p in v ]
+    plt.clf()
+    return v
