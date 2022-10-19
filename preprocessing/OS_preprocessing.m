@@ -15,7 +15,8 @@ for i=1:length(RatID)
     for j=1:length(files)
         load(files{j})
         %xo
-        Y= cellfun(@(x) alignripples(x),GC_window_ripples_broadband_total,'UniformOutput',false);
+%         Y= cellfun(@(x) alignripples(x),GC_window_ripples_broadband_total,'UniformOutput',false);
+        Y= cellfun(@(x) alignripples(x),GC_window_ripples_total,'UniformOutput',false);
         clear GC_window_ripples_broadband_total
         
         fn=2500;
