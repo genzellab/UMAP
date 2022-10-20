@@ -4,6 +4,8 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.colors as cl
+from shapely.geometry import Point
+from shapely.geometry.polygon import Polygon
 from matplotlib import cm
 import seaborn as sns
 import cv2 as cv2
@@ -13,6 +15,7 @@ from tqdm import tqdm
 
 
 sns.set(style='white',context='poster', rc={'figure.figsize':(14,10)} )
+
 
 def plot_binary(x,y,title:str, xlabel:str = '', ylabel:str='', color = 'r', alpha = 0.1, s = 20):
     '''
@@ -43,7 +46,7 @@ def plot_binary(x,y,title:str, xlabel:str = '', ylabel:str='', color = 'r', alph
 
     #plt.legend(['First line', 'Second line'])
 
-def plot_umap(x,y,z=None, feature = None, clipmin=None,clipmax=None, title:str = '', figsize=(12, 12), xlabel:str = 'Umap 1', ylabel:str='Umap 2', zlabel:str='Umap 4', cmap='seismic',alpha = 0.6, s = 20):
+def plot_umap(x,y,z=None, feature = None, plot = True, clipmin=None,clipmax=None, title:str = '', figsize=(12, 12), xlabel:str = 'Umap 1', ylabel:str='Umap 2', zlabel:str='Umap 4', cmap='seismic',alpha = 0.6, s = 20):
     ''' 
         x = u[L,0]
         y = u[L,1]
@@ -51,16 +54,21 @@ def plot_umap(x,y,z=None, feature = None, clipmin=None,clipmax=None, title:str =
         feature = Amp
         clipmin = plots points with feature value greater than clipmin
         clipmax = plots points with feature value less than clipmax
+        Returns: Bool vector of features in-between clipmin and clippmax
     '''
-
-    normalize = cl.Normalize(vmin=np.mean(feature)-3*np.std(feature), vmax=np.mean(feature)+3*np.std(feature))
+    if feature is not None:
+        normalize = cl.Normalize(vmin=np.mean(feature)-3*np.std(feature), vmax=np.mean(feature)+3*np.std(feature))
     
     #colormap=plt.cm.get_cmap('bwr')
     #colors=colormap(z)
     #sm=plt.scatter(u[:,0],u[:,1],c=z,alpha=0.6,s=0.01)g
-    cmin = np.mean(feature)-3*np.std(feature)
-    cmax = np.mean(feature)+3*np.std(feature)
-
+        cmin = np.mean(feature)-3*np.std(feature)
+        cmax = np.mean(feature)+3*np.std(feature)
+    else:
+        normalize = None
+        cmin = None
+        cmax = None
+        
     t = None
     if clipmax is not None or clipmin is not None:
         if clipmax is not None:
@@ -73,14 +81,14 @@ def plot_umap(x,y,z=None, feature = None, clipmin=None,clipmax=None, title:str =
         x, y, feature = x[t], y[t], feature[t]
         if z is not None:
             z = z[t]
-    
-    fig = plt.figure(figsize=figsize)
-    if z is not None:
-        ax = fig.add_subplot(projection='3d')
-        sm=ax.scatter(x, y, z,c=feature,alpha=alpha,s=s,cmap=cmap,norm=normalize)
-    else:
-        ax = fig.add_subplot()
-        sm=plt.scatter(x,y,c=feature,alpha=alpha,s=s,cmap=cmap,norm=normalize)
+    if plot: 
+        fig = plt.figure(figsize=figsize)
+        if z is not None:
+            ax = fig.add_subplot(projection='3d')
+            sm=ax.scatter(x, y, z,c=feature,alpha=alpha,s=s,cmap=cmap,norm=normalize)
+        else:
+            ax = fig.add_subplot()
+            sm=plt.scatter(x,y,c=feature,alpha=alpha,s=s,cmap=cmap,norm=normalize)
 
     #sm=plt.scatter(u[:,0],u[:,1],c=z,alpha=0.6,s=0.1,cmap='seismic')
     
@@ -89,15 +97,16 @@ def plot_umap(x,y,z=None, feature = None, clipmin=None,clipmax=None, title:str =
     #sm.set_clim(vmin=np.min(z),vmax=np.max(z))
     #sm.set_clim(vmin=np.min(z),vmax=220)
     
-    plt.colorbar(sm)
-    plt.clim(cmin,cmax)
+        plt.colorbar(sm)
+        if cmin is not None and cmax is not None:
+            plt.clim(cmin,cmax)
 
-    ax.set_xlabel(xlabel)
-    ax.set_ylabel(ylabel)
-    if z is not None:
-        ax.set_zlabel(zlabel)
-    plt.title(title)
-    plt.show()
+        ax.set_xlabel(xlabel)
+        ax.set_ylabel(ylabel)
+        if z is not None:
+            ax.set_zlabel(zlabel)
+        plt.title(title)
+        plt.show()
     return t
 
 
@@ -141,6 +150,7 @@ def plot_density(x, y = None,bins = 100, title= 'Figure',window_title='-', xlabe
     plt.tight_layout() 
     plt.show()
 
+
 def bs(A,a,st,ed):
     if st > ed :
         return st
@@ -151,6 +161,7 @@ def bs(A,a,st,ed):
         return bs(A,a,st , mid-1)
     else:
         return bs(A,a,mid+1,ed)
+
 
 def getIndex(A, a, n):
     return bs(A,a,0,n-1)
@@ -192,7 +203,8 @@ def plotZfeatureOnDensities(x,y, z_feature,bins = 100, plot = True, behaviour = 
     '''
     
         For 2-D density plot of X,Y
-        Plot feature Z over the bins
+        Plot feature Z over the bins features must be list eg: [Amp]
+        labels must also be a list eg: ['Amplitude']
         By default it's mean of all points
         Can change the behaviour 
         eg:
@@ -204,21 +216,14 @@ def plotZfeatureOnDensities(x,y, z_feature,bins = 100, plot = True, behaviour = 
                 list of list of indices of datapoints for each bin 
     
     '''
-    multiple = len(z_feature[0].shape) > 0
-   
 
     if indices:
         sig_indices = {}
     X = np.linspace(x.min(), x.max(), num=bins+1)
     Y = np.linspace(y.min(), y.max(), num=bins+1)
 
-    if multiple :
-        m = len(z_feature)
-        z_feature = [[*z] for z in zip(*z_feature)]
-    else:
-        m = 1
-        z_feature = [z_feature]
-        featureLabel = [featureLabel]
+    m = len(z_feature)
+    z_feature = [[*z] for z in zip(*z_feature)]
 
     images = [np.zeros((bins,bins)) for _ in range(m)] 
 
@@ -280,13 +285,11 @@ def plotZfeatureOnDensities(x,y, z_feature,bins = 100, plot = True, behaviour = 
         return images, X[1:], Y[1:]
 
 
-
-
 def significant_pixels(x,y,features,bins=100, iter=100, pval = 0.5, smooth= False, plot=True, figsize=(12,12), xlabel:str = 'Umap 1', ylabel:str='Umap 2', featureLabel:str = '',s=30,linewidths=1,cmap='hot',marker=None,pbar=True):
     ''' 
         x = u[:,0]
         y = u[:,1]
-        z = Meanfreq
+        z = [Meanfreq]
         bins = Suggested: 100. It gives a 100x100 density matrix. 
         iter = iterations
         pval = P-value. Suggested: 0.001    
@@ -308,14 +311,8 @@ def significant_pixels(x,y,features,bins=100, iter=100, pval = 0.5, smooth= Fals
     
     #Rat
     
-    multiple = len(features[0].shape) > 0  
-    if not multiple:
-        features = [features]
-        featureLabel = [featureLabel]
-        assert features[0].shape[0] == x.shape[0], "features must be of same dimensions as x and y"        
-    else:
-        for i,feature in enumerate(features):
-            assert feature.shape[0] == x.shape[0], f"feature {i} must be of same dimensions as x and y"        
+    for i,feature in enumerate(features):
+        assert feature.shape[0] == x.shape[0], f"feature {i} must be of same dimensions as x and y"        
 
 
     images, _,  _, indices=plotZfeatureOnDensities(x,y, features,bins = bins, xlabel=xlabel,ylabel=ylabel,featureLabel=featureLabel,s=s,linewidths=linewidths,cmap=cmap,marker=marker,figsize=figsize,indices=True)
@@ -325,20 +322,17 @@ def significant_pixels(x,y,features,bins=100, iter=100, pval = 0.5, smooth= Fals
             img = hproc.smooth_image_custom(img)
         images[i] = img.flatten()
         
-    # %% permuting 2D density maps
+    # permuting 2D density maps
     m = len(images)
     B=[[] for _ in range(m)] 
     
     for _ in tqdm(range(iter)) if pbar else range(iter):    #Takes several minutes
         # L_permuted=np.random.permutation(L)  # This line
-        
-        features = features
         for i,feature in enumerate(features):
             np.random.shuffle(feature)
             features[i] = feature
 
         image_perms,_,_ = plotZfeatureOnDensities(x,y, features, bins = bins, plot=False)
-        assert(len(features) == len(image_perms))
 
         for i , imgp in enumerate(image_perms):
             if smooth:
@@ -350,9 +344,6 @@ def significant_pixels(x,y,features,bins=100, iter=100, pval = 0.5, smooth= Fals
 
     for i,b in enumerate(B):
         B[i]=np.vstack(b)        
-
-    for img,b in zip(images, B):
-        assert(img.shape[0] == b.shape[1])
 
     #p-value calculation (Plusmaze method)   
     D=[[] for _ in range(m)] 
@@ -377,21 +368,17 @@ def significant_pixels(x,y,features,bins=100, iter=100, pval = 0.5, smooth= Fals
         img = np.reshape(img,(bins,bins))
         images[i] = img
         
-                        
-
     new_images = []
-    significant_indices = [[]] * m
+    significant_indices = [] 
     data = []
 
     for i,(d, img) in enumerate(zip(D,images)):
+        sig_ind = []
         for id, v in np.ndenumerate(d):
-            if v:
-                try:
-                    significant_indices[i].extend(indices[id]) 
-                except KeyError:
-                    ...
-                except IndexError:
-                    ... 
+            if v and id in indices:
+                sig_ind.extend(indices[id]) 
+        significant_indices.append(sig_ind)
+        print(len(sig_ind), i)
         nimg = img * d
         temp = [] 
         for index,v in np.ndenumerate(nimg):
@@ -472,4 +459,28 @@ def plot_umap_binary(x,y,z=None,   title:str = '', figsize=(12, 12), xlabel:str 
         ax.set_zlabel(zlabel)
     plt.title(title)
     plt.show()    
-    
+
+
+def is_inside(polygons, point):
+    point = Point(*point)
+    for polygon in polygons:
+        polygon = Polygon(polygon)
+        if polygon.contains(point):
+            return True
+    return False
+
+
+def get_kde_contours(x,y):
+    kde = sns.kdeplot(x,y)
+    v = [ t.get_paths() for t in kde.collections]
+    v = [[np.array(t.vertices) for t in p] for p in v ]
+    plt.clf()
+    return v
+
+
+def get_centroids(polygons):
+    centroids = []
+    for polygon in polygons:
+        polygon = Polygon(polygon)
+        centroids.append(polygon.centroid)
+    return centroids
