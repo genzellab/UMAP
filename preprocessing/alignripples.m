@@ -1,6 +1,8 @@
 function [Y]=alignripples(x)
 % Align ripples to the closest minimum nearest to the ripple peak.
-
+if size(x,2)> 1 % In case we stored more data besides the waveforms. This is the case in OS and more recently preprocessed datasets. 
+    x=x(:,1);
+end
 % Input
 % x is the cell array obtained from the GC files. Each cell is one ripple. 
 Fs=2500;
