@@ -1,5 +1,6 @@
 import numpy as np
 import cv2
+import scipy.io
 from PIL import Image, ImageFilter
 
 
@@ -21,14 +22,16 @@ def v_stack(dur_np):
 #Function to accumulate values from numpy arrays
 def h_stack(amplitude_np):    
     Amp=[]
-    for i, amp in enumerate(amplitude_np):
-        if not i:
-            Amp = amp[0]
-        else:
-            try:
+    flag = False
+    for amp in amplitude_np:
+        try:
+            if flag:
                 Amp = np.hstack((Amp, amp[0]))
-            except IndexError:
-                ...
+            else:
+                Amp = amp[0]
+                flag = True
+        except IndexError:
+            ...
                 
     return Amp        
 
@@ -76,3 +79,31 @@ def smooth_image_custom(ab):
 
     return image
 
+def get_data_tcell(file):
+    ''' 
+    Returns dictionary containing numpy arrays of:
+        Original format:
+        'treatment', 'rat', 'studyday', 'trial', 'ripples', 
+        
+        Vertically stacked: 
+        'data'
+
+        Horizontally stacked: 
+        'meanfreq', 'amp', 'amp2', 'freq', 'entropy', 'auc', 'auc2'.    
+    '''
+    my_dict = scipy.io.loadmat(file)
+    key = file.split('.')[0]
+    keys = ['treatment','rat','studyday', 'trial', 'ripples', 'amp', 'meanfreq', 'amp2', 'freq', 'entropy', 'auc', 'auc2']
+    T = my_dict[key]
+    data = {}
+    print(T.shape, T.shape[1])
+    for i in range(T.shape[1]):
+        if i < 4:
+            data[keys[i]] = T[:,i]
+        elif i == 4:
+            data[keys[i]] = T[:,i]
+            data['data'] = v_stack(T[:,i])
+        else:
+            data[keys[i]] = h_stack(T[:,i])
+    
+    return data

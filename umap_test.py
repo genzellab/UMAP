@@ -141,6 +141,7 @@ Entropy=hproc.h_stack(entropy_np)
 AUC=hproc.h_stack(auc_np)
 AUC2=hproc.h_stack(auc2_np)
 
+hplt.plot_umap(u[:,0], u[:,1], u[:,3], feature=Amp, title="Amplitude", s=1)
 
 #DUR=get_duration(dur_np);
 # TODO: Uncomment this
@@ -244,6 +245,7 @@ logicresult=studyday*treatment
 L=hproc.binary_feature(Ripples,logicresult)
 # TODO: Uncomment this
 # hplt.plot_density(u[L,0],u[L,1],title="Ripples from "+string+" HC",figsize =(10, 7),vmax=0.25)
+
 
 
 # %% Significant clusters 

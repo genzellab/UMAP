@@ -12,6 +12,7 @@ import cv2 as cv2
 import utils.processing_helpers as hproc
 from mpl_toolkits.mplot3d import Axes3D
 from tqdm import tqdm
+import plotly.graph_objects as go
 
 
 sns.set(style='white',context='poster', rc={'figure.figsize':(14,10)} )
@@ -64,6 +65,7 @@ def plot_umap(x,y,z=None, feature = None, plot = True, clipmin=None,clipmax=None
     #sm=plt.scatter(u[:,0],u[:,1],c=z,alpha=0.6,s=0.01)g
         cmin = np.mean(feature)-3*np.std(feature)
         cmax = np.mean(feature)+3*np.std(feature)
+
     else:
         normalize = None
         cmin = None
@@ -83,23 +85,33 @@ def plot_umap(x,y,z=None, feature = None, plot = True, clipmin=None,clipmax=None
             z = z[t]
     if plot: 
         fig = plt.figure(figsize=figsize)
+
         if z is not None:
+            # marker_data = go.Scatter3d(
+            #     x=x,y=y,z=z,marker = go.scatter3d.Marker(size=s),
+            #     opacity= alpha,
+            #     mode= 'markers'
+            # )
+            # fig = go.Figure(data=marker_data)
+            # fig.show()
+            # return t
             ax = fig.add_subplot(projection='3d')
+
             sm=ax.scatter(x, y, z,c=feature,alpha=alpha,s=s,cmap=cmap,norm=normalize)
         else:
             ax = fig.add_subplot()
             sm=plt.scatter(x,y,c=feature,alpha=alpha,s=s,cmap=cmap,norm=normalize)
 
-    #sm=plt.scatter(u[:,0],u[:,1],c=z,alpha=0.6,s=0.1,cmap='seismic')
-    
-    #sm=plt.cm.ScalarMappable(cmap=colormap)
-    
-    #sm.set_clim(vmin=np.min(z),vmax=np.max(z))
-    #sm.set_clim(vmin=np.min(z),vmax=220)
-    
-        plt.colorbar(sm)
-        if cmin is not None and cmax is not None:
-            plt.clim(cmin,cmax)
+        #sm=plt.scatter(u[:,0],u[:,1],c=z,alpha=0.6,s=0.1,cmap='seismic')
+        
+        #sm=plt.cm.ScalarMappable(cmap=colormap)
+        
+        #sm.set_clim(vmin=np.min(z),vmax=np.max(z))
+        #sm.set_clim(vmin=np.min(z),vmax=220)
+        if feature is not None: 
+            plt.colorbar(sm)
+        # if cmin is not None and cmax is not None:
+        #     plt.clim(cmin,cmax)
 
         ax.set_xlabel(xlabel)
         ax.set_ylabel(ylabel)
@@ -107,6 +119,7 @@ def plot_umap(x,y,z=None, feature = None, plot = True, clipmin=None,clipmax=None
             ax.set_zlabel(zlabel)
         plt.title(title)
         plt.show()
+
     return t
 
 
