@@ -47,7 +47,7 @@ def plot_binary(x,y,title:str, xlabel:str = '', ylabel:str='', color = 'r', alph
 
     #plt.legend(['First line', 'Second line'])
 
-def plot_umap(x,y,z=None, feature = None, plot = True, clipmin=None,clipmax=None, title:str = '', figsize=(12, 12), xlabel:str = 'Umap 1', ylabel:str='Umap 2', zlabel:str='Umap 4', cmap='seismic',alpha = 0.6, s = 20):
+def plot_umap(x,y,z=None, feature = None, plot = True, clipmin=None,clipmax=None, title:str = '', figsize=(12, 9), xlabel:str = 'Umap 1', ylabel:str='Umap 2', zlabel:str='Umap 4', cmap='seismic',alpha = 0.6, s = 20):
     ''' 
         x = u[L,0]
         y = u[L,1]

@@ -26,8 +26,8 @@ u = np.load(f'u_{data_type}.npy')
 
 # hplt.plot_umap(u[:,0], u[:,1], u[:,3], feature=data['amp'], title="Amplitude", s=1)
 for i, j in zip(range(4), range(1,4)):
-    hplt.plot_umap(u[:,i], u[:,j], s=1, xlabel=f'Umap {i}', ylabel = f'Umap {j}')
-
+    hplt.plot_umap(u[:,i], u[:,j], s=1, xlabel=f'Umap {i+1}', ylabel = f'Umap {j+1}')
+print(data['data'].shape)
 
 
 
