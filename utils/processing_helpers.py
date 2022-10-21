@@ -7,15 +7,16 @@ from PIL import Image, ImageFilter
 # Data will be a matrix X by 127, where X is the pooled amount of ripples across all trials. 
 def v_stack(dur_np):
     DUR=[]
-
-    for i, dur in enumerate(dur_np):
-        if not i:
-            DUR=dur
-        else:
-            try:
+    flag = False
+    for dur in dur_np:
+        try:
+            if flag:
                 DUR=np.vstack((DUR,dur))
-            except ValueError:
-                ...
+            else:
+                DUR = dur
+                flag = True
+        except ValueError:
+            ...
     return DUR
 
 
