@@ -80,6 +80,7 @@ def smooth_image_custom(ab):
 
     return image
 
+
 def get_data_tcell(file):
     ''' 
     Returns dictionary containing numpy arrays of:
@@ -95,6 +96,7 @@ def get_data_tcell(file):
     my_dict = scipy.io.loadmat(file)
     key = file.split('.')[0]
     keys = ['treatment','rat','studyday', 'trial', 'ripples', 'amp', 'meanfreq', 'amp2', 'freq', 'entropy', 'auc', 'auc2']
+    
     T = my_dict[key]
     data = {}
     print(T.shape, T.shape[1])

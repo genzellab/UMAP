@@ -130,7 +130,7 @@ def plot_density(x, y = None,bins = 100, title= 'Figure',window_title='-', xlabe
     '''
     #z=Amp
     #normalize = cl.Normalize(vmin=np.mean(z)-3*np.std(z), vmax=np.mean(z)+3*np.std(z))
-    
+
     #colormap=plt.cm.get_cmap('bwr')
     #colors=colormap(z)
     #sm=plt.scatter(u[:,0],u[:,1],c=z,alpha=0.6,s=0.01)g
@@ -188,6 +188,8 @@ def plot3Ddensity(x,y,z, bins = 100, xlabel:str = 'umap 1', ylabel:str='umap 2',
     Y = np.linspace(y.min(), y.max(), num=bins+1)
     Z = np.linspace(z.min(), z.max(), num=bins+1)
     data = {}
+    L = {}
+
     for xv,yv,zv in zip(x,y,z):
         xi,yi,zi = getIndex(X,xv,bins+1),getIndex(Y,yv,bins+1),getIndex(Z,zv,bins+1)
         xi -= 1
@@ -197,6 +199,8 @@ def plot3Ddensity(x,y,z, bins = 100, xlabel:str = 'umap 1', ylabel:str='umap 2',
             data[(xi,yi,zi)] += 1
         else:
             data[(xi,yi,zi)] = 1
+        L[(xv,yv,zv)] = (xi,yi,zi)
+    
     data = [[k[0], k[1], k[2], v] for k,v in data.items()]
     data = np.array(data)
     # datap = data[:,3]>0.0
@@ -210,6 +214,43 @@ def plot3Ddensity(x,y,z, bins = 100, xlabel:str = 'umap 1', ylabel:str='umap 2',
     ax.set_ylabel(ylabel)
     ax.set_zlabel(zlabel)
     plt.show()
+    return L, data
+
+
+def plot2Ddensity(x,y, bins = 100, xlabel:str = 'umap 1', ylabel:str='umap 2', s=30,linewidths=0.5,cmap='hot',marker=None, plot= True):
+    ''' 
+        Plots 3d histogram for x, y and z
+    '''
+    X = np.linspace(x.min(), x.max(), num=bins+1)
+    Y = np.linspace(y.min(), y.max(), num=bins+1)
+
+    data = {}
+    L = {}
+
+    for xv,yv in zip(x,y):
+        xi,yi = getIndex(X,xv,bins+1),getIndex(Y,yv,bins+1)
+        xi -= 1
+        yi -= 1
+        if (xi,yi) in data:
+            data[(xi,yi)] += 1
+        else:
+            data[(xi,yi)] = 1
+        L[(xv,yv)] = (xi,yi)
+    ndata = data
+    data = [[k[0], k[1], v] for k,v in data.items()]
+    data = np.array(data)
+    # datap = data[:,3]>0.0
+    # data = data[datap]
+    if plot:
+        fig = plt.figure()
+        ax = fig.add_subplot(111)
+
+        p3d = ax.scatter(data[:,0], data[:,1], s=s, c=data[:,2].tolist(),linewidths=linewidths,cmap=cmap,marker=marker)
+        fig.colorbar(p3d)
+        ax.set_xlabel(xlabel)
+        ax.set_ylabel(ylabel)
+        plt.show()
+    return L, ndata
 
 
 def plotZfeatureOnDensities(x,y, z_feature,bins = 100, plot = True, behaviour = lambda x, axis: np.mean(x,axis = axis), figsize=(12,12), xlabel:str = 'Umap 1', ylabel:str='Umap 2', featureLabel:str = '',s=30,linewidths=1,cmap='hot',marker=None,indices = False):
