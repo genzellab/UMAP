@@ -90,3 +90,21 @@ ax.set_xlabel('Umap 1', fontsize=14)
 ax.set_ylabel('Umap 2',fontsize=14)
 
 plt.show()
+
+data_type_index = 0         # osbasic
+data_type = data_types[data_type_index]
+
+# data = hproc.get_data_tcell(f'Tcell_{data_type}.mat')
+u = np.load(f'u_{data_type}.npy')
+
+
+cl = u[:,0] > 4             # the binary vector for the rightmost cluster for All
+fig = plt.figure()
+ax = fig.add_subplot(111)
+d1, d2 = u[cl], u[cl != True] 
+ax.scatter(d2[:,0], d2[:,1], c='grey', alpha=0.4,s=1)
+ax.scatter(d1[:,0], d1[:,1], c='red', alpha=0.7,s=1)
+ax.set_xlabel('Umap 1', fontsize=14)
+ax.set_ylabel('Umap 2',fontsize=14)
+
+plt.show()
