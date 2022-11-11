@@ -110,3 +110,72 @@ def get_data_tcell(file):
             data[keys[i]] = h_stack(T[:,i])
     
     return data
+
+
+def extract_labels (data):
+    labels = {
+        0:[],
+        1:[],
+        2:[],
+        3:[],
+        4:[]
+    }
+    
+    for x in data:
+        labels[0].append(x[0][0])
+        labels[1].append(x[1][0])
+        labels[2].append(x[2][0])
+        labels[3].append(x[3][0])
+        labels[4].append(x[4][0])
+
+    labels[0] = set(labels[0])
+    labels[1] = set(labels[1])
+    labels[2] = set(labels[2])
+    labels[3] = set(labels[3])
+    labels[4] = set(labels[4])
+    return labels
+
+
+def align_data(files, ROOT_DIR = "dataset"):
+    metadata = {
+        0:[],
+        1:[],
+        2:[],
+        3:[],
+        4:[]
+    }
+
+    aligned_data = []
+    
+    for file in files:
+        data = scipy.io.loadmat(f'{ROOT_DIR}/Tcell_{file}.mat')[f'Tcell_{file}']
+        labels = extract_labels(data)
+        for k, v in labels.items():
+            for it in v:
+                if it not in metadata[k]:
+                    metadata[k].append(it)
+        
+        for x in data:
+            if x[5].shape[1] != 0:
+                sitem = []
+                for i, it in enumerate(x):                    
+                    if i == 5:
+                        break
+                    else:
+                        sitem.append(metadata[i].index(it))
+                        
+                for it in x[5]:
+                    item = sitem.copy() 
+                    item.extend(it)
+                    aligned_data.append(item)
+    aligned_data = np.array(aligned_data)
+    return metadata, aligned_data
+
+
+def get_code(metadata, key, value):
+    return metadata[key].index(value)
+
+
+def get_data(data):
+    return data[:][5:]
+
