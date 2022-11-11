@@ -1,5 +1,7 @@
 # Preprocessing for UMAP
 
+Update (25/10/22): Use the OS_preprocessing script to run all following steps. 
+
 * alignripples.m : Shifts ripple traces to align them always on the minimum closest to the peak. You might encounter some dimension errors which are due to either extra samples from GC files or empty arrays. You can fix with this script:
 
 ```
