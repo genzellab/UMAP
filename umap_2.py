@@ -9,6 +9,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 
+import pandas as pd
+from URC_computeClusterIndex_V4 import computeClusterIndex_V4
+
 import seaborn as sns
 from sklearn.cluster import DBSCAN, OPTICS, KMeans
 #import plotly.express as px
@@ -139,3 +142,51 @@ for i in range(4):
 
 
         plt.show()
+
+
+u = np.load('u_all.npy')
+data = np.load('all_ripples.npy')
+L, datak = hplt.plot2Ddensity(u[:,0], u[:,1], plot = False)
+data[:.0] += 1
+
+df=pd.DataFrame(u, columns=['u1','u2','u3','u4'])
+cI_val, bLab, _= computeClusterIndex_V4(df,data[:,0],100,['u1','u2'],plotCluster=0,vmin=-1, vmax=4)
+
+cI_val_array=[]
+for i in range(4):
+    for k in range(4):
+        if i==k:
+            cI_val=0
+        else:
+            cI_val, bLab, _= computeClusterIndex_V4(df,data[:,0],10,[df.columns[i],df.columns[k]],plotCluster=0,vmin=0, vmax=4)
+        cI_val_array.append(cI_val)
+
+
+fig,ax = plt.subplots()
+cI_val_array=np.array(cI_val_array)
+cI_val_array.resize(4,4)
+im1 = plt.imshow(cI_val_array, cmap=plt.cm.Greys)
+
+
+plt.xticks([0,1,2,3], [1,2,3,4])
+plt.yticks([0,1,2,3], [1,2,3,4])
+
+
+
+plt.xlabel('UMAP', loc='center')
+plt.ylabel('UMAP', loc='center')
+plt.title("Structure Index \n (AUC)")
+
+plt.colorbar()
+
+plt.show()
+
+
+et = time.time()
+
+# get the execution time
+elapsed_time = et - st
+print('Execution time:', elapsed_time, 'seconds')
+
+
+
