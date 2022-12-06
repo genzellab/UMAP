@@ -416,7 +416,7 @@ def plot_scatter_form_image(img):
     plt.show()
     
     
-def plot_umap_binary(x,y,z=None,   title:str = '', figsize=(12, 12), xlabel:str = 'Umap 1', ylabel:str='Umap 2', zlabel:str='Umap 4', cmap='Greys', s = 20):
+def plot_umap_binary(x,y,z=None,   title:str = '', figsize=(12, 12), xlabel:str = 'Umap 1', ylabel:str='Umap 2', zlabel:str='Umap 4', cmap='Greys', s = 20, c='0'):
     ''' 
         x = u[L,0]
         y = u[L,1]
@@ -432,9 +432,7 @@ def plot_umap_binary(x,y,z=None,   title:str = '', figsize=(12, 12), xlabel:str 
     #colors=colormap(z)
     #sm=plt.scatter(u[:,0],u[:,1],c=z,alpha=0.6,s=0.01)g
     #cmin = np.min(feature);
-    #cmax = np.max(feature);
-
-   
+    #cmax = np.max(feature);  
     
     fig = plt.figure(figsize=figsize)
     if z is not None:
@@ -442,7 +440,7 @@ def plot_umap_binary(x,y,z=None,   title:str = '', figsize=(12, 12), xlabel:str 
         sm=ax.scatter(x, y, z,s=s,cmap=cmap)
     else:
         ax = fig.add_subplot()
-        sm=plt.scatter(x,y,s=s,cmap=cmap,alpha=1,c='0')
+        sm=plt.scatter(x,y,s=s,cmap=cmap,alpha=1,c=c)
 
     #sm=plt.scatter(u[:,0],u[:,1],c=z,alpha=0.6,s=0.1,cmap='seismic')
     

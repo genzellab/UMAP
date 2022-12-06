@@ -7,7 +7,7 @@ Rats=fieldnames(Rats);
 StudyDays=fieldnames(CBD.(Treatment{1}).(Rats{1}));
 TrialNames={'Presleep','Post1','Post2','Post3','Post4','Post5-1','Post5-2','Post5-3','Post5-4'};
 veh=[];
-Treatment={'VEH','RGS14'};
+Treatment={'VEH','CBD'};
 Dataset='CBDchronic';
 %%
 for l=1:length(Treatment)
@@ -64,6 +64,7 @@ end
 %% RGS14
 
 Treatment=fieldnames(CBD);
+Treatment=Treatment(1);
 Rats=CBD.(Treatment{1});
 Rats=fieldnames(Rats);
 StudyDays=fieldnames(CBD.(Treatment{1}).(Rats{1}));
@@ -98,28 +99,38 @@ end
  
  
 %% rgs14
-
-Rats=fieldnames(RGS);
-StudyDays=fieldnames(RGS.(Rats{1}));
+Treatment=fieldnames(CBD);
+Treatment=Treatment(2);
+Rats=CBD.(Treatment{1});
+Rats=fieldnames(Rats);
+StudyDays=fieldnames(CBD.(Treatment{1}).(Rats{1}));
 TrialNames={'Presleep','Post1','Post2','Post3','Post4','Post5-1','Post5-2','Post5-3','Post5-4'};
 rgs=[];
-Treatment={'VEH','RGS14'};
+%Rats=[Rats; fieldnames(CBD.(Treatment{2}))];
+%Treatment={'rgs','RGS14'};
+Dataset='RGS14';
+%%
+for l=1:length(Treatment)
+    for i=1:length(Rats)
+        for j=1:length(StudyDays)
+            %xo
+          Trials=CBD.(Treatment{l}).(Rats{i}).(StudyDays{j});
+          Rat=(Rats{i});
+          StudyDay=StudyDays{j};
+            for k=1:length(Trials)
+                %xo
+                t=table({Dataset},Treatment(l),{Rat},{StudyDay},{TrialNames{k}},Trials(k));
+                rgs=[rgs;t];
+            end
 
-for i=1:length(Rats)
-    for j=1:length(StudyDays)
-      Trials=RGS.(Rats{i}).(StudyDays{j});
-      Rat=(Rats{i});
-      StudyDay=StudyDays{j};
-        for k=1:length(Trials)
-            
-            t=table(Treatment(2),{Rat},{StudyDay},{TrialNames{k}},Trials(k));
-            rgs=[rgs;t];
         end
-      
     end
 end
 
- rgs.Properties.VariableNames=[ {'Treatment'} {'Rat'} {'StudyDay'} {'Trial'} {'Ripples'}];
+%%
+ rgs.Properties.VariableNames=[{'Dataset'} {'Treatment'} {'Rat'} {'StudyDay'} {'Trial'} {'Ripples'}];
+
+ %rgs.Properties.VariableNames=[ {'Treatment'} {'Rat'} {'StudyDay'} {'Trial'} {'Ripples'}];
  %%
  T=[veh;rgs];
  %% Compute/add features

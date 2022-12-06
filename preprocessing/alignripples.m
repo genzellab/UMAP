@@ -6,15 +6,20 @@ end
 % Input
 % x is the cell array obtained from the GC files. Each cell is one ripple. 
 Fs=2500;
+Wn1=[100/(Fs/2) 300/(Fs/2)]; % Cutoff=100-300 Hz
+[b,a] = butter(3,Wn1,'bandpass');
 x=cell2mat(x);
 
 x=x(2:2:end,:);
+ripples=filtfilt(b,a,x.');
+ripples=ripples.';
+x=ripples;
 %%
 
 xPeak=7500+1; %Ripple Peak
-ripples=x;
+% ripples=x;
 Data=[];
-coil = Fs * 0.010;
+coil = Fs * 0.010; %Original script used 0.010
 Y=[];
 for i=1:size(ripples,1)
 
