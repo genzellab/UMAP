@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Tue Dec  6 13:05:45 2022
+Created on Wed Oct 19 12:38:57 2022
 
 @author: adrian
 """
@@ -30,6 +30,9 @@ from URC_computeIsomapDimEst import isomapDimEst
 import utils.plotting_helpers as hplt
 import utils.processing_helpers as hproc
 from sklearn.cluster import KMeans, DBSCAN
+from seaborn import kdeplot
+import pickle
+
 
 sns.set(style='white',context='poster', rc={'figure.figsize':(14,10)} )
 # %% Load whole table and split columns 
@@ -51,6 +54,22 @@ T_osbasic=myDict['osbasic']
 #Ripples waveforms
 Ripples=T[:,5]
 Data = hproc.v_stack(Ripples[2:])
+#Dataset
+dataset_np=T[:,0]
+dataset_rip=hproc.unfold_days2ripples(Ripples,dataset_np)
+#Treatment
+treatment_np=T[:,1]
+treatment_rip=hproc.unfold_days2ripples(Ripples,treatment_np)
+#Rat
+rat_np=T[:,2]
+rat_rip=hproc.unfold_days2ripples(Ripples, rat_np)
+#StudyDay
+StudyDay_np=T[:,3]
+StudyDay_rip=hproc.unfold_days2ripples(Ripples, StudyDay_np)
+#Trial
+trial_np=T[:,4]
+trial_rip=hproc.unfold_days2ripples(Ripples,trial_np)
+
 
 Ripples_cbd=T_cbd[:,5]
 Ripples_cbd=Ripples_cbd[2:];
@@ -58,6 +77,9 @@ Data_cbd = hproc.v_stack(Ripples_cbd)
 
 Ripples_rgs=T_rgs[:,5]
 Data_rgs = hproc.v_stack(Ripples_rgs)
+treatment_np_rgs=T_rgs[:,1]
+treatment_rip_rgs=hproc.unfold_days2ripples(Ripples_rgs,treatment_np_rgs)
+
 
 Ripples_osbasic=T_osbasic[:,5]
 Data_osbasic = hproc.v_stack(Ripples_osbasic)
@@ -75,20 +97,21 @@ u_osbasic = fit.fit_transform(Data_osbasic)
 # figsize=(cm2inch(3.5), cm2inch(3.5))
 # plt.figure(figsize=(cm2inch(12.8), cm2inch(9.6)))
 
+
 #2D
-hplt.plot_umap_binary(u_rgs[:,0],u_rgs[:,2] ,title="RGS14",s=1,xlabel='Umap 1',ylabel='Umap 3',c='#0343DF')
+hplt.plot_umap_binary(u_rgs[:,0],u_rgs[:,2] ,title="RGS14 dataset",s=1,xlabel='Umap 1',ylabel='Umap 3',c='#0343DF')
 plt.xlim([-1,11])
 plt.ylim([-1,11])
 
-hplt.plot_umap_binary(u_osbasic[:,1],u_osbasic[:,2] ,title="OS basic",s=1,xlabel='UMAP2',ylabel='UMAP3',c='#E50000')
+hplt.plot_umap_binary(u_osbasic[:,1],u_osbasic[:,2] ,title="OS basic dataset",s=1,xlabel='UMAP2',ylabel='UMAP3',c='#E50000')
 plt.xlim([-1,11])
 plt.ylim([-1,11])
 
-hplt.plot_umap_binary(u_cbd[:,1],u_cbd[:,3] ,title="CBD",s=1,xlabel='Umap 2', ylabel='Umap 4', c='#15B01A')
+hplt.plot_umap_binary(u_cbd[:,1],u_cbd[:,3] ,title="CBD dataset",s=1,xlabel='Umap 2', ylabel='Umap 4', c='#15B01A')
 plt.xlim([-1,11])
 plt.ylim([-1,11])
 
-hplt.plot_umap_binary(u[:,1],u[:,3] ,title="Combined",s=1,xlabel='Umap 2', ylabel='Umap 4')
+hplt.plot_umap_binary(u[:,1],u[:,3] ,title="Combined datasets",s=1,xlabel='Umap 2', ylabel='Umap 4')
 plt.xlim([-1,11])
 plt.ylim([-1,11])
 
@@ -103,110 +126,152 @@ hplt.plot3Ddensity(u_osbasic[:,0],u_osbasic[:,1],u_osbasic[:,2], zlabel='umap 3'
 
 hplt.plot3Ddensity(u[:,0],u[:,1],u[:,3], zlabel='umap 4', bins=50)
 
-# %% Remove outliers using K-means clustering.
-
-#OS BASIC
-a=u_osbasic[:,0:2];
-
-# kmeans = KMeans(n_clusters=4, random_state=0).fit(a)
-# label = kmeans.labels_
-
-clustering = DBSCAN(eps=0.2, min_samples=10).fit(a)
-label=clustering.labels_
+# %% Remove outliers using DBSCAN clustering.
 
 
-fig = plt.figure(figsize=(12,12))
-ax = fig.add_subplot()
-p3d =plt.scatter(u_osbasic[:,0],u_osbasic[:,1],c=label, s=10,cmap='viridis')
-plt.colorbar(p3d)
-ax.set_xlabel('Umap 1')
-ax.set_ylabel('Umap 2')
-plt.title('OS basic')
-
-outliers_osbasic=[label==1];
-# %%
-#RGS14
-a=u_rgs[:,0:2];
-
-clustering = DBSCAN(eps=0.2, min_samples=10).fit(a)
-label=clustering.labels_
+[outliers_osbasic]=hplt.dbscan_outliers(u_osbasic, "OS_basic", eps_value=0.2, min_samples_value=10)
+[outliers_rgs]=hplt.dbscan_outliers(u_rgs, "RGS14", eps_value=0.2, min_samples_value=10)
+[outliers_cbd]=hplt.dbscan_outliers(u_cbd, "CBD", eps_value=0.10, min_samples_value=1)
+[outliers]=hplt.dbscan_outliers(u, "Combined", eps_value=0.2, min_samples_value=5)
 
 
-fig = plt.figure(figsize=(12,12))
-ax = fig.add_subplot()
-p3d =plt.scatter(u_rgs[:,0],u_rgs[:,1],c=label, s=10,cmap='viridis')
-plt.colorbar(p3d)
-ax.set_xlabel('Umap 1')
-ax.set_ylabel('Umap 2')
-plt.title('RGS14')
+# %% Using combined outliers from all datasets. 
+outliers_combined=np.concatenate([outliers_cbd,outliers_osbasic,outliers_rgs]);
 
-outliers_rgs=[label==1];
-
-# %% 
-# CBD
-
-a=u_cbd[:,0:2];
-
-clustering = DBSCAN(eps=0.2, min_samples=5).fit(a)
-label=clustering.labels_
-
-
-fig = plt.figure(figsize=(12,12))
-ax = fig.add_subplot()
-p3d =plt.scatter(u_cbd[:,0],u_cbd[:,1],c=label, s=10,cmap='viridis')
-plt.colorbar(p3d)
-ax.set_xlabel('Umap 1')
-ax.set_ylabel('Umap 2')
-plt.title('CBD')
-
-outliers_cbd=[label==1];
-# %%
-# Combined
-a=u[:,0:2];
-
-clustering = DBSCAN(eps=0.2, min_samples=5).fit(a)
-label=clustering.labels_
-
-
-fig = plt.figure(figsize=(12,12))
-ax = fig.add_subplot()
-p3d =plt.scatter(u[:,0],u[:,1],c=label, s=10,cmap='viridis')
-plt.colorbar(p3d)
-ax.set_xlabel('Umap 1')
-ax.set_ylabel('Umap 2')
-plt.title('Combined')
-
-outliers=[label==1];
 
 # %% Re compute UMAP without outliers
 
 fit = umap.UMAP(n_components=4)
-u_clean=fit.fit_transform(Data[np.logical_not(outliers)[0]])
-u_cbd_clean = fit.fit_transform(Data_cbd[np.logical_not(outliers_cbd)[0]])
-u_rgs_clean = fit.fit_transform(Data_rgs[np.logical_not(outliers_rgs)[0]])
-u_osbasic_clean = fit.fit_transform(Data_osbasic[np.logical_not(outliers_osbasic)[0]])
+u_clean=fit.fit_transform(Data[np.logical_not(outliers_combined)])
+u_cbd_clean = fit.fit_transform(Data_cbd[np.logical_not(outliers_cbd)])
+u_rgs_clean = fit.fit_transform(Data_rgs[np.logical_not(outliers_rgs)])
+u_osbasic_clean = fit.fit_transform(Data_osbasic[np.logical_not(outliers_osbasic)])
 
 
-# %% Figures, describing embeddings.
+# %% Figures, describing embeddings. Per dataset. Without outliers 
 # def cm2inch(value):
 #     return value/2.54
 # figsize=(cm2inch(3.5), cm2inch(3.5))
 # plt.figure(figsize=(cm2inch(12.8), cm2inch(9.6)))
+list_colours=['#0343DF','#E50000','#15B01A','black'];
+list_embeddings=[u_rgs_clean,u_osbasic_clean,u_cbd_clean,u_clean];
+list_names=["RGS14 dataset","OS basic dataset", "CBD dataset","Combined datasets"]
 
-#2D
-#plt.rc('axes', labelsize=40)
-hplt.plot_umap_binary(u_rgs_clean[:,0],u_rgs_clean[:,1] ,title="RGS14",s=1,xlabel='Umap 1',ylabel='Umap 2',c='#0343DF')
-plt.xlim([-1,11])
-plt.ylim([-1,11])
+for (item,colours,names) in zip(list_embeddings, list_colours,list_names):
+    hplt.plot_umap_binary(item[:,0],item[:,1] ,title=names,s=1,xlabel='Umap 1',ylabel='Umap 2',c=colours)
+    plt.xlim([-1,11])
+    plt.ylim([-1,11])
 
-hplt.plot_umap_binary(u_osbasic_clean[:,0],u_osbasic_clean[:,1] ,title="OS basic",s=1,xlabel='Umap 1',ylabel='Umap 2',c='#E50000')
-plt.xlim([-1,11])
-plt.ylim([-1,11])
+#%% Store outliers in Dataframe
+df = pd.DataFrame(dataset_rip[outliers_combined], columns = ['Dataset'])
+df['Treatment'] = treatment_rip[outliers_combined]
+df['Rat'] = rat_rip[outliers_combined]
+df['StudyDay'] = StudyDay_rip[outliers_combined]
+df['Trial'] = trial_rip[outliers_combined]
 
-hplt.plot_umap_binary(u_cbd_clean[:,0],u_cbd_clean[:,1] ,title="CBD",s=1,xlabel='Umap 1', ylabel='Umap 2', c='#15B01A')
-plt.xlim([-1,11])
-plt.ylim([-1,11])
+df.to_csv('outliers.csv')  
+#%%
+#Dataset
+dataset_rip
+#Treatment
+treatment_rip
+#Rat
+rat_rip
+#StudyDay
+StudyDay_rip
+#Trial
+trial_rip
 
-hplt.plot_umap_binary(u_clean[:,0],u_clean[:,1] ,title="Combined",s=1,xlabel='Umap 1', ylabel='Umap 2')
-plt.xlim([-1,11])
-plt.ylim([-1,11])
+#%% Split by treatment, not by dataset.
+treatment_veh=hproc.strcmp(treatment_rip,"VEH") #OSBASIC #RGS14
+treatment_cbd=hproc.strcmp(treatment_rip,"CBD") #OSBASIC #RGS14
+treatment_rgs=hproc.strcmp(treatment_rip,"RGS") #OSBASIC #RGS14
+
+
+Data_veh_treatment=Data[np.logical_and(np.squeeze(treatment_veh)==1,np.logical_not(outliers_combined))]
+Data_cbd_treatment=Data[np.logical_and(np.squeeze(treatment_cbd)==1,np.logical_not(outliers_combined))]
+Data_rgs_treatment=Data[np.logical_and(np.squeeze(treatment_rgs)==1,np.logical_not(outliers_combined))]
+
+
+fit = umap.UMAP(n_components=4)
+u_cbd_treatment = fit.fit_transform(Data_cbd_treatment)
+u_rgs_treatment = fit.fit_transform(Data_rgs_treatment)
+u_veh_treatment = fit.fit_transform(Data_veh_treatment)
+
+
+
+#%%
+list_colours=['#0343DF','#E50000','#15B01A','black'];
+list_embeddings=[u_rgs_treatment,u_veh_treatment,u_cbd_treatment,u_clean];
+list_names=["RGS14 treatment","Vehicle treatment", "CBD treatment","Combined treatment"]
+
+for (item,colours,names) in zip(list_embeddings, list_colours,list_names):
+    #ax = fig.add_subplot()
+    hplt.plot_umap_binary(item[:,0],item[:,1] ,title=names,s=1,xlabel='Umap 1',ylabel='Umap 2',c=colours)
+    plt.xlim([-1,11])
+    plt.ylim([-1,11])
+
+
+# %%
+hplt.plot3Ddensity(u_rgs_treatment[:,0],u_rgs_treatment[:,1],u_rgs_treatment[:,2], zlabel='umap 3', bins=50)
+
+hplt.plot3Ddensity(u_cbd_treatment[:,0],u_cbd_treatment[:,1],u_cbd_treatment[:,2], zlabel='umap 3', bins=50)
+
+hplt.plot3Ddensity(u_veh_treatment[:,0],u_veh_treatment[:,1],u_veh_treatment[:,2], zlabel='umap 3', bins=50)
+
+hplt.plot3Ddensity(u_clean[:,0],u_clean[:,1],u_clean[:,2], zlabel='umap 3', bins=50)
+
+# %% Splitting controls.
+
+dataset_osbasic=hproc.strcmp(dataset_rip,"OSBASIC") #OSBASIC
+dataset_cbd=hproc.strcmp(dataset_rip,"CBDchronic") #CBD
+dataset_rgs=hproc.strcmp(dataset_rip,"RGS14") #RGS14
+
+#Controls
+Data_veh_osbasic_dataset=Data[np.logical_and(    np.logical_and(np.squeeze(treatment_veh)==1,np.logical_not(outliers_combined))  ,  np.squeeze(dataset_osbasic)==1)]
+Data_veh_rgs_dataset=Data[np.logical_and(    np.logical_and(np.squeeze(treatment_veh)==1,np.logical_not(outliers_combined))  ,  np.squeeze(dataset_rgs)==1)]
+Data_veh_cbd_dataset=Data[np.logical_and(    np.logical_and(np.squeeze(treatment_veh)==1,np.logical_not(outliers_combined))  ,  np.squeeze(dataset_cbd)==1)]
+
+#Non-Controls:
+Data_rgs_rgs_dataset=Data[np.logical_and(    np.logical_and(np.squeeze(treatment_rgs)==1,np.logical_not(outliers_combined))  ,  np.squeeze(dataset_rgs)==1)]
+Data_cbd_cbd_dataset=Data[np.logical_and(    np.logical_and(np.squeeze(treatment_cbd)==1,np.logical_not(outliers_combined))  ,  np.squeeze(dataset_cbd)==1)]
+    
+# All combined except RGS.
+
+Data_combined_no_rgs=np.concatenate([Data_veh_cbd_dataset,Data_cbd_cbd_dataset,Data_veh_osbasic_dataset]);
+
+
+fit = umap.UMAP(n_components=4)
+
+
+# Controls
+u_veh_osbasic = fit.fit_transform(Data_veh_osbasic_dataset)
+u_veh_rgs = fit.fit_transform(Data_veh_rgs_dataset)
+u_veh_cbd = fit.fit_transform(Data_veh_cbd_dataset)
+
+# Non-controls
+u_rgs_rgs = fit.fit_transform(Data_rgs_rgs_dataset)
+u_cbd_cbd = fit.fit_transform(Data_cbd_cbd_dataset)
+
+
+u_rgs_rgs.shape[0]+u_veh_rgs.shape[0]+u_cbd_cbd.shape[0]+u_veh_cbd.shape[0]+u_veh_osbasic.shape[0]
+
+u_combined_no_rgs = fit.fit_transform(Data_combined_no_rgs)
+
+
+# %% Plot all embeddings for controls and treatments
+
+plt.rc('font', size=35)
+plt.rc('axes', titlesize=35, labelsize=35)
+
+list_colours=['#E50000','purple','saddlebrown','#15B01A','#0343DF','black','gold'];
+list_embeddings=[u_veh_osbasic,u_veh_rgs,u_veh_cbd,u_cbd_cbd,u_rgs_rgs,u_clean,u_combined_no_rgs];
+list_names=["OS Basic","VEH treatment-RGS dataset", "VEH treatment-CBD dataset","CBD treatment-CBD dataset","RGS treatment-RGS dataset","Combined","Combined (no RGS dataset)"]
+
+for (item,colours,names) in zip(list_embeddings, list_colours,list_names):
+    hplt.plot_umap_binary(item[:,0],item[:,1] ,title=names,s=1,xlabel='Umap 1',ylabel='Umap 2',c=colours)
+    plt.xlim([-1,11])
+    plt.ylim([-1,11])
+
+
+

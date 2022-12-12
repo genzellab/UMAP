@@ -12,6 +12,7 @@ import cv2 as cv2
 import utils.processing_helpers as hproc
 from mpl_toolkits.mplot3d import Axes3D
 from tqdm import tqdm
+from sklearn.cluster import  DBSCAN
 
 
 sns.set(style='white',context='poster', rc={'figure.figsize':(14,10)} )
@@ -197,7 +198,10 @@ def plot3Ddensity(x,y,z, bins = 100, xlabel:str = 'umap 1', ylabel:str='umap 2',
     ax.set_ylabel(ylabel)
     ax.set_zlabel(zlabel)
     plt.show()
-
+    # for angle in range(0, 360,20):
+    #    ax.view_init(angle,30)
+    #    plt.draw()
+    #    plt.pause(.001)
 
 def plotZfeatureOnDensities(x,y, z_feature,bins = 100, plot = True, behaviour = lambda x, axis: np.mean(x,axis = axis), figsize=(12,12), xlabel:str = 'Umap 1', ylabel:str='Umap 2', featureLabel:str = '',s=30,linewidths=1,cmap='hot',marker=None,indices = False):
     '''
@@ -482,3 +486,30 @@ def get_centroids(polygons):
         polygon = Polygon(polygon)
         centroids.append(polygon.centroid)
     return centroids
+
+
+def dbscan_outliers(some_embedding, embedding_name,eps_value, min_samples_value):
+    #Some embedding: UMAP embedding. Example u_osbasic.
+    #embedding_name: String with name. Example "OS basic"
+    #eps_value and min_samples_value: Arbitrary arguments for DBSCAN.
+    
+    a=some_embedding[:,0:2];
+    
+    # kmeans = KMeans(n_clusters=4, random_state=0).fit(a)
+    # label = kmeans.labels_
+    
+    clustering = DBSCAN(eps=eps_value, min_samples=min_samples_value).fit(a)
+    label=clustering.labels_
+    
+    
+    fig = plt.figure(figsize=(12,12))
+    ax = fig.add_subplot()
+    p3d =plt.scatter(some_embedding[:,0],some_embedding[:,1],c=label, s=10,cmap='viridis')
+    plt.colorbar(p3d)
+    ax.set_xlabel('Umap 1')
+    ax.set_ylabel('Umap 2')
+    plt.title(embedding_name)
+    
+    outliers_embedding=[label==0];
+    outliers_embedding=np.logical_not(outliers_embedding);
+    return outliers_embedding

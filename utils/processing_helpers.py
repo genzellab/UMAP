@@ -1,6 +1,7 @@
 import numpy as np
 import cv2
 from PIL import Image, ImageFilter
+import scipy.io
 
 
 # Data will be a matrix X by 127, where X is the pooled amount of ripples across all trials. 
@@ -49,6 +50,16 @@ def binary_feature(Ripples,treatment):
     L=L==1
     return L
 
+def unfold_days2ripples(Ripples,T_column):
+
+    L=[]
+    
+    for i, ripple in enumerate(Ripples):
+        v=ripple;        
+        if v.shape[0]:
+            L.extend([T_column[i]]*v.shape[0])
+    L=np.array(L)
+    return L
 
 def smooth_image(ab):
     #ab =np.load(f'{ROOT_DIR}/array_bool2_rat8.npy')
@@ -75,4 +86,58 @@ def smooth_image_custom(ab):
     image=image.astype('float64');
 
     return image
+
+def align_data(files, ROOT_DIR = "dataset"):
+    metadata = {
+        0:[],
+        1:[],
+        2:[],
+        3:[],
+        4:[]
+    }
+    aligned_data = []
+    for file in files:
+        data = scipy.io.loadmat(f'{ROOT_DIR}/Tcell_{file}.mat')[f'Tcell_{file}']
+        labels = extract_labels(data)
+        for k, v in labels.items():
+            for it in v:
+                if it not in metadata[k]:
+                    metadata[k].append(it)
+        for x in data:
+            if x[5].shape[1] != 0:
+                sitem = []
+                for i, it in enumerate(x):
+                    if i == 5:
+                        break
+                    else:
+                        sitem.append(metadata[i].index(it))
+                for it in x[5]:
+                    item = sitem.copy()
+                    item.extend(it)
+                    aligned_data.append(item)
+    aligned_data = np.array(aligned_data)
+    return metadata, aligned_data
+
+def extract_labels (data):
+    labels = {
+        0:[],
+        1:[],
+        2:[],
+        3:[],
+        4:[]
+    }
+    for x in data:
+        labels[0].append(x[0][0])
+        labels[1].append(x[1][0])
+        labels[2].append(x[2][0])
+        labels[3].append(x[3][0])
+        labels[4].append(x[4][0])
+    labels[0] = set(labels[0])
+    labels[1] = set(labels[1])
+    labels[2] = set(labels[2])
+    labels[3] = set(labels[3])
+    labels[4] = set(labels[4])
+    return labels
+
+
 
