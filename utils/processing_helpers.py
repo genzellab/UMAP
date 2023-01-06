@@ -140,4 +140,18 @@ def extract_labels (data):
     return labels
 
 
-
+#Function to accumulate values from numpy arrays
+def flatcells(amplitude_np):    
+    Amp=[];
+    for i in range(len(amplitude_np)):
+        print(i);
+    #    Data=np.vstack((Data,x[i][0]));
+        if i==0:
+            Amp=amplitude_np[i][0];
+            continue
+        try:
+         Amp=np.hstack((Amp,amplitude_np[i][0]));
+        except IndexError:
+            print('Empty cell')
+            continue
+    return Amp
