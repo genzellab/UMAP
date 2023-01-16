@@ -1,5 +1,7 @@
 # Preprocessing for UMAP
 
+Update (16/12/22): Use this function to compute new features "get_extra_features.m".
+
 Update (03/12/22): Use the OS_preprocessing_filter_align script. Includes new pipeline: Filtering before alignment. Follow by using  manual_struct.m  and create a table with  create_table_OSCBD.m 
 
 Update (25/10/22): Use the OS_preprocessing script to run all following steps. 
