@@ -329,82 +329,75 @@ clear rip_duration rip_phase SO_b SO_a rip_threshold
 cd /mnt/genzel/Rat/OS_CBD_analysis/chronic/4
 
 load('newfeatures_GC_window_ripples_broadband_Rat_OS_Ephys_cbd_chronic_Rat4_407699_SD1_OR_20210601')
-CBD.VEH.Rat4CBD.OR=[rip_duration; rip_phase; SO_b; SO_a ;rip_threshold];;
+CBD.VEH.Rat4CBD.OR=Z;
 clear rip_duration rip_phase SO_b SO_a rip_threshold 
 
 load('newfeatures_GC_window_ripples_broadband_Rat_OS_Ephys_cbd_chronic_Rat4_407699_SD2_HC_20210603')
-CBD.VEH.Rat4CBD.HC=[rip_duration; rip_phase; SO_b; SO_a ;rip_threshold];;
+CBD.VEH.Rat4CBD.HC=Z;
 clear rip_duration rip_phase SO_b SO_a rip_threshold 
 
 load('newfeatures_GC_window_ripples_broadband_Rat_OS_Ephys_cbd_chronic_Rat4_407699_SD3_OR_20210604')
-CBD.CBD.Rat4CBD.OR=[rip_duration; rip_phase; SO_b; SO_a ;rip_threshold];;
+CBD.CBD.Rat4CBD.OR=Z;
 clear rip_duration rip_phase SO_b SO_a rip_threshold 
 
 load('newfeatures_GC_window_ripples_broadband_Rat_OS_Ephys_cbd_chronic_Rat4_407699_SD4_OD_20210607')
-CBD.CBD.Rat4CBD.OD=[rip_duration; rip_phase; SO_b; SO_a ;rip_threshold];;
+CBD.CBD.Rat4CBD.OD=Z;
 clear rip_duration rip_phase SO_b SO_a rip_threshold 
 
 load('newfeatures_GC_window_ripples_broadband_Rat_OS_Ephys_cbd_chronic_Rat4_407699_SD6_OD_20210610')
-CBD.VEH.Rat4CBD.OD=[rip_duration; rip_phase; SO_b; SO_a ;rip_threshold];;
+CBD.VEH.Rat4CBD.OD=Z;
 
 load('newfeatures_GC_window_ripples_broadband_Rat_OS_Ephys_cbd_chronic_Rat4_407699_SD7_HC_20210614')
-CBD.CBD.Rat4CBD.HC=[rip_duration; rip_phase; SO_b; SO_a ;rip_threshold];;
+CBD.CBD.Rat4CBD.HC=Z;
 clear rip_duration rip_phase SO_b SO_a rip_threshold 
 
 
 % Rat 5
-cd /mnt/genzel/Rat/OS_CBD_analysis/chronic/5
-
 load('newfeatures_GC_window_ripples_broadband_Rat_OS_Ephys_cbd_chronic_Rat5_411358_SD1_OR_6_07_2021')
-CBD.CBD.Rat5CBD.OR=[rip_duration; rip_phase; SO_b; SO_a ;rip_threshold];;
+CBD.CBD.Rat5CBD.OR=Z;
 clear rip_duration rip_phase SO_b SO_a rip_threshold 
 
 load('newfeatures_GC_window_ripples_broadband_Rat_OS_Ephys_cbd_chronic_Rat5_411358_SD2_OR_9_07_2021')
-CBD.VEH.Rat5CBD.OR=[rip_duration; rip_phase; SO_b; SO_a ;rip_threshold];;
+CBD.VEH.Rat5CBD.OR=Z;
 clear rip_duration rip_phase SO_b SO_a rip_threshold 
 
 load('newfeatures_GC_window_ripples_broadband_Rat_OS_Ephys_cbd_chronic_Rat5_411358_SD3_OD_14-15_07_2021')
-CBD.VEH.Rat5CBD.OD=[rip_duration; rip_phase; SO_b; SO_a ;rip_threshold];;
+CBD.VEH.Rat5CBD.OD=Z;
 clear rip_duration rip_phase SO_b SO_a rip_threshold 
 
 load('newfeatures_GC_window_ripples_broadband_Rat_OS_Ephys_cbd_chronic_Rat5_411358_SD4_HC_16_07_2021')
-CBD.VEH.Rat5CBD.HC=[rip_duration; rip_phase; SO_b; SO_a ;rip_threshold];;
+CBD.VEH.Rat5CBD.HC=Z;
 clear rip_duration rip_phase SO_b SO_a rip_threshold 
 
 load('newfeatures_GC_window_ripples_broadband_Rat_OS_Ephys_cbd_chronic_Rat5_411358_SD5_OD_20210717')
-CBD.CBD.Rat5CBD.OD=[rip_duration; rip_phase; SO_b; SO_a ;rip_threshold];;
+CBD.CBD.Rat5CBD.OD=Z;
 clear rip_duration rip_phase SO_b SO_a rip_threshold 
 
 load('newfeatures_GC_window_ripples_broadband_Rat_OS_Ephys_cbd_chronic_Rat5_411358_SD6_HC_20210719')
-CBD.CBD.Rat5CBD.HC=[rip_duration; rip_phase; SO_b; SO_a ;rip_threshold];;
+CBD.CBD.Rat5CBD.HC=Z;
 clear rip_duration rip_phase SO_b SO_a rip_threshold 
 
 % Rat 6
-cd /mnt/genzel/Rat/OS_CBD_analysis/chronic/6
-
 load('newfeatures_GC_window_ripples_broadband_Rat_OS_Ephys_cbd_chronic_Rat6_411357_SD1_OR_20210706')
-CBD.VEH.Rat6CBD.OR=[rip_duration; rip_phase; SO_b; SO_a ;rip_threshold];;
+CBD.VEH.Rat6CBD.OR=Z;
 clear rip_duration rip_phase SO_b SO_a rip_threshold 
 
 load('newfeatures_GC_window_ripples_broadband_Rat_OS_Ephys_cbd_chronic_Rat6_411357_SD2_OR_20210708')
-CBD.CBD.Rat6CBD.OR=[rip_duration; rip_phase; SO_b; SO_a ;rip_threshold];;
+CBD.CBD.Rat6CBD.OR=Z;
 clear rip_duration rip_phase SO_b SO_a rip_threshold 
 
 load('newfeatures_GC_window_ripples_broadband_Rat_OS_Ephys_cbd_chronic_Rat6_411357_SD3_OD_20210714')
-CBD.CBD.Rat6CBD.OD=[rip_duration; rip_phase; SO_b; SO_a ;rip_threshold];;
+CBD.CBD.Rat6CBD.OD=Z;
 clear rip_duration rip_phase SO_b SO_a rip_threshold 
 
 load('newfeatures_GC_window_ripples_broadband_Rat_OS_Ephys_cbd_chronic_Rat6_411357_SD4_HC_20210716')
-CBD.VEH.Rat6CBD.HC=[rip_duration; rip_phase; SO_b; SO_a ;rip_threshold];;
+CBD.VEH.Rat6CBD.HC=Z;
 clear rip_duration rip_phase SO_b SO_a rip_threshold 
 
 load('newfeatures_GC_window_ripples_broadband_Rat_OS_Ephys_cbd_chronic_Rat6_411357_SD5_OD_20210717')
-CBD.VEH.Rat6CBD.OD=[rip_duration; rip_phase; SO_b; SO_a ;rip_threshold];;
-clear rip_duration rip_phase SO_b SO_a rip_threshold 
+CBD.VEH.Rat6CBD.OD=Z;
 
 load('newfeatures_GC_window_ripples_broadband_Rat_OS_Ephys_cbd_chronic_Rat6_411357_SD6_HC_20210719')
-CBD.CBD.Rat6CBD.HC=[rip_duration; rip_phase; SO_b; SO_a ;rip_threshold];;
-clear rip_duration rip_phase SO_b SO_a rip_threshold 
+CBD.CBD.Rat6CBD.HC=Z;
 
-CBD_features=CBD;
-clear CBD
+clear Z
