@@ -63,8 +63,14 @@ def plot_umap(x,y,z=None, feature = None, plot = True, clipmin=None,clipmax=None
     #colormap=plt.cm.get_cmap('bwr')
     #colors=colormap(z)
     #sm=plt.scatter(u[:,0],u[:,1],c=z,alpha=0.6,s=0.01)g
-        cmin = np.mean(feature)-3*np.std(feature)
-        cmax = np.mean(feature)+3*np.std(feature)
+        if clipmin is not None  and  clipmax is not None:
+            cmin = clipmin
+            cmax = clipmax
+            
+        else:
+            cmin = np.mean(feature)-3*np.std(feature)
+            cmax = np.mean(feature)+3*np.std(feature)
+        
     else:
         normalize = None
         cmin = None
@@ -108,6 +114,9 @@ def plot_umap(x,y,z=None, feature = None, plot = True, clipmin=None,clipmax=None
             ax.set_zlabel(zlabel)
         plt.title(title)
         plt.show()
+        plt.xlim([-1,11])
+        plt.ylim([-1,11])
+
     return t
 
 
@@ -130,7 +139,7 @@ def plot_density(x, y = None,bins = 100, title= 'Figure',window_title='-', xlabe
     if y is not None:
         plt.hist2d(x, y,100,density=density)
         cmb=plt.colorbar()
-        cmb.mappable.set_clim(vmin=0, vmax=0.25)    
+        cmb.mappable.set_clim(vmin=0, vmax=vmax)    
     else:
         plt.hist(x,bins,density=density)
     
