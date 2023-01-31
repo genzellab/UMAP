@@ -2,6 +2,7 @@ import numpy as np
 import cv2
 from PIL import Image, ImageFilter
 import scipy.io
+from sklearn.cluster import DBSCAN
 
 
 # Data will be a matrix X by 127, where X is the pooled amount of ripples across all trials. 
@@ -155,3 +156,30 @@ def flatcells(amplitude_np):
             print('Empty cell')
             continue
     return Amp
+
+def dbscan_outliers(some_embedding, embedding_name,eps_value, min_samples_value,outlier_label):
+    #Some embedding: UMAP embedding. Example u_osbasic.
+    #embedding_name: String with name. Example "OS basic"
+    #eps_value and min_samples_value: Arbitrary arguments for DBSCAN.
+    #outlier_label: Label from clustering to be used for identifying outliers.
+    
+    a=some_embedding[:,0:2]; #First two UMAP components. 
+    
+    # kmeans = KMeans(n_clusters=4, random_state=0).fit(a)
+    # label = kmeans.labels_
+    
+    clustering = DBSCAN(eps=eps_value, min_samples=min_samples_value).fit(a)
+    label=clustering.labels_
+    
+    
+    fig = plt.figure(figsize=(12,12))
+    ax = fig.add_subplot()
+    p3d =plt.scatter(some_embedding[:,0],some_embedding[:,1],c=label, s=10,cmap='viridis')
+    plt.colorbar(p3d)
+    ax.set_xlabel('Umap 1')
+    ax.set_ylabel('Umap 2')
+    plt.title(embedding_name)
+    
+    outliers_embedding=[label==0];
+    outliers_embedding=np.logical_not(outliers_embedding);
+    return outliers_embedding

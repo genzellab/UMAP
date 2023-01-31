@@ -55,25 +55,26 @@ T_rgs=myDict['Tcell_RGS14_03_12_2022']
 myDict = scipy.io.loadmat('Tcell_OSBASIC_17_01_2023.mat')
 T_osbasic=myDict['Tcell']
 
+#We use T which contains data from all datasets. 
 
 #Ripples waveforms
 Ripples=T[:,5]
 Data = hproc.v_stack(Ripples[2:]) #Number of ripples by 127
 #Dataset label
-dataset_np=T[:,0]
-dataset_rip=hproc.unfold_days2ripples(Ripples,dataset_np)
+#dataset_np=T[:,0]
+dataset_rip=hproc.unfold_days2ripples(Ripples,T[:,0])
 #Treatment
-treatment_np=T[:,1]
-treatment_rip=hproc.unfold_days2ripples(Ripples,treatment_np)
+#treatment_np=T[:,1]
+treatment_rip=hproc.unfold_days2ripples(Ripples,T[:,1])
 #Rat
-rat_np=T[:,2]
-rat_rip=hproc.unfold_days2ripples(Ripples, rat_np)
+#rat_np=T[:,2]
+rat_rip=hproc.unfold_days2ripples(Ripples, T[:,2])
 #StudyDay
-StudyDay_np=T[:,3]
-StudyDay_rip=hproc.unfold_days2ripples(Ripples, StudyDay_np)
+#StudyDay_np=T[:,3]
+StudyDay_rip=hproc.unfold_days2ripples(Ripples, T[:,3])
 #Trial
-trial_np=T[:,4]
-trial_rip=hproc.unfold_days2ripples(Ripples,trial_np)
+#trial_np=T[:,4]
+trial_rip=hproc.unfold_days2ripples(Ripples,T[:,4])
 
 #Amplitude
 amplitude_np=T[:,6];
@@ -104,7 +105,7 @@ SO_after=hproc.flatcells(so_after_np[2:]);
 S_entropy=hproc.flatcells(s_entropy_np[2:]);
 
 
-
+#Separate datasets: T_cbd, T_rgs, T_osbasic. (Split for sanite check, ideally just use T)
 
 Ripples_cbd=T_cbd[:,5]
 Ripples_cbd=Ripples_cbd[2:];
@@ -119,9 +120,10 @@ treatment_rip_rgs=hproc.unfold_days2ripples(Ripples_rgs,treatment_np_rgs)
 Ripples_osbasic=T_osbasic[:,5]
 Data_osbasic = hproc.v_stack(Ripples_osbasic)
 
-# %%  Compute UMAP
+# %%  Compute UMAP from Data (T)
 fit = umap.UMAP(n_components=4)
 u=fit.fit_transform(Data)
+# Compute from split datasets. 
 u_cbd = fit.fit_transform(Data_cbd)
 u_rgs = fit.fit_transform(Data_rgs)
 u_osbasic = fit.fit_transform(Data_osbasic)
@@ -133,24 +135,7 @@ u_osbasic = fit.fit_transform(Data_osbasic)
 # plt.figure(figsize=(cm2inch(12.8), cm2inch(9.6)))
 
 
-#2D
-hplt.plot_umap_binary(u_rgs[:,0],u_rgs[:,2] ,title="RGS14 dataset",s=1,xlabel='Umap 1',ylabel='Umap 3',c='#0343DF')
-plt.xlim([-1,11])
-plt.ylim([-1,11])
-
-hplt.plot_umap_binary(u_osbasic[:,1],u_osbasic[:,2] ,title="OS basic dataset",s=1,xlabel='UMAP2',ylabel='UMAP3',c='#E50000')
-plt.xlim([-1,11])
-plt.ylim([-1,11])
-
-hplt.plot_umap_binary(u_cbd[:,1],u_cbd[:,3] ,title="CBD dataset",s=1,xlabel='Umap 2', ylabel='Umap 4', c='#15B01A')
-plt.xlim([-1,11])
-plt.ylim([-1,11])
-
-hplt.plot_umap_binary(u[:,1],u[:,3] ,title="Combined datasets",s=1,xlabel='Umap 2', ylabel='Umap 4')
-plt.xlim([-1,11])
-plt.ylim([-1,11])
-
-# %%
+# %% Looking for outliers
 #Density
 hplt.plot3Ddensity(u_rgs[:,0],u_rgs[:,1],u_rgs[:,2], zlabel='umap 3', bins=50)
 
@@ -163,45 +148,16 @@ hplt.plot3Ddensity(u[:,0],u[:,1],u[:,3], zlabel='umap 4', bins=50)
 
 # %% Remove outliers using DBSCAN clustering.
 
+[outliers_osbasic]=hproc.dbscan_outliers(u_osbasic, "OS_basic", eps_value=0.2, min_samples_value=10, outlier_label=1)
+[outliers_rgs]=hproc.dbscan_outliers(u_rgs, "RGS14", eps_value=0.2, min_samples_value=10, outlier_label=1)
+[outliers_cbd]=hproc.dbscan_outliers(u_cbd, "CBD", eps_value=0.10, min_samples_value=1, outlier_label=1)
+[outliers]=hproc.dbscan_outliers(u, "Combined", eps_value=0.2, min_samples_value=5, outlier_label=1)
 
-
-def dbscan_outliers(some_embedding, embedding_name,eps_value, min_samples_value,outlier_label):
-    #Some embedding: UMAP embedding. Example u_osbasic.
-    #embedding_name: String with name. Example "OS basic"
-    #eps_value and min_samples_value: Arbitrary arguments for DBSCAN.
-    #outlier_label: Label from clustering to be used for identifying outliers.
-    
-    a=some_embedding[:,0:2];
-    
-    # kmeans = KMeans(n_clusters=4, random_state=0).fit(a)
-    # label = kmeans.labels_
-    
-    clustering = DBSCAN(eps=eps_value, min_samples=min_samples_value).fit(a)
-    label=clustering.labels_
-    
-    
-    fig = plt.figure(figsize=(12,12))
-    ax = fig.add_subplot()
-    p3d =plt.scatter(some_embedding[:,0],some_embedding[:,1],c=label, s=10,cmap='viridis')
-    plt.colorbar(p3d)
-    ax.set_xlabel('Umap 1')
-    ax.set_ylabel('Umap 2')
-    plt.title(embedding_name)
-    
-    outliers_embedding=[label==0];
-    outliers_embedding=np.logical_not(outliers_embedding);
-    return outliers_embedding
-
-
-[outliers_osbasic]=dbscan_outliers(u_osbasic, "OS_basic", eps_value=0.2, min_samples_value=10, outlier_label=1)
-[outliers_rgs]=dbscan_outliers(u_rgs, "RGS14", eps_value=0.2, min_samples_value=10, outlier_label=1)
-[outliers_cbd]=dbscan_outliers(u_cbd, "CBD", eps_value=0.10, min_samples_value=1, outlier_label=1)
-[outliers]=dbscan_outliers(u, "Combined", eps_value=0.2, min_samples_value=5, outlier_label=1)
-
-
+#[:,0:2]
 # %% Using combined outliers from all datasets. 
 outliers_combined=np.concatenate([outliers_cbd,outliers_osbasic,outliers_rgs]);
 
+# Remove outliers from features data. 
 Meanfreq_combined=Meanfreq[np.logical_not(outliers_combined)];
 Amp_combined=Amp[np.logical_not(outliers_combined)];
 
@@ -233,7 +189,7 @@ list_embeddings=[u_rgs_clean,u_osbasic_clean,u_cbd_clean,u_clean];
 list_names=["RGS14 dataset","OS basic dataset", "CBD dataset","Combined datasets"]
 
 for (item,colours,names) in zip(list_embeddings, list_colours,list_names):
-    hplt.plot_umap_binary(item[:,0],item[:,1] ,title=names,s=1,xlabel='Umap 1',ylabel='Umap 2',c=colours)
+    hplt.plot_scatter(item[:,0],item[:,1] ,title=names,s=1,xlabel='Umap 1',ylabel='Umap 2',c=colours)
     plt.xlim([-1,11])
     plt.ylim([-1,11])
 
@@ -246,17 +202,6 @@ df['Trial'] = trial_rip[outliers_combined]
 
 df.to_csv('outliers.csv')  
 #%%
-#Dataset
-dataset_rip
-#Treatment
-treatment_rip
-#Rat
-rat_rip
-#StudyDay
-StudyDay_rip
-#Trial
-trial_rip
-
 #%% Split by treatment, not by dataset.
 treatment_veh=hproc.strcmp(treatment_rip,"VEH") #OSBASIC #RGS14
 treatment_cbd=hproc.strcmp(treatment_rip,"CBD") #OSBASIC #RGS14
@@ -282,7 +227,7 @@ list_names=["RGS14 treatment","Vehicle treatment", "CBD treatment","Combined tre
 
 for (item,colours,names) in zip(list_embeddings, list_colours,list_names):
     #ax = fig.add_subplot()
-    hplt.plot_umap_binary(item[:,0],item[:,1] ,title=names,s=1,xlabel='Umap 1',ylabel='Umap 2',c=colours)
+    hplt.plot_scatter(item[:,0],item[:,1] ,title=names,s=1,xlabel='Umap 1',ylabel='Umap 2',c=colours)
     plt.xlim([-1,11])
     plt.ylim([-1,11])
 
@@ -341,7 +286,7 @@ list_embeddings=[u_veh_osbasic,u_veh_rgs,u_veh_cbd,u_cbd_cbd,u_rgs_rgs,u_clean,u
 list_names=["OS Basic","VEH treatment-RGS dataset", "VEH treatment-CBD dataset","CBD treatment-CBD dataset","RGS treatment-RGS dataset","Combined","Combined (no RGS dataset)"]
 
 for (item,colours,names) in zip(list_embeddings, list_colours,list_names):
-    hplt.plot_umap_binary(item[:,0],item[:,1] ,title=names,s=1,xlabel='Umap 1',ylabel='Umap 2',c=colours)
+    hplt.plot_scatter(item[:,0],item[:,1] ,title=names,s=1,xlabel='Umap 1',ylabel='Umap 2',c=colours)
     plt.xlim([-1,11])
     plt.ylim([-1,11])
 
@@ -436,6 +381,30 @@ hplt.plot_umap(x=u_cbd_cbd[:,0],y=u_cbd_cbd[:,1],feature = Meanfreq_cbd_cbd_data
 hplt.plot_umap(x=u_clean[:,0],y=u_clean[:,1],feature = Meanfreq_combined,title='Combined',clipmin=100,clipmax=200)
 hplt.plot_umap(x=u_combined_no_rgs[:,0],y=u_combined_no_rgs[:,1],feature = Meanfreq_combined_no_rgs,title='Combined (No RGS)',clipmin=100,clipmax=200)
 
+
+
+# Saving embeddings:
+list_Meanfreq=[Meanfreq_veh_osbasic_dataset,Meanfreq_veh_cbd_dataset,Meanfreq_cbd_cbd_dataset,Meanfreq_combined,Meanfreq_combined_no_rgs];
+with open('Meanfreq.pkl', 'wb') as f:  # Python 3: open(..., 'wb')
+    pickle.dump(list_Meanfreq, f)
+
+# # Getting back the objects:
+with open('Meanfreq.pkl','rb') as f:  # Python 3: open(..., 'rb')
+    Meanfreq_list= pickle.load(f)    
+
+Meanfreq_veh_osbasic_dataset=Meanfreq_list[0];
+Meanfreq_veh_cbd_dataset=Meanfreq_list[1];
+Meanfreq_cbd_cbd_dataset=Meanfreq_list[2];
+Meanfreq_combined=Meanfreq_list[3];
+Meanfreq_combined_no_rgs=Meanfreq_list[4];
+
+
+def structureindex(u,feature,Vmin,Vmax,StringDim1, StringDim2):
+    df=pd.DataFrame(u, columns=['u1','u2','u3','u4'])    
+    cI_val, bLab, _=URC_computeClusterIndex_V4.computeClusterIndex_V4(df,feature,10,[StringDim1,StringDim2],plotCluster=0,vmin=Vmin, vmax=Vmax)
+    return cI_val
+
+si_Meanfreq_u_veh_osbasic_u1_u2=structureindex(u_veh_osbasic,Meanfreq_veh_osbasic_dataset,100,300,'u1', 'u2')
 # %%
 Amp_veh_osbasic_dataset=Amp[np.logical_and(    np.logical_and(np.squeeze(treatment_veh)==1,np.logical_not(outliers_combined))  ,  np.squeeze(dataset_osbasic)==1)]
 Amp_veh_rgs_dataset=Amp[np.logical_and(    np.logical_and(np.squeeze(treatment_veh)==1,np.logical_not(outliers_combined))  ,  np.squeeze(dataset_rgs)==1)]

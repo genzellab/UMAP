@@ -429,7 +429,7 @@ def plot_scatter_form_image(img):
     plt.show()
     
     
-def plot_umap_binary(x,y,z=None,   title:str = '', figsize=(12, 12), xlabel:str = 'Umap 1', ylabel:str='Umap 2', zlabel:str='Umap 4', cmap='Greys', s = 20, c='0'):
+def plot_scatter(x,y,z=None,   title:str = '', figsize=(12, 12), xlabel:str = 'Umap 1', ylabel:str='Umap 2', zlabel:str='Umap 4', cmap='Greys', s = 20, c='0'):
     ''' 
         x = u[L,0]
         y = u[L,1]
