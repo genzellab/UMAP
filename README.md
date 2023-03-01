@@ -1,6 +1,5 @@
 Dependencies: To-add. 
 
-This is a test.
 # UMAP
 Repository for UMAP project. 
 
