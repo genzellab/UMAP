@@ -1,4 +1,6 @@
 _**Data preprocessing:**_ 
+Downsampling first requires generating the corresponding .mat files with information about rat IDS, channels,etc. They can be generated using the Corticohippocampal toolbox. 
+
   * downsample_os_basic.m : Downsamples channels to 2500 Hz.
   * downsample_os_nsd.m : Downsamples channels to 2500 Hz. 
   * downsample_rgs14_2500.m : Downsamples RGS14 detections to 2500 Hz. 
