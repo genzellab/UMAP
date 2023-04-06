@@ -9,12 +9,13 @@ Created on Wed Jun 29 15:54:42 2022
 import os
 import sys
 # TODO: Select path wrt your system
-os.chdir('/mnt/genzel/Rat/OS_Ephys_RGS14_analysis/UMAP');
-#os.chdir('/home/blazkowiz47/work/UMAP/dataset');
+# os.chdir('/mnt/genzel/Rat/OS_Ephys_RGS14_analysis/UMAP');
+os.chdir('F:/UMAP/dataset');
 # sys.path.append('/home/genzel/Documents/UMAP')
 
 import scipy.io
 import pandas as pd
+from scipy import stats
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -154,18 +155,18 @@ AUC2=hproc.h_stack(auc2_np)
 # %% Look for features ranges and their overlap.
 
 
-t_freq=hplt.plot_umap(u[:,0],u[:,1],feature= Freq,title="Frequency",s=1)
-t_amp=hplt.plot_umap(u[:,0],u[:,1],feature= Amp,title="Amplitude",s=1)
-t_ent=hplt.plot_umap(u[:,0],u[:,1],feature= Entropy,title="Entropy",s=1)
+t_freq=hplt.plot_umap(u[:,0],u[:,1],feature= Freq,title="Frequency",s=1,plot= False)
+t_amp=hplt.plot_umap(u[:,0],u[:,1],feature= Amp,title="Amplitude",s=1,plot= False)
+t_ent=hplt.plot_umap(u[:,0],u[:,1],feature= Entropy,title="Entropy",s=1,plot= False)
 
 
-t_freq=hplt.plot_umap(u[:,0],u[:,1],feature= Freq,clipmin=160,title="Frequency",s=1)
-t_amp=hplt.plot_umap(u[:,0],u[:,1],feature= Amp,clipmax=2,title="Amplitude",s=1)
-t_ent=hplt.plot_umap(u[:,0],u[:,1],feature= Entropy,clipmin=3.75,title="Entropy",s=1)
+t_freq=hplt.plot_umap(u[:,0],u[:,1],feature= Freq,clipmin=160,title="Frequency",s=1,plot= False)
+t_amp=hplt.plot_umap(u[:,0],u[:,1],feature= Amp,clipmax=2,title="Amplitude",s=1,plot= False)
+t_ent=hplt.plot_umap(u[:,0],u[:,1],feature= Entropy,clipmin=3.75,title="Entropy",s=1,plot= False)
 
 
-x=np.logical_and(t_freq,t_amp);
-x1=np.logical_and(x,t_ent);
+x=np.logical_and(t_freq,t_amp)
+x1=np.logical_and(x,t_ent)
 
 hplt.plot_umap_binary(u[x1,0],u[x1,1] ,title="Overlap",s=1)
 
@@ -209,7 +210,7 @@ logicresult2=st2*treatment;
 logicresult3=st3*treatment;
 
 x=np.logical_or(logicresult,logicresult2)
-x1=np.logical_or(x,logicresult3)
+x2=np.logical_or(x,logicresult3)
 
 
 L=hproc.binary_feature(Ripples,x1)
@@ -247,18 +248,98 @@ L=hproc.binary_feature(Ripples,logicresult)
 
 # %% Significant clusters 
 
-# features = [Meanfreq, Amp, Amp2, Freq, Entropy, AUC, AUC2]
-# labels = ['Mean Frequency', 'Amp', 'Amp2', 'Frequency', 'Entropy', 'AUC', 'AUC2']
+features = [Meanfreq, Amp, Amp2, Freq, Entropy, AUC, AUC2]
+labels = ['Mean Frequency', 'Amp', 'Amp2', 'Frequency', 'Entropy', 'AUC', 'AUC2']
 
-features = [Meanfreq]
-labels = ['Mean Frequency']
+# features = [Meanfreq]
+# labels = ['Mean Frequency']
 x = u[:,0] # between -10 and 4, log-gamma of an svc
 y = u[:,1]
 # TODO: Uncomment this
-print(x.shape[0],len(features[0][:-2].shape) != 0,features[0][:-2][0].shape)
-img, sig_ind = hplt.significant_pixels(x,y,features,iter=1000,featureLabel=labels ,s=25,pval=0.05)
-# sig_ind = np.array(sig_ind)
-# np.save('sig_ind.npy',sig_ind)
-# hplt.plotZfeatureOnDensities(x,y,features, featureLabel=labels)
-sig_ind = np.load('sig_ind.npy')
+# print(x.shape[0],len(features[0][:-2].shape) != 0,features[0][:-2][0].shape)
+# img, sig_ind = hplt.significant_pixels(x,y,features,iter=1000,featureLabel=labels ,s=25,pval=0.05)
+
+# np.savez('sig_ind.npz', *sig_ind)
+# TODO: For plotting significant pixels uncomment this
+# sig_ind = np.load('sig_ind.npz')
+# sig_ind = [(sig_ind[k]).astype(int) for k in sig_ind]
+# for i,sig in enumerate(sig_ind):
+    # hplt.plotZfeatureOnDensities(x[sig],y[sig],[features[i][sig]],featureLabel=[labels[i]])
+
+# Computing indexes x1,x2,x3 per ripple category:
+t_freq=hplt.plot_umap(u[:,0], u[:,1], feature= Freq,clipmin=160,title="Frequency",s=1,plot=False)
+t_amp=hplt.plot_umap(u[:,0],u[:,1],feature= Amp,clipmax=2,title="Amplitude",s=1,plot=False)
+t_ent=hplt.plot_umap(u[:,0],u[:,1],feature= Entropy,clipmin=3.75,title="Entropy",s=1,plot=False)
+x=np.logical_and(t_freq,t_amp);
+x1=np.logical_and(x,t_ent);
+
+t_freq=hplt.plot_umap(u[:,0],u[:,1],feature= Freq,clipmin=120, clipmax=160,title="Frequency",s=1,plot=False)
+t_amp=hplt.plot_umap(u[:,0],u[:,1],feature= Amp,clipmin=4,title="Amplitude",s=1,plot=False)
+t_ent=hplt.plot_umap(u[:,0],u[:,1],feature= Entropy,clipmax=2.75,title="Entropy",s=1,plot=False)
+x=np.logical_and(t_freq,t_amp);
+x2=np.logical_and(x,t_ent);
+
+t_freq=hplt.plot_umap(u[:,0],u[:,1],feature= Freq,clipmin=80, clipmax=120,title="Frequency",s=1,plot=False)
+t_amp=hplt.plot_umap(u[:,0],u[:,1],feature= Amp,clipmax=2,title="Amplitude",s=1,plot=False)
+x3=np.logical_and(t_freq,t_amp);
+
+
+v = hplt.get_kde_contours(u[x1,0],u[x1,1])                  # Get countours 
+
+# for vc in v:
+#     for t in vc:
+#         plt.scatter(t[:,0], t[:,1], c='blue',alpha=0.8,s=1)
+#     # plt.show()
+#     t = map(lambda x: hplt.is_inside(vc, x) , zip(u[:,0], u[:,1]))
+#     t = np.array(list(t))
+#     x4 = np.logical_and(t,x1)
+#     x = u[x4,0]
+#     y = u[x4,1]
+#     plt.scatter(x,y, c = 'red', alpha=1,s=1)
+#     plt.scatter(u[x1,0],u[x1,1], c='black', alpha=0.1,s=1)
+#     plt.show()
+
+vc = v[-2]                                                  # Select a countour
+centroids = hplt.get_centroids(vc)                          # get centroids of the countour (might be multiple countours so multiple centroids)
+for t in vc:
+    plt.scatter(t[:,0],t[:,1],c='blue',alpha = 0.8,s=1)     # plot countour
+t = map(lambda x: hplt.is_inside(vc,x),zip(u[:,0],u[:,1]))  # check whether each point the the data is inside the countour
+t = np.array(list(t))
+x4 = np.logical_and(t,x1)                                   # Select points inside the countour from data and also overlapping
+
+plt.scatter(u[x4,0],u[x4,1], c = 'red', alpha=0.8,s=1)        # Plot significant data points
+plt.scatter(u[x1,0],u[x1,1], c='black', alpha=0.2,s=1)      # Plot all data points
+for centroid in centroids:
+    plt.scatter(centroid.x,centroid.y, c='green',s=10)       # Plot centroids
+plt.show()
+
+rip = Data[x4]
+for r in rip:
+    plt.plot(r,c='lightblue')
+
+plt.show()
+
+# close()
+# v2,c2=get_kde_contour(x=u[x2,0], y=u[x2,1])
+# close()
+# v3,c3=get_kde_contour(x=u[x3,0], y=u[x3,1])
+# close()
+# plt.show()
+# plt.plot(v1[:,0],v1[:,1])
+# # plt.plot(u[x1,0],u[x1,1], 'k.', markersize=2)
+# plt.show()
+
+# plt.plot(v2[:,0],v2[:,1])
+# # plt.plot(u[x2,0],u[x2,1], 'k.', markersize=2)
+# plt.show()
+
+# plt.plot(v3[:,0],v3[:,1])
+# # plt.plot(u[x3,0],u[x3,1], 'k.', markersize=2)
+# plt.show()
+# from shapely.geometry import Point
+# from shapely.geometry.polygon import Polygon
+
+# point = Point(0.5, 0.5)
+# polygon = Polygon([(0, 0), (0, 1), (1, 1), (1, 0)])
+# print(polygon.contains(point))
 

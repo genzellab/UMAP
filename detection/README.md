@@ -20,3 +20,11 @@ You may need to adapt the values of k and j depending on the Rat and Study day y
 
  - spindle_visualization_gui_trial.m 
    Use this script to visualize the spindle detections. 
+
+## Ripple Characteristics
+ -  ripple_characteristics.m 
+    Generates excel sheet tables per rat containing the ripple characteristics. 
+
+## Long Short Ripples
+ - long_short_ripples. m
+   Computes the count of short and long ripples. 
