@@ -4,7 +4,7 @@
 To detect ripples run:
 
 ```
-swrAnalysis
+swrAnalysiswithPFC.m
 ```
 You may need to adapt the values of k and j depending on the Rat and Study day you want to run.
 
