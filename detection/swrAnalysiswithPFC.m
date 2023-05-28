@@ -16,7 +16,12 @@ close all
 addpath(genpath('/home/genzel/Documents/CorticoHippocampal'))
 addpath(genpath('/home/genzel/Documents/UMAP_Basic_OS/huseyin'))
 addpath('/home/genzel/Documents/ADRITOOLS/')
-cd('/media/genzel/genzel1/UMAP_NSD')
+% cd('/home/genzel/Documents/UMAP_Basic_OS/huseyin')
+%cd('/media/genzel/genzel1/UMAP_NSD')
+cd('/media/genzel/genzel1/UMAP_Basic_OS')
+% cd('/media/genzel/genzel1/RGS14_NSD/RGS_Rats')
+% singletrialdetection=0;
+% rat 3 sd 2 new counts for ripples with std7 0	0	0	50	46	89	158	180	176
 % Change to huseyin for new channel
 % cd('/Volumes/Samsung_T5/Milan_DA/RGS14_Ephys_da/Data_RGS14_Downsampled')
       yy = {'HPC'};      
@@ -41,10 +46,9 @@ fn = 2500;
 
 nr_cohfos_pt = [];
 rat_folder = getfolder;
-% rat_folder=rat_folder(1:end-1); %WHY? Because there is 'huseyin' folder.
 % for k=1:length(rat_folder)
-k=4; % Rat number 
-while k<5
+k=7; % Rat number (This is not the actual number of the animal). This is with respect to "rat_folder".
+% while k<6
 % for k=1:length(rat_folder)
     %rat index 
     cd(rat_folder{k})    
@@ -62,9 +66,8 @@ while k<5
     
 
 %     for j=1:length(g) %study day index 
-%     for j = 2:length(g)  %567
-j=6;  %Study day
-    while j<7
+j=4;  %Study day
+    while j<=4 %length(g) %2 
 
         
         
@@ -178,15 +181,29 @@ Cortex=Cortex.*(0.195);
         %Find SD values
         [sd_swr,signal2_hpc,signal2_pfc]=find_stdPFC(HPC,Cortex,states,ss,fn);
         
-        Sd_Swr.sd2_hpc_co(i)=sd_swr.sd2_hpc_co;
-        Sd_Swr.sd5_hpc_co(i)=sd_swr.sd5_hpc_co;
-        Sd_Swr.sd2_pfc_co(i)=sd_swr.sd2_pfc_co;
-        Sd_Swr.sd5_pfc_co(i)=sd_swr.sd5_pfc_co;
-        Sd_Swr.sd2_hpc_long(i)=sd_swr.sd2_hpc_long;
-        Sd_Swr.sd5_hpc_long(i)=sd_swr.sd5_hpc_long;
-        Sd_Swr.sd2_pfc_long(i)=sd_swr.sd2_pfc_long;
-        Sd_Swr.sd5_pfc_long(i)=sd_swr.sd5_pfc_long;
+        if sum(states==3)< 180 % If there's less than 3 min of NREM
     
+            Sd_Swr.sd2_hpc_co(i)=NaN;
+            Sd_Swr.sd5_hpc_co(i)=NaN;
+            Sd_Swr.sd2_pfc_co(i)=NaN;
+            Sd_Swr.sd5_pfc_co(i)=NaN;
+            Sd_Swr.sd2_hpc_long(i)=NaN;
+            Sd_Swr.sd5_hpc_long(i)=NaN;
+            Sd_Swr.sd2_pfc_long(i)=NaN;
+            Sd_Swr.sd5_pfc_long(i)=NaN;
+            cd ..
+            continue
+
+        else
+            Sd_Swr.sd2_hpc_co(i)=sd_swr.sd2_hpc_co;
+            Sd_Swr.sd5_hpc_co(i)=sd_swr.sd5_hpc_co;
+            Sd_Swr.sd2_pfc_co(i)=sd_swr.sd2_pfc_co;
+            Sd_Swr.sd5_pfc_co(i)=sd_swr.sd5_pfc_co;
+            Sd_Swr.sd2_hpc_long(i)=sd_swr.sd2_hpc_long;
+            Sd_Swr.sd5_hpc_long(i)=sd_swr.sd5_hpc_long;
+            Sd_Swr.sd2_pfc_long(i)=sd_swr.sd2_pfc_long;
+            Sd_Swr.sd5_pfc_long(i)=sd_swr.sd5_pfc_long;
+        end
                     elseif contains(G{i}, 'rial5') % PostTrial 5 case 
 %                         xo
                         %Sleep scoring data
@@ -228,45 +245,92 @@ Cortex=Cortex.*(0.195);
                         Cortex_4=Cortex(1+2700*3*fn:2700*4*fn);
                                     %Find SD values
                                     [sd_swr]=find_stdPFC(HPC_1,Cortex_1,states1,ss,fn);
-                                    Sd_Swr.sd2_hpc_co(6)=sd_swr.sd2_hpc_co;
-                                    Sd_Swr.sd5_hpc_co(6)=sd_swr.sd5_hpc_co;
-                                    Sd_Swr.sd2_pfc_co(6)=sd_swr.sd2_pfc_co;
-                                    Sd_Swr.sd5_pfc_co(6)=sd_swr.sd5_pfc_co;
-                                    Sd_Swr.sd2_hpc_long(6)=sd_swr.sd2_hpc_long;
-                                    Sd_Swr.sd5_hpc_long(6)=sd_swr.sd5_hpc_long;
-                                    Sd_Swr.sd2_pfc_long(6)=sd_swr.sd2_pfc_long;
-                                    Sd_Swr.sd5_pfc_long(6)=sd_swr.sd5_pfc_long;
+                                    if sum(states1==3)>=180
+                                        Sd_Swr.sd2_hpc_co(6)=sd_swr.sd2_hpc_co;
+                                        Sd_Swr.sd5_hpc_co(6)=sd_swr.sd5_hpc_co;
+                                        Sd_Swr.sd2_pfc_co(6)=sd_swr.sd2_pfc_co;
+                                        Sd_Swr.sd5_pfc_co(6)=sd_swr.sd5_pfc_co;
+                                        Sd_Swr.sd2_hpc_long(6)=sd_swr.sd2_hpc_long;
+                                        Sd_Swr.sd5_hpc_long(6)=sd_swr.sd5_hpc_long;
+                                        Sd_Swr.sd2_pfc_long(6)=sd_swr.sd2_pfc_long;
+                                        Sd_Swr.sd5_pfc_long(6)=sd_swr.sd5_pfc_long;
+                                    else
+                                        Sd_Swr.sd2_hpc_co(6)=NaN;
+                                        Sd_Swr.sd5_hpc_co(6)=NaN;
+                                        Sd_Swr.sd2_pfc_co(6)=NaN;
+                                        Sd_Swr.sd5_pfc_co(6)=NaN;
+                                        Sd_Swr.sd2_hpc_long(6)=NaN;
+                                        Sd_Swr.sd5_hpc_long(6)=NaN;
+                                        Sd_Swr.sd2_pfc_long(6)=NaN;
+                                        Sd_Swr.sd5_pfc_long(6)=NaN;
+
+                                    end
                                     
                                     
                                     [sd_swr]=find_stdPFC(HPC_2,Cortex_2,states2,ss,fn);
-                                    Sd_Swr.sd2_hpc_co(7)=sd_swr.sd2_hpc_co;
-                                    Sd_Swr.sd5_hpc_co(7)=sd_swr.sd5_hpc_co;
-                                    Sd_Swr.sd2_pfc_co(7)=sd_swr.sd2_pfc_co;
-                                    Sd_Swr.sd5_pfc_co(7)=sd_swr.sd5_pfc_co;
-                                    Sd_Swr.sd2_hpc_long(7)=sd_swr.sd2_hpc_long;
-                                    Sd_Swr.sd5_hpc_long(7)=sd_swr.sd5_hpc_long;
-                                    Sd_Swr.sd2_pfc_long(7)=sd_swr.sd2_pfc_long;
-                                    Sd_Swr.sd5_pfc_long(7)=sd_swr.sd5_pfc_long;
+                                    if sum(states2==3)>=180
+                                        Sd_Swr.sd2_hpc_co(7)=sd_swr.sd2_hpc_co;
+                                        Sd_Swr.sd5_hpc_co(7)=sd_swr.sd5_hpc_co;
+                                        Sd_Swr.sd2_pfc_co(7)=sd_swr.sd2_pfc_co;
+                                        Sd_Swr.sd5_pfc_co(7)=sd_swr.sd5_pfc_co;
+                                        Sd_Swr.sd2_hpc_long(7)=sd_swr.sd2_hpc_long;
+                                        Sd_Swr.sd5_hpc_long(7)=sd_swr.sd5_hpc_long;
+                                        Sd_Swr.sd2_pfc_long(7)=sd_swr.sd2_pfc_long;
+                                        Sd_Swr.sd5_pfc_long(7)=sd_swr.sd5_pfc_long;
+                                    else
+                                        Sd_Swr.sd2_hpc_co(7)=NaN;
+                                        Sd_Swr.sd5_hpc_co(7)=NaN;
+                                        Sd_Swr.sd2_pfc_co(7)=NaN;
+                                        Sd_Swr.sd5_pfc_co(7)=NaN;
+                                        Sd_Swr.sd2_hpc_long(7)=NaN;
+                                        Sd_Swr.sd5_hpc_long(7)=NaN;
+                                        Sd_Swr.sd2_pfc_long(7)=NaN;
+                                        Sd_Swr.sd5_pfc_long(7)=NaN;                                        
+
+                                    end
                                     
                                     [sd_swr]=find_stdPFC(HPC_3,Cortex_3,states3,ss,fn);
-                                    Sd_Swr.sd2_hpc_co(8)=sd_swr.sd2_hpc_co;
-                                    Sd_Swr.sd5_hpc_co(8)=sd_swr.sd5_hpc_co;
-                                    Sd_Swr.sd2_pfc_co(8)=sd_swr.sd2_pfc_co;
-                                    Sd_Swr.sd5_pfc_co(8)=sd_swr.sd5_pfc_co;
-                                    Sd_Swr.sd2_hpc_long(8)=sd_swr.sd2_hpc_long;
-                                    Sd_Swr.sd5_hpc_long(8)=sd_swr.sd5_hpc_long;
-                                    Sd_Swr.sd2_pfc_long(8)=sd_swr.sd2_pfc_long;
-                                    Sd_Swr.sd5_pfc_long(8)=sd_swr.sd5_pfc_long;       
+                                    if sum(states3==3)>=180
+                                        Sd_Swr.sd2_hpc_co(8)=sd_swr.sd2_hpc_co;
+                                        Sd_Swr.sd5_hpc_co(8)=sd_swr.sd5_hpc_co;
+                                        Sd_Swr.sd2_pfc_co(8)=sd_swr.sd2_pfc_co;
+                                        Sd_Swr.sd5_pfc_co(8)=sd_swr.sd5_pfc_co;
+                                        Sd_Swr.sd2_hpc_long(8)=sd_swr.sd2_hpc_long;
+                                        Sd_Swr.sd5_hpc_long(8)=sd_swr.sd5_hpc_long;
+                                        Sd_Swr.sd2_pfc_long(8)=sd_swr.sd2_pfc_long;
+                                        Sd_Swr.sd5_pfc_long(8)=sd_swr.sd5_pfc_long;     
+                                    else
+                                        Sd_Swr.sd2_hpc_co(8)=NaN;
+                                        Sd_Swr.sd5_hpc_co(8)=NaN;
+                                        Sd_Swr.sd2_pfc_co(8)=NaN;
+                                        Sd_Swr.sd5_pfc_co(8)=NaN;
+                                        Sd_Swr.sd2_hpc_long(8)=NaN;
+                                        Sd_Swr.sd5_hpc_long(8)=NaN;
+                                        Sd_Swr.sd2_pfc_long(8)=NaN;
+                                        Sd_Swr.sd5_pfc_long(8)=NaN;                                         
+                                    end
                                     
                                     [sd_swr]=find_stdPFC(HPC_4,Cortex_4,states4,ss,fn);
-                                    Sd_Swr.sd2_hpc_co(9)=sd_swr.sd2_hpc_co;
-                                    Sd_Swr.sd5_hpc_co(9)=sd_swr.sd5_hpc_co;
-                                    Sd_Swr.sd2_pfc_co(9)=sd_swr.sd2_pfc_co;
-                                    Sd_Swr.sd5_pfc_co(9)=sd_swr.sd5_pfc_co;
-                                    Sd_Swr.sd2_hpc_long(9)=sd_swr.sd2_hpc_long;
-                                    Sd_Swr.sd5_hpc_long(9)=sd_swr.sd5_hpc_long;
-                                    Sd_Swr.sd2_pfc_long(9)=sd_swr.sd2_pfc_long;
-                                    Sd_Swr.sd5_pfc_long(9)=sd_swr.sd5_pfc_long;                                      
+                                    if sum(states4==3)>=180
+                                        Sd_Swr.sd2_hpc_co(9)=sd_swr.sd2_hpc_co;
+                                        Sd_Swr.sd5_hpc_co(9)=sd_swr.sd5_hpc_co;
+                                        Sd_Swr.sd2_pfc_co(9)=sd_swr.sd2_pfc_co;
+                                        Sd_Swr.sd5_pfc_co(9)=sd_swr.sd5_pfc_co;
+                                        Sd_Swr.sd2_hpc_long(9)=sd_swr.sd2_hpc_long;
+                                        Sd_Swr.sd5_hpc_long(9)=sd_swr.sd5_hpc_long;
+                                        Sd_Swr.sd2_pfc_long(9)=sd_swr.sd2_pfc_long;
+                                        Sd_Swr.sd5_pfc_long(9)=sd_swr.sd5_pfc_long; 
+                                    else
+                                        Sd_Swr.sd2_hpc_co(9)=NaN;
+                                        Sd_Swr.sd5_hpc_co(9)=NaN;
+                                        Sd_Swr.sd2_pfc_co(9)=NaN;
+                                        Sd_Swr.sd5_pfc_co(9)=NaN;
+                                        Sd_Swr.sd2_hpc_long(9)=NaN;
+                                        Sd_Swr.sd5_hpc_long(9)=NaN;
+                                        Sd_Swr.sd2_pfc_long(9)=NaN;
+                                        Sd_Swr.sd5_pfc_long(9)=NaN; 
+
+                                    end
     
                     end
 
@@ -323,12 +387,23 @@ corrected_means = [];
  TT.corrected_means = num2cell(corrected_means);
 
        cd(g{j})
+% if j==3 & k==3 & singletrialdetection==1
+%     TT=load("TT.mat")
+%     TT=TT.TT;
+% end
+
+
    ripple_timestamps={};
    ripple_phases={};
    ripple_count =[];
+ ripple_waveform_total = {};
+ripple_waveform_broadband_total={};
+GC_window_ripples_total= {};
+GC_window_ripples_broadband_total={};
+ripple_total_data = {};   
    NREM_min = [];
                for i=1:length(G) % Trial Index
-%        for i = 2
+%        for i = 5
 %                  xo
                 cd(G{i})
                 clear states
@@ -345,7 +420,12 @@ corrected_means = [];
 %                     st2=st(cellfun(@(x) ~isempty(strfind(x,barea)),st)); %Brain area.
                     cellfun(@load,A);
 
-
+                    if sum(states==3)<180
+                        'Less than 3 minutes of NREM, skipping trial'
+                        NREM_min(i)  = sum(states==3)/60;
+                        cd ..
+                        continue
+                    end
                    
                     HPC=dir('*HPC_*.mat');
                     HPC=HPC.name;
@@ -442,7 +522,10 @@ ripple_phases{i} = swr_pfc;
 
 ripple_total_data{i} = ripples;
 ripple_count(i) = total_swrs;
-NREM_min(i)  = total_NREM_min;               
+NREM_min(i)  = total_NREM_min;
+
+
+clear ripples GC_phase total_swrs total_NREM_min swr_pfc swr_hpc GC_window_ripples_broadband GC_window_ripples waveforms_ripples_broadband waveforms_ripples
                     end
 
                    if contains(G{i}, 'rial5')
@@ -531,16 +614,29 @@ NREM_min(i)  = total_NREM_min;
                                 GC_window_ripples_broadband = {NaN};
                             end 
 
-                          ripple_waveform_total{i+jj-1} = waveforms_ripples;
-                          ripple_waveform_broadband_total{i+jj-1} = waveforms_ripples_broadband;                         
-                          GC_window_ripples_total{i+jj-1} = GC_window_ripples;
-                          GC_window_ripples_broadband_total{i+jj-1} = GC_window_ripples_broadband;
-                          ripple_timestamps{i+jj-1} = swr_hpc; 
-                          ripple_phases{i+jj-1} = swr_pfc;
-                          ripple_total_data{i+jj-1} = ripples;
-                          ripple_count(i+jj-1) = total_swrs;
-                          NREM_min(i+jj-1)  = total_NREM_min;               
+                          if   sum(states_chunk==3)>=180
+                              ripple_waveform_total{i+jj-1} = waveforms_ripples;
+                              ripple_waveform_broadband_total{i+jj-1} = waveforms_ripples_broadband;                         
+                              GC_window_ripples_total{i+jj-1} = GC_window_ripples;
+                              GC_window_ripples_broadband_total{i+jj-1} = GC_window_ripples_broadband;
+                              ripple_timestamps{i+jj-1} = swr_hpc; 
+                              ripple_phases{i+jj-1} = swr_pfc;
+                              ripple_total_data{i+jj-1} = ripples;
+                              ripple_count(i+jj-1) = total_swrs;
+                              NREM_min(i+jj-1)  = total_NREM_min; 
+                          else
+                              ripple_waveform_total{i+jj-1} = [];
+                              ripple_waveform_broadband_total{i+jj-1} =[];                         
+                              GC_window_ripples_total{i+jj-1} = [];
+                              GC_window_ripples_broadband_total{i+jj-1} = [];
+                              ripple_timestamps{i+jj-1} = []; 
+                              ripple_phases{i+jj-1} = NaN;
+                              ripple_total_data{i+jj-1} = [];
+                              ripple_count(i+jj-1) = 0;
+                              NREM_min(i+jj-1)  = total_NREM_min;    
 
+                          end
+clear ripples GC_phase total_swrs total_NREM_min swr_pfc swr_hpc GC_window_ripples_broadband GC_window_ripples waveforms_ripples_broadband waveforms_ripples
                            end                                 
                    end
                    end
@@ -585,8 +681,6 @@ save(strcat('ripple_phases_compilation_Rat',rat_folder{k},'.mat'),'ripple_phases
     end
 
     cd ..
-k=k+1    ;    
-end
 %         zsinglet_total=[];
 %         zdoublet_total=[];
 %         ztriplet_total=[];
@@ -613,3 +707,4 @@ end
 %     end
 % end
 toc
+clearvars -except g
