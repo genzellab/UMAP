@@ -32,7 +32,7 @@ You may need to adapt the values of k and j depending on the Rat and Study day y
 ## Outputs:
 GC_window_ripples_broadband are cell arrays with the following content:
 
-1) 2x1 Matrix with 6 second long traces centered at ripple peak. The first row includes PFC, the second one HPC.
+1) 2x15001 Matrix with 6 second long traces centered at ripple peak. The first row includes PFC, the second one HPC.
 2) Ripple start timestamp
 3) Ripple peak timestamp
 4) Ripple end timestamp
