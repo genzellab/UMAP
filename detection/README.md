@@ -28,3 +28,14 @@ You may need to adapt the values of k and j depending on the Rat and Study day y
 ## Long Short Ripples
  - long_short_ripples. m
    Computes the count of short and long ripples. 
+
+## Outputs:
+GC_window_ripples_broadband are cell arrays with the following content:
+
+1) 2x1 Matrix with 6 second long traces centered at ripple peak. The first row includes PFC, the second one HPC.
+2) Ripple start timestamp
+3) Ripple peak timestamp
+4) Ripple end timestamp
+5) Duration of ripple (End-Start)
+6) Slow-oscillation phase
+7) Detection threshold.
