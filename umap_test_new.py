@@ -75,34 +75,39 @@ StudyDay_rip=hproc.unfold_days2ripples(Ripples, T[:,3])
 #Trial
 #trial_np=T[:,4]
 trial_rip=hproc.unfold_days2ripples(Ripples,T[:,4])
-
-#Amplitude
-amplitude_np=T[:,6];
-#Meanfreq
-meanfreq_np=T[:,7];
-#Duration
-duration_np=T[:,8];
-#Phase
-phase_np=T[:,9];
-# SO power before
-so_before_np=T[:,10];
-# SO power after
-so_after_np=T[:,11];
-# Spectral entropy
-s_entropy_np=T[:,13];
+# %%
+# #Amplitude
+# amplitude_np=T[:,6];
+# #Meanfreq
+# meanfreq_np=T[:,7];
+# #Duration
+# duration_np=T[:,8];
+# #Phase
+# phase_np=T[:,9];
+# # SO power before
+# so_before_np=T[:,10];
+# # SO power after
+# so_after_np=T[:,11];
+# # Spectral entropy
+# s_entropy_np=T[:,13];
 
 
 #Features per ripple    
-Amp=hproc.flatcells(amplitude_np[2:]);
-Meanfreq=hproc.flatcells(meanfreq_np[2:]);
+# Amp=hproc.flatcells(amplitude_np[2:]);
+# Meanfreq=hproc.flatcells(meanfreq_np[2:]);
+# Duration=hproc.flatcells(duration_np[2:]);
+# Phase=hproc.flatcells(phase_np[2:]);
+# SO_before=hproc.flatcells(so_before_np[2:]);
+# SO_after=hproc.flatcells(so_after_np[2:]);
+# S_entropy=hproc.flatcells(s_entropy_np[2:]);
+Amp=hproc.flatcells(T[2:,6]);
+Meanfreq=hproc.flatcells(T[2:,7]);
+Duration=hproc.flatcells(T[2:,8]);
+Phase=hproc.flatcells(T[2:,9]);
+SO_before=hproc.flatcells(T[2:,10]);
+SO_after=hproc.flatcells(T[2:,11]);
+S_entropy=hproc.flatcells(T[2:,13]);
 
-Duration=hproc.flatcells(duration_np[2:]);
-Phase=hproc.flatcells(phase_np[2:]);
-
-SO_before=hproc.flatcells(so_before_np[2:]);
-SO_after=hproc.flatcells(so_after_np[2:]);
-
-S_entropy=hproc.flatcells(s_entropy_np[2:]);
 
 
 #Separate datasets: T_cbd, T_rgs, T_osbasic. (Split for sanite check, ideally just use T)
@@ -121,12 +126,12 @@ Ripples_osbasic=T_osbasic[:,5]
 Data_osbasic = hproc.v_stack(Ripples_osbasic)
 
 # %%  Compute UMAP from Data (T)
-fit = umap.UMAP(n_components=4)
-u=fit.fit_transform(Data)
-# Compute from split datasets. 
-u_cbd = fit.fit_transform(Data_cbd)
-u_rgs = fit.fit_transform(Data_rgs)
-u_osbasic = fit.fit_transform(Data_osbasic)
+# fit = umap.UMAP(n_components=4)
+# u=fit.fit_transform(Data)
+# # Compute from split datasets. 
+# u_cbd = fit.fit_transform(Data_cbd)
+# u_rgs = fit.fit_transform(Data_rgs)
+# u_osbasic = fit.fit_transform(Data_osbasic)
 
 # %% Figures, describing embeddings.
 # def cm2inch(value):
@@ -137,27 +142,41 @@ u_osbasic = fit.fit_transform(Data_osbasic)
 
 # %% Looking for outliers
 #Density
-hplt.plot3Ddensity(u_rgs[:,0],u_rgs[:,1],u_rgs[:,2], zlabel='umap 3', bins=50)
 
-hplt.plot3Ddensity(u_cbd[:,0],u_cbd[:,1],u_cbd[:,3], zlabel='umap 4', bins=50)
-
-hplt.plot3Ddensity(u_osbasic[:,0],u_osbasic[:,1],u_osbasic[:,2], zlabel='umap 3', bins=50)
-
-
-hplt.plot3Ddensity(u[:,0],u[:,1],u[:,3], zlabel='umap 4', bins=50)
+# hplt.plot3Ddensity(u_rgs[:,0],u_rgs[:,1],u_rgs[:,2], zlabel='umap 3', bins=50)
+# hplt.plot3Ddensity(u_cbd[:,0],u_cbd[:,1],u_cbd[:,3], zlabel='umap 4', bins=50)
+# hplt.plot3Ddensity(u_osbasic[:,0],u_osbasic[:,1],u_osbasic[:,2], zlabel='umap 3', bins=50)
+# hplt.plot3Ddensity(u[:,0],u[:,1],u[:,3], zlabel='umap 4', bins=50)
 
 # %% Remove outliers using DBSCAN clustering.
 
-[outliers_osbasic]=hproc.dbscan_outliers(u_osbasic, "OS_basic", eps_value=0.2, min_samples_value=10, outlier_label=1)
-[outliers_rgs]=hproc.dbscan_outliers(u_rgs, "RGS14", eps_value=0.2, min_samples_value=10, outlier_label=1)
-[outliers_cbd]=hproc.dbscan_outliers(u_cbd, "CBD", eps_value=0.10, min_samples_value=1, outlier_label=1)
-[outliers]=hproc.dbscan_outliers(u, "Combined", eps_value=0.2, min_samples_value=5, outlier_label=1)
+# [outliers_osbasic]=hproc.dbscan_outliers(u_osbasic, "OS_basic", eps_value=0.2, min_samples_value=10, outlier_label=1)
+# [outliers_rgs]=hproc.dbscan_outliers(u_rgs, "RGS14", eps_value=0.2, min_samples_value=10, outlier_label=1)
+# [outliers_cbd]=hproc.dbscan_outliers(u_cbd, "CBD", eps_value=0.10, min_samples_value=1, outlier_label=1)
+# [outliers]=hproc.dbscan_outliers(u, "Combined", eps_value=0.2, min_samples_value=5, outlier_label=1)
 
-#[:,0:2]
-# %% Using combined outliers from all datasets. 
-outliers_combined=np.concatenate([outliers_cbd,outliers_osbasic,outliers_rgs]);
+# [np.sum(outliers_osbasic), np.sum(outliers_rgs), np.sum(outliers_cbd), np.sum(outliers)]
 
-# Remove outliers from features data. 
+# # Using combined outliers from all datasets. 
+# outliers_combined=np.concatenate([outliers_cbd,outliers_osbasic,outliers_rgs]);
+
+
+# list_outliers=[outliers_osbasic,outliers_rgs,outliers_cbd,outliers,outliers_combined];
+# with open('outliers.pkl', 'wb') as f:  # Python 3: open(..., 'wb')
+#     pickle.dump(list_outliers, f)
+    
+# # Getting back the objects:
+with open('outliers.pkl','rb') as f:  # Python 3: open(..., 'rb')
+    outliers_list= pickle.load(f)    
+
+outliers_osbasic=outliers_list[0];
+outliers_rgs=outliers_list[1];
+outliers_cbd=outliers_list[2];
+outliers=outliers_list[3];
+outliers_combined=outliers_list[4];
+
+# %% Remove outliers from features data. 
+
 Meanfreq_combined=Meanfreq[np.logical_not(outliers_combined)];
 Amp_combined=Amp[np.logical_not(outliers_combined)];
 
@@ -174,9 +193,16 @@ S_entropy_combined=S_entropy[np.logical_not(outliers_combined)];
 fit = umap.UMAP(n_components=4)
 Data_clean=Data[np.logical_not(outliers_combined)];
 u_clean=fit.fit_transform(Data[np.logical_not(outliers_combined)])
+# Separate datasets
 u_cbd_clean = fit.fit_transform(Data_cbd[np.logical_not(outliers_cbd)])
 u_rgs_clean = fit.fit_transform(Data_rgs[np.logical_not(outliers_rgs)])
 u_osbasic_clean = fit.fit_transform(Data_osbasic[np.logical_not(outliers_osbasic)])
+# %%
+#Density
+# hplt.plot3Ddensity(u_rgs_clean[:,0],u_rgs_clean[:,1],u_rgs_clean[:,2], zlabel='umap 3', bins=50)
+# hplt.plot3Ddensity(u_cbd_clean[:,0],u_cbd_clean[:,1],u_cbd_clean[:,3], zlabel='umap 4', bins=50)
+# hplt.plot3Ddensity(u_osbasic_clean[:,0],u_osbasic_clean[:,1],u_osbasic_clean[:,2], zlabel='umap 3', bins=50)
+# hplt.plot3Ddensity(u[:,0],u[:,1],u[:,3], zlabel='umap 4', bins=50)
 
 
 # %% Figures, describing embeddings. Per dataset. Without outliers 
@@ -208,38 +234,38 @@ treatment_cbd=hproc.strcmp(treatment_rip,"CBD") #OSBASIC #RGS14
 treatment_rgs=hproc.strcmp(treatment_rip,"RGS") #OSBASIC #RGS14
 
 
-Data_veh_treatment=Data[np.logical_and(np.squeeze(treatment_veh)==1,np.logical_not(outliers_combined))]
-Data_cbd_treatment=Data[np.logical_and(np.squeeze(treatment_cbd)==1,np.logical_not(outliers_combined))]
-Data_rgs_treatment=Data[np.logical_and(np.squeeze(treatment_rgs)==1,np.logical_not(outliers_combined))]
+# Data_veh_treatment=Data[np.logical_and(np.squeeze(treatment_veh)==1,np.logical_not(outliers_combined))]
+# Data_cbd_treatment=Data[np.logical_and(np.squeeze(treatment_cbd)==1,np.logical_not(outliers_combined))]
+# Data_rgs_treatment=Data[np.logical_and(np.squeeze(treatment_rgs)==1,np.logical_not(outliers_combined))]
 
 
-fit = umap.UMAP(n_components=4)
-u_cbd_treatment = fit.fit_transform(Data_cbd_treatment)
-u_rgs_treatment = fit.fit_transform(Data_rgs_treatment)
-u_veh_treatment = fit.fit_transform(Data_veh_treatment)
+# fit = umap.UMAP(n_components=4)
+# u_cbd_treatment = fit.fit_transform(Data_cbd_treatment)
+# u_rgs_treatment = fit.fit_transform(Data_rgs_treatment)
+# u_veh_treatment = fit.fit_transform(Data_veh_treatment)
 
 
 
-#%%
-list_colours=['#0343DF','#E50000','#15B01A','black'];
-list_embeddings=[u_rgs_treatment,u_veh_treatment,u_cbd_treatment,u_clean];
-list_names=["RGS14 treatment","Vehicle treatment", "CBD treatment","Combined treatment"]
+# #%%
+# list_colours=['#0343DF','#E50000','#15B01A','black'];
+# list_embeddings=[u_rgs_treatment,u_veh_treatment,u_cbd_treatment,u_clean];
+# list_names=["RGS14 treatment","Vehicle treatment", "CBD treatment","Combined treatment"]
 
-for (item,colours,names) in zip(list_embeddings, list_colours,list_names):
-    #ax = fig.add_subplot()
-    hplt.plot_scatter(item[:,0],item[:,1] ,title=names,s=1,xlabel='Umap 1',ylabel='Umap 2',c=colours)
-    plt.xlim([-1,11])
-    plt.ylim([-1,11])
+# for (item,colours,names) in zip(list_embeddings, list_colours,list_names):
+#     #ax = fig.add_subplot()
+#     hplt.plot_scatter(item[:,0],item[:,1] ,title=names,s=1,xlabel='Umap 1',ylabel='Umap 2',c=colours)
+#     plt.xlim([-1,11])
+#     plt.ylim([-1,11])
 
 
-# %%
-hplt.plot3Ddensity(u_rgs_treatment[:,0],u_rgs_treatment[:,1],u_rgs_treatment[:,2], zlabel='umap 3', bins=50)
+# # %%
+# hplt.plot3Ddensity(u_rgs_treatment[:,0],u_rgs_treatment[:,1],u_rgs_treatment[:,2], zlabel='umap 3', bins=50)
 
-hplt.plot3Ddensity(u_cbd_treatment[:,0],u_cbd_treatment[:,1],u_cbd_treatment[:,2], zlabel='umap 3', bins=50)
+# hplt.plot3Ddensity(u_cbd_treatment[:,0],u_cbd_treatment[:,1],u_cbd_treatment[:,2], zlabel='umap 3', bins=50)
 
-hplt.plot3Ddensity(u_veh_treatment[:,0],u_veh_treatment[:,1],u_veh_treatment[:,2], zlabel='umap 3', bins=50)
+# hplt.plot3Ddensity(u_veh_treatment[:,0],u_veh_treatment[:,1],u_veh_treatment[:,2], zlabel='umap 3', bins=50)
 
-hplt.plot3Ddensity(u_clean[:,0],u_clean[:,1],u_clean[:,2], zlabel='umap 3', bins=50)
+# hplt.plot3Ddensity(u_clean[:,0],u_clean[:,1],u_clean[:,2], zlabel='umap 3', bins=50)
 
 # %% Splitting controls.
 
@@ -271,7 +297,7 @@ u_rgs_rgs = fit.fit_transform(Data_rgs_rgs_dataset)
 u_cbd_cbd = fit.fit_transform(Data_cbd_cbd_dataset)
 
 
-u_rgs_rgs.shape[0]+u_veh_rgs.shape[0]+u_cbd_cbd.shape[0]+u_veh_cbd.shape[0]+u_veh_osbasic.shape[0]
+#u_rgs_rgs.shape[0]+u_veh_rgs.shape[0]+u_cbd_cbd.shape[0]+u_veh_cbd.shape[0]+u_veh_osbasic.shape[0]
 
 u_combined_no_rgs = fit.fit_transform(Data_combined_no_rgs)
 
@@ -296,12 +322,6 @@ for (item,colours,names) in zip(list_embeddings, list_colours,list_names):
 list_embeddings=[u_veh_osbasic,u_veh_rgs,u_veh_cbd,u_cbd_cbd,u_rgs_rgs,u_clean,u_combined_no_rgs];
 with open('embeddings.pkl', 'wb') as f:  # Python 3: open(..., 'wb')
     pickle.dump(list_embeddings, f)
-
-
-# Saving data:
-list_data=[Data_veh_osbasic_dataset,Data_veh_rgs_dataset,Data_veh_cbd_dataset,Data_cbd_cbd_dataset,Data_rgs_rgs_dataset,Data_clean,Data_combined_no_rgs];
-with open('Data.pkl', 'wb') as f:  # Python 3: open(..., 'wb')
-    pickle.dump(list_data, f)
     
 # # Getting back the objects:
 with open('embeddings.pkl','rb') as f:  # Python 3: open(..., 'rb')
@@ -314,6 +334,11 @@ u_cbd_cbd=embeddings[3];
 u_rgs_rgs=embeddings[4];
 u_clean=embeddings[5];
 u_combined_no_rgs=embeddings[6];
+
+# Saving data:
+list_data=[Data_veh_osbasic_dataset,Data_veh_rgs_dataset,Data_veh_cbd_dataset,Data_cbd_cbd_dataset,Data_rgs_rgs_dataset,Data_clean,Data_combined_no_rgs];
+with open('Data.pkl', 'wb') as f:  # Python 3: open(..., 'wb')
+    pickle.dump(list_data, f)
 
 
 #,u_veh_rgs,u_veh_cbd,u_cbd_cbd,u_rgs_rgs,u_clean,u_combined_no_rgs];
@@ -381,7 +406,7 @@ hplt.plot_umap(x=u_cbd_cbd[:,0],y=u_cbd_cbd[:,1],feature = Meanfreq_cbd_cbd_data
 hplt.plot_umap(x=u_clean[:,0],y=u_clean[:,1],feature = Meanfreq_combined,title='Combined',clipmin=100,clipmax=200)
 hplt.plot_umap(x=u_combined_no_rgs[:,0],y=u_combined_no_rgs[:,1],feature = Meanfreq_combined_no_rgs,title='Combined (No RGS)',clipmin=100,clipmax=200)
 
-
+# %%
 
 # Saving embeddings:
 list_Meanfreq=[Meanfreq_veh_osbasic_dataset,Meanfreq_veh_cbd_dataset,Meanfreq_cbd_cbd_dataset,Meanfreq_combined,Meanfreq_combined_no_rgs];
@@ -398,13 +423,6 @@ Meanfreq_cbd_cbd_dataset=Meanfreq_list[2];
 Meanfreq_combined=Meanfreq_list[3];
 Meanfreq_combined_no_rgs=Meanfreq_list[4];
 
-
-def structureindex(u,feature,Vmin,Vmax,StringDim1, StringDim2):
-    df=pd.DataFrame(u, columns=['u1','u2','u3','u4'])    
-    cI_val, bLab, _=URC_computeClusterIndex_V4.computeClusterIndex_V4(df,feature,10,[StringDim1,StringDim2],plotCluster=0,vmin=Vmin, vmax=Vmax)
-    return cI_val
-
-si_Meanfreq_u_veh_osbasic_u1_u2=structureindex(u_veh_osbasic,Meanfreq_veh_osbasic_dataset,100,300,'u1', 'u2')
 # %%
 Amp_veh_osbasic_dataset=Amp[np.logical_and(    np.logical_and(np.squeeze(treatment_veh)==1,np.logical_not(outliers_combined))  ,  np.squeeze(dataset_osbasic)==1)]
 Amp_veh_rgs_dataset=Amp[np.logical_and(    np.logical_and(np.squeeze(treatment_veh)==1,np.logical_not(outliers_combined))  ,  np.squeeze(dataset_rgs)==1)]
@@ -426,6 +444,22 @@ hplt.plot_umap(x=u_clean[:,0],y=u_clean[:,1],feature = Amp_combined,title='Combi
 hplt.plot_umap(x=u_combined_no_rgs[:,0],y=u_combined_no_rgs[:,1],feature = Amp_combined_no_rgs,title='Combined (No RGS)',clipmin=0,clipmax=4.5)
 
 # %%
+# Saving embeddings:
+list_Amp=[Amp_veh_osbasic_dataset,Amp_veh_cbd_dataset,Amp_cbd_cbd_dataset,Amp_combined,Amp_combined_no_rgs];
+with open('Amp.pkl', 'wb') as f:  # Python 3: open(..., 'wb')
+    pickle.dump(list_Amp, f)
+
+# # Getting back the objects:
+with open('Amp.pkl','rb') as f:  # Python 3: open(..., 'rb')
+    Amp_list= pickle.load(f)    
+Amp_veh_osbasic_dataset=Amp_list[0];
+Amp_veh_cbd_dataset=Amp_list[1];
+Amp_cbd_cbd_dataset=Amp_list[2];
+Amp_combined=Amp_list[3];
+Amp_combined_no_rgs=Amp_list[4];
+
+
+# %%
 Duration_veh_osbasic_dataset=Duration[np.logical_and(    np.logical_and(np.squeeze(treatment_veh)==1,np.logical_not(outliers_combined))  ,  np.squeeze(dataset_osbasic)==1)]
 Duration_veh_rgs_dataset=Duration[np.logical_and(    np.logical_and(np.squeeze(treatment_veh)==1,np.logical_not(outliers_combined))  ,  np.squeeze(dataset_rgs)==1)]
 Duration_veh_cbd_dataset=Duration[np.logical_and(    np.logical_and(np.squeeze(treatment_veh)==1,np.logical_not(outliers_combined))  ,  np.squeeze(dataset_cbd)==1)]
@@ -445,6 +479,21 @@ hplt.plot_umap(x=u_cbd_cbd[:,0],y=u_cbd_cbd[:,1],feature = Duration_cbd_cbd_data
 #hplt.plot_umap(x=u_clean[:,0],y=u_clean[:,1],feature = Duration_combined,title='Combined',clipmin=0,clipmax=130)
 hplt.plot_umap(x=u_combined_no_rgs[:,0],y=u_combined_no_rgs[:,1],feature = Duration_combined_no_rgs,title='Combined (No RGS)',clipmin=0,clipmax=100)
 # %%
+# Saving embeddings:
+list_Duration=[Duration_veh_osbasic_dataset,Duration_veh_cbd_dataset,Duration_cbd_cbd_dataset,Duration_combined,Duration_combined_no_rgs];
+with open('Duration.pkl', 'wb') as f:  # Python 3: open(..., 'wb')
+    pickle.dump(list_Duration, f)
+
+# # Getting back the objects:
+with open('Duration.pkl','rb') as f:  # Python 3: open(..., 'rb')
+    Duration_list= pickle.load(f)    
+Duration_veh_osbasic_dataset=Duration_list[0];
+Duration_veh_cbd_dataset=Duration_list[1];
+Duration_cbd_cbd_dataset=Duration_list[2];
+Duration_combined=Duration_list[3];
+Duration_combined_no_rgs=Duration_list[4];
+
+# %%
 Phase_veh_osbasic_dataset=Phase[np.logical_and(    np.logical_and(np.squeeze(treatment_veh)==1,np.logical_not(outliers_combined))  ,  np.squeeze(dataset_osbasic)==1)]
 Phase_veh_rgs_dataset=Phase[np.logical_and(    np.logical_and(np.squeeze(treatment_veh)==1,np.logical_not(outliers_combined))  ,  np.squeeze(dataset_rgs)==1)]
 Phase_veh_cbd_dataset=Phase[np.logical_and(    np.logical_and(np.squeeze(treatment_veh)==1,np.logical_not(outliers_combined))  ,  np.squeeze(dataset_cbd)==1)]
@@ -463,6 +512,21 @@ hplt.plot_umap(x=u_veh_cbd[:,0],y=u_veh_cbd[:,1],feature = Phase_veh_cbd_dataset
 hplt.plot_umap(x=u_cbd_cbd[:,0],y=u_cbd_cbd[:,1],feature = Phase_cbd_cbd_dataset,title='CBD treatment- CBD dataset',clipmin=0,clipmax=360,cmap='twilight')
 #hplt.plot_umap(x=u_clean[:,0],y=u_clean[:,1],feature = Phase_combined,title='Combined',clipmin=0,clipmax=130)
 hplt.plot_umap(x=u_combined_no_rgs[:,0],y=u_combined_no_rgs[:,1],feature = Phase_combined_no_rgs,title='Combined (No RGS)',clipmin=0,clipmax=360,cmap='twilight')
+# %%
+# Saving embeddings:
+list_Phase=[Phase_veh_osbasic_dataset,Phase_veh_cbd_dataset,Phase_cbd_cbd_dataset,Phase_combined,Phase_combined_no_rgs];
+with open('Phase.pkl', 'wb') as f:  # Python 3: open(..., 'wb')
+    pickle.dump(list_Phase, f)
+
+# # Getting back the objects:
+with open('Phase.pkl','rb') as f:  # Python 3: open(..., 'rb')
+    Phase_list= pickle.load(f)    
+Phase_veh_osbasic_dataset=Phase_list[0];
+Phase_veh_cbd_dataset=Phase_list[1];
+Phase_cbd_cbd_dataset=Phase_list[2];
+Phase_combined=Phase_list[3];
+Phase_combined_no_rgs=Phase_list[4];
+
 # %%
 from scipy import stats
 #SO_before=stats.zscore(SO_before)
@@ -486,6 +550,21 @@ hplt.plot_umap(x=u_cbd_cbd[:,0],y=u_cbd_cbd[:,1],feature = stats.zscore(SO_befor
 #hplt.plot_umap(x=u_clean[:,0],y=u_clean[:,1],feature = SO_before_combined,title='Combined',clipmin=0,clipmax=130)
 hplt.plot_umap(x=u_combined_no_rgs[:,0],y=u_combined_no_rgs[:,1],feature = stats.zscore(SO_before_combined_no_rgs),title='Combined (No RGS)',clipmin=-1,clipmax=1)
 # %%
+# Saving embeddings:
+list_SO_before=[SO_before_veh_osbasic_dataset,SO_before_veh_cbd_dataset,SO_before_cbd_cbd_dataset,SO_before_combined,SO_before_combined_no_rgs];
+with open('SO_before.pkl', 'wb') as f:  # Python 3: open(..., 'wb')
+    pickle.dump(list_SO_before, f)
+
+# # Getting back the objects:
+with open('SO_before.pkl','rb') as f:  # Python 3: open(..., 'rb')
+    SO_before_list= pickle.load(f)    
+SO_before_veh_osbasic_dataset=SO_before_list[0];
+SO_before_veh_cbd_dataset=SO_before_list[1];
+SO_before_cbd_cbd_dataset=SO_before_list[2];
+SO_before_combined=SO_before_list[3];
+SO_before_combined_no_rgs=SO_before_list[4];
+
+# %%
 from scipy import stats
 #SO_afterz=stats.zscore(SO_after)
 
@@ -507,6 +586,20 @@ hplt.plot_umap(x=u_veh_cbd[:,0],y=u_veh_cbd[:,1],feature = stats.zscore(SO_after
 hplt.plot_umap(x=u_cbd_cbd[:,0],y=u_cbd_cbd[:,1],feature = stats.zscore(SO_after_cbd_cbd_dataset),title='CBD treatment- CBD dataset',clipmin=-1,clipmax=1)
 #hplt.plot_umap(x=u_clean[:,0],y=u_clean[:,1],feature = SO_after_combined,title='Combined',clipmin=0,clipmax=130)
 hplt.plot_umap(x=u_combined_no_rgs[:,0],y=u_combined_no_rgs[:,1],feature = stats.zscore(SO_after_combined_no_rgs),title='Combined (No RGS)',clipmin=-1,clipmax=1)
+# %%
+# Saving embeddings:
+list_SO_after=[SO_after_veh_osbasic_dataset,SO_after_veh_cbd_dataset,SO_after_cbd_cbd_dataset,SO_after_combined,SO_after_combined_no_rgs];
+with open('SO_after.pkl', 'wb') as f:  # Python 3: open(..., 'wb')
+    pickle.dump(list_SO_after, f)
+
+# # Getting back the objects:
+with open('SO_after.pkl','rb') as f:  # Python 3: open(..., 'rb')
+    SO_after_list= pickle.load(f)    
+SO_after_veh_osbasic_dataset=SO_after_list[0];
+SO_after_veh_cbd_dataset=SO_after_list[1];
+SO_after_cbd_cbd_dataset=SO_after_list[2];
+SO_after_combined=SO_after_list[3];
+SO_after_combined_no_rgs=SO_after_list[4];
 
 # %%
 S_entropy_veh_osbasic_dataset=S_entropy[np.logical_and(    np.logical_and(np.squeeze(treatment_veh)==1,np.logical_not(outliers_combined))  ,  np.squeeze(dataset_osbasic)==1)]
@@ -527,6 +620,20 @@ hplt.plot_umap(x=u_veh_cbd[:,0],y=u_veh_cbd[:,1],feature = S_entropy_veh_cbd_dat
 hplt.plot_umap(x=u_cbd_cbd[:,0],y=u_cbd_cbd[:,1],feature = S_entropy_cbd_cbd_dataset,title='CBD treatment- CBD dataset',clipmin=2,clipmax=4.5)
 #hplt.plot_umap(x=u_clean[:,0],y=u_clean[:,1],feature = S_entropy_combined,title='Combined',clipmin=0,clipmax=130)
 hplt.plot_umap(x=u_combined_no_rgs[:,0],y=u_combined_no_rgs[:,1],feature = S_entropy_combined_no_rgs,title='Combined (No RGS)',clipmin=2,clipmax=4.5)
+# %%
+# Saving embeddings:
+list_S_entropy=[S_entropy_veh_osbasic_dataset,S_entropy_veh_cbd_dataset,S_entropy_cbd_cbd_dataset,S_entropy_combined,S_entropy_combined_no_rgs];
+with open('S_entropy.pkl', 'wb') as f:  # Python 3: open(..., 'wb')
+    pickle.dump(list_S_entropy, f)
+
+# # Getting back the objects:
+with open('S_entropy.pkl','rb') as f:  # Python 3: open(..., 'rb')
+    S_entropy_list= pickle.load(f)    
+S_entropy_veh_osbasic_dataset=S_entropy_list[0];
+S_entropy_veh_cbd_dataset=S_entropy_list[1];
+S_entropy_cbd_cbd_dataset=S_entropy_list[2];
+S_entropy_combined=S_entropy_list[3];
+S_entropy_combined_no_rgs=S_entropy_list[4];
 
 
 # %% Splitting days.
@@ -1002,7 +1109,7 @@ plt.title('Combined embedding')
 
 
 
-# %%
+# %%  OLD CODE 
 #Dataset
 dataset_np=T[:,0]
 

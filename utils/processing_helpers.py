@@ -3,7 +3,8 @@ import cv2
 from PIL import Image, ImageFilter
 import scipy.io
 from sklearn.cluster import DBSCAN
-
+import matplotlib.pyplot as plt
+import random
 
 # Data will be a matrix X by 127, where X is the pooled amount of ripples across all trials. 
 def v_stack(dur_np):
@@ -167,7 +168,8 @@ def dbscan_outliers(some_embedding, embedding_name,eps_value, min_samples_value,
     
     # kmeans = KMeans(n_clusters=4, random_state=0).fit(a)
     # label = kmeans.labels_
-    
+
+    random.seed(10)
     clustering = DBSCAN(eps=eps_value, min_samples=min_samples_value).fit(a)
     label=clustering.labels_
     
