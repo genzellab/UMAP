@@ -408,3 +408,159 @@ clear rip_duration rip_phase SO_b SO_a rip_threshold
 
 CBD_features=CBD;
 clear CBD
+
+
+%% Features RGS14
+
+cd /media/genzel/genzel1/UMAP_rgs_downsampled/1
+
+load('newfeatures_GC_window_ripples_broadband_Rat_OS_Ephys_RGS14_Rat1_57986_SD1_CON_26-27_07_2018.mat')
+RGS14.VEH.Rat1RGS.CN=[rip_duration; rip_phase; SO_b; SO_a ;rip_threshold];
+clear rip_duration rip_phase SO_b SO_a rip_threshold 
+
+load('newfeatures_GC_window_ripples_broadband_Rat_OS_Ephys_RGS14_Rat1_57986_SD2_OD_28-29_07_2018.mat')
+RGS14.VEH.Rat1RGS.OD=[rip_duration; rip_phase; SO_b; SO_a ;rip_threshold];
+clear rip_duration rip_phase SO_b SO_a rip_threshold 
+
+load('newfeatures_GC_window_ripples_broadband_Rat_OS_Ephys_RGS14_Rat1_57986_SD3_OR_30-31_07_2018.mat')
+RGS14.VEH.Rat1RGS.OR=[rip_duration; rip_phase; SO_b; SO_a ;rip_threshold];
+clear rip_duration rip_phase SO_b SO_a rip_threshold 
+
+load('newfeatures_GC_window_ripples_broadband_Rat_OS_Ephys_RGS14_Rat1_57986_SD4_HC_01_08_2018.mat')
+RGS14.VEH.Rat1RGS.HC=[rip_duration; rip_phase; SO_b; SO_a ;rip_threshold];
+clear rip_duration rip_phase SO_b SO_a rip_threshold 
+
+cd /media/genzel/genzel1/UMAP_rgs_downsampled/2/
+
+load('newfeatures_GC_window_ripples_broadband_Rat_OS_Ephys_RGS14_Rat2_57987_SD1_OD_24-25_07_2018.mat')
+RGS14.VEH.Rat2RGS.OD=[rip_duration; rip_phase; SO_b; SO_a ;rip_threshold];
+clear rip_duration rip_phase SO_b SO_a rip_threshold 
+
+load('newfeatures_GC_window_ripples_broadband_Rat_OS_Ephys_RGS14_Rat2_57987_SD2_OR_26-27_07_2018.mat')
+RGS14.VEH.Rat2RGS.OR=[rip_duration; rip_phase; SO_b; SO_a ;rip_threshold];
+clear rip_duration rip_phase SO_b SO_a rip_threshold 
+
+load('newfeatures_GC_window_ripples_broadband_Rat_OS_Ephys_RGS14_Rat2_57987_SD3_CON_28-29_07_2018.mat')
+RGS14.VEH.Rat2RGS.CN=[rip_duration; rip_phase; SO_b; SO_a ;rip_threshold];
+clear rip_duration rip_phase SO_b SO_a rip_threshold 
+
+load('newfeatures_GC_window_ripples_broadband_Rat_OS_Ephys_RGS14_Rat2_57987_SD4_HC_30-31_07_2018.mat')
+RGS14.VEH.Rat2RGS.HC=[rip_duration; rip_phase; SO_b; SO_a ;rip_threshold];
+clear rip_duration rip_phase SO_b SO_a rip_threshold 
+
+
+cd /media/genzel/genzel1/UMAP_rgs_downsampled/3
+
+load('newfeatures_GC_window_ripples_broadband_Rat_OS_Ephys_RGS14_Rat3_357152_SD1_OD_10-11_10_2019.mat')
+RGS14.RGS.Rat3RGS.OD=[rip_duration; rip_phase; SO_b; SO_a ;rip_threshold];
+clear rip_duration rip_phase SO_b SO_a rip_threshold 
+
+
+load('newfeatures_GC_window_ripples_broadband_OS_Ephys_RGS14_Rat3_357152_SD3_OR_14-15_10_2019.mat')
+RGS14.RGS.Rat3RGS.OR=[rip_duration; rip_phase; SO_b; SO_a ;rip_threshold];
+clear rip_duration rip_phase SO_b SO_a rip_threshold 
+
+load('newfeatures_GC_window_ripples_broadband_OS_Ephys_RGS14_Rat3_357152_SD5_CON_18-19_10_2019.mat')
+RGS14.RGS.Rat3RGS.CN=[rip_duration; rip_phase; SO_b; SO_a ;rip_threshold];
+clear rip_duration rip_phase SO_b SO_a rip_threshold 
+
+load('newfeatures_GC_window_ripples_broadband_OS_Ephys_RGS14_Rat3_357152_SD14_HC_16-11-2019.mat')
+RGS14.RGS.Rat3RGS.HC=[rip_duration; rip_phase; SO_b; SO_a ;rip_threshold];
+clear rip_duration rip_phase SO_b SO_a rip_threshold 
+
+
+cd /media/genzel/genzel1/UMAP_rgs_downsampled/4
+
+load('newfeatures_GC_window_ripples_broadband_OS_Ephys_RGS14_Rat4_357153_SD3_CON_30-31_10_2019.mat')
+RGS14.RGS.Rat4RGS.CN=[rip_duration; rip_phase; SO_b; SO_a ;rip_threshold];
+clear rip_duration rip_phase SO_b SO_a rip_threshold 
+
+load('newfeatures_GC_window_ripples_broadband_OS_Ephys_RGS14_Rat4_357153_SD4_HC_05_11_2019.mat')
+RGS14.RGS.Rat4RGS.HC=[rip_duration; rip_phase; SO_b; SO_a ;rip_threshold];
+clear rip_duration rip_phase SO_b SO_a rip_threshold 
+
+
+load('newfeatures_GC_window_ripples_broadband_OS_Ephys_RGS14_Rat4_357153_SD5_OD_07-08_11_2019.mat')
+RGS14.RGS.Rat4RGS.OD=[rip_duration; rip_phase; SO_b; SO_a ;rip_threshold];
+clear rip_duration rip_phase SO_b SO_a rip_threshold 
+
+load('newfeatures_GC_window_ripples_broadband_OS_Ephys_RGS14_Rat4_357153_SD6_OR_14-15_11_2019.mat')
+RGS14.RGS.Rat4RGS.OR=[rip_duration; rip_phase; SO_b; SO_a ;rip_threshold];
+clear rip_duration rip_phase SO_b SO_a rip_threshold 
+
+cd /media/genzel/genzel1/UMAP_rgs_downsampled/6
+
+load('newfeatures_GC_window_ripples_broadband_Rat_OS_Ephys_RGS14_rat6_373726_SD1_HC_01_02_2020.mat')
+RGS14.VEH.Rat6RGS.HC=[rip_duration; rip_phase; SO_b; SO_a ;rip_threshold];
+clear rip_duration rip_phase SO_b SO_a rip_threshold 
+
+load('newfeatures_GC_window_ripples_broadband_Rat_OS_Ephys_RGS14_rat6_373726_SD2_OR_06-07_02_2020.mat')
+RGS14.VEH.Rat6RGS.OR=[rip_duration; rip_phase; SO_b; SO_a ;rip_threshold];
+clear rip_duration rip_phase SO_b SO_a rip_threshold 
+
+
+load('newfeatures_GC_window_ripples_broadband_Rat_OS_Ephys_RGS14_rat6_373726_SD3_CON_11-12_02_2020.mat')
+RGS14.VEH.Rat6RGS.CN=[rip_duration; rip_phase; SO_b; SO_a ;rip_threshold];
+clear rip_duration rip_phase SO_b SO_a rip_threshold 
+
+load('newfeatures_GC_window_ripples_broadband_Rat_OS_Ephys_RGS14_rat6_373726_SD4_OD_15-16_02_2020.mat')
+RGS14.VEH.Rat6RGS.OD=[rip_duration; rip_phase; SO_b; SO_a ;rip_threshold];
+clear rip_duration rip_phase SO_b SO_a rip_threshold 
+
+cd /media/genzel/genzel1/UMAP_rgs_downsampled/7
+
+load('newfeatures_GC_window_ripples_broadband_Rat_OS_Ephys_RGS14_rat7_373727_SD1_HC_01-02-2020.mat')
+RGS14.RGS.Rat7RGS.HC=[rip_duration; rip_phase; SO_b; SO_a ;rip_threshold];
+clear rip_duration rip_phase SO_b SO_a rip_threshold 
+
+load('newfeatures_GC_window_ripples_broadband_Rat_OS_Ephys_RGS14_rat7_373727_SD2_OR_03_04-02-2020.mat')
+RGS14.RGS.Rat7RGS.OR=[rip_duration; rip_phase; SO_b; SO_a ;rip_threshold];
+clear rip_duration rip_phase SO_b SO_a rip_threshold 
+
+load('newfeatures_GC_window_ripples_broadband_Rat_OS_Ephys_RGS14_rat7_373727_SD3_CON_08_09_02_2020.mat')
+RGS14.RGS.Rat7RGS.CN=[rip_duration; rip_phase; SO_b; SO_a ;rip_threshold];
+clear rip_duration rip_phase SO_b SO_a rip_threshold 
+
+load('newfeatures_GC_window_ripples_broadband_Rat_OS_Ephys_RGS14_rat7_373727_SD5_OD_13-14_02_2020.mat')
+RGS14.RGS.Rat7RGS.OD=[rip_duration; rip_phase; SO_b; SO_a ;rip_threshold];
+clear rip_duration rip_phase SO_b SO_a rip_threshold 
+
+cd /media/genzel/genzel1/UMAP_rgs_downsampled/8
+
+load('newfeatures_GC_window_ripples_broadband_OS_Ephys_RGS14_Rat8_378133_SD1_HC_21_04_2020.mat')
+RGS14.RGS.Rat8RGS.HC=[rip_duration; rip_phase; SO_b; SO_a ;rip_threshold];
+clear rip_duration rip_phase SO_b SO_a rip_threshold 
+
+load('newfeatures_GC_window_ripples_broadband_OS_Ephys_RGS14_Rat8_378133_SD2_CON_23-24_04_2020.mat')
+RGS14.RGS.Rat8RGS.CN=[rip_duration; rip_phase; SO_b; SO_a ;rip_threshold];
+clear rip_duration rip_phase SO_b SO_a rip_threshold 
+
+load('newfeatures_GC_window_ripples_broadband_OS_Ephys_RGS14_Rat8_378133_SD3_OR_27-28_04_2020.mat')
+RGS14.RGS.Rat8RGS.OR=[rip_duration; rip_phase; SO_b; SO_a ;rip_threshold];
+clear rip_duration rip_phase SO_b SO_a rip_threshold 
+
+load('newfeatures_GC_window_ripples_broadband_OS_Ephys_RGS14_Rat8_378133_SD6_OD_04-05_05_2020.mat')
+RGS14.RGS.Rat8RGS.OD=[rip_duration; rip_phase; SO_b; SO_a ;rip_threshold];
+clear rip_duration rip_phase SO_b SO_a rip_threshold 
+
+
+cd /media/genzel/genzel1/UMAP_rgs_downsampled/9
+
+load('newfeatures_GC_window_ripples_broadband_OS_Ephys_RGS14_Rat9_378134_SD1_HC_29_04_2020.mat')
+RGS14.VEH.Rat9RGS.HC=[rip_duration; rip_phase; SO_b; SO_a ;rip_threshold];
+clear rip_duration rip_phase SO_b SO_a rip_threshold 
+
+
+load('newfeatures_GC_window_ripples_broadband_OS_Ephys_RGS14_Rat9_378134_SD2_CON_30_04-01_05_2020.mat')
+RGS14.VEH.Rat9RGS.CN=[rip_duration; rip_phase; SO_b; SO_a ;rip_threshold];
+clear rip_duration rip_phase SO_b SO_a rip_threshold 
+
+load('newfeatures_GC_window_ripples_broadband_OS_Ephys_RGS14_Rat9_378134_SD3_OR_04-05_05_2020.mat')
+RGS14.VEH.Rat9RGS.OR=[rip_duration; rip_phase; SO_b; SO_a ;rip_threshold];
+clear rip_duration rip_phase SO_b SO_a rip_threshold 
+
+load('newfeatures_GC_window_ripples_broadband_OS_Ephys_RGS14_Rat9_378134_SD6_OD_15-16_05_2020.mat')
+RGS14.VEH.Rat9RGS.OD=[rip_duration; rip_phase; SO_b; SO_a ;rip_threshold];
+clear rip_duration rip_phase SO_b SO_a rip_threshold 
+
+
