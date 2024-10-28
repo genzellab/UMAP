@@ -1,21 +1,28 @@
-% OS gui_downsample
+% OS downsample
 % This script downsamples electrophysiological (ephys) data for specified rats.
 % It allows user interaction for selecting rats, acquisition frequencies, and conditions.
+%You need the 'select_folder.m' function from Corticohippocampal: https://github.com/Aleman-Z/CorticoHippocampal/blob/master/Object%20space%20task/select_folder.m
+addpath(genpath('/home/adrian/Documents/GitHub/CorticoHippocampal/Object space task'))
 
 % Clear workspace and close figures
 clear variables;
 close all;
+
+%You need the pre-designed files with information of Object Space tast from
+%the UMAP github: https://github.com/genzellab/UMAP/tree/main/downsample
+umap_github_path= '/home/adrian/Documents/GitHub/UMAP/downsample';
 
 % Set paths for raw and downsampled data
 folderpath_raw_data = '/kunefe/Rat_OS_Ephys_RGS14/Raw'; % Raw data directory for Rat 13
 folderpath_downsampled_data = '/home/adrian/Documents/UMAP/rgs_downsampled';
 
 % Change directory to downsampled data folder and load existing downsampled data
-cd(folderpath_downsampled_data);
+cd(umap_github_path);
 load('OS_RGS14_UMAP_downsampling.mat');
+cd(folderpath_downsampled_data)
 
 % Define sampling frequencies for rats (in Hz)
-fs_rats = ones(1, 9) * 30000;
+fs_rats = ones(1, 9) * 30000; % CAREFUL, THESE VALUES are different for OS BASIC rats. Ask a core lab member. 
 
 % Select rat(s) via input dialog
 opts.Resize = 'on';
@@ -37,6 +44,29 @@ fs_new = str2num(answer{2});   % Downsampled frequency
 % Initialize variables for trial selection
 an = [];  
 stage = an;  % Define stage variable for trial conditions
+
+if ~isempty(stage)
+    %Splits Multiple trials
+    if ~isempty(stage(~isempty(strfind(an{1},','))))
+        stage=stage(~isempty(strfind(an{1},',')));
+        stage=stage{1};
+        stage=strsplit(stage,',');
+    end
+end
+
+
+%Adds trials containing an initial capital letter.
+idx = isstrprop(stage,'upper') ;
+if ~isempty(idx)
+    for indexup=1:length(idx)
+         varind=idx{indexup};
+         if varind(1)~=1
+             vj=stage{indexup};
+             vj(1)=upper(vj(1));
+             stage= [stage vj];
+         end
+    end
+end
 
 % Get ephys data folder for the selected rat
 dname = uigetdir(folderpath_raw_data, strcat('Select folder with Ephys data for Rat', num2str(Rat)));
@@ -79,86 +109,110 @@ close(f);
 iii = 1;
 while iii <= length(labelconditions)
     cd(dname);  % Go to the ephys folder for the specified rat
-
     % Select folder for the current condition
     [BB, labelconditions, labelconditions2] = select_folder(Rat, iii, labelconditions, labelconditions2);
     cd(BB);
     A = getfolder;  % Get list of files in the selected folder
     
-    % Trial selection based on user input
-    if ~isempty(stage)
-        Var = zeros(size(A));
-        for j = 1:length(stage)
-            aver = cellfun(@(x) strfind(x, stage{j}), A, 'UniformOutput', false);
-            aver = cellfun(@(x) length(x), aver, 'UniformOutput', false);
-            Var = or(cell2mat(aver), Var);
-        end
-    else
-        Var = ones(size(A));  % Use all trials if no stage specified
+%Look for trial
+if ~isempty(stage)
+    Var=zeros(size(A));
+    for j=1:length(stage)
+    aver=cellfun(@(x) strfind(x,stage{j}),A,'UniformOutput',false);
+    aver=cellfun(@(x) length(x),aver,'UniformOutput',false);
+    Var=or(cell2mat(aver),Var);
     end
+else
+    Var=ones(size(A));    
+end
 
-    % Check for additional folders if necessary
-    if Var == 0
-        cd(A{1});
-        A = getfolder;  % Get files again from new directory
-        Var = zeros(size(A));
-        for j = 1:length(stage)
-            aver = cellfun(@(x) strfind(x, stage{j}), A, 'UniformOutput', false);
-            aver = cellfun(@(x) length(x), aver, 'UniformOutput', false);
-            Var = or(cell2mat(aver), Var);
-        end
-    end
+%In case of extra folder
+if Var==0 %Error: Var is a vector
+    xo
+ cd(A{1})
+        A=getfolder;
+        %Look for trial
+        Var=zeros(size(A));
+        for j=1:length(stage)
+        aver=cellfun(@(x) strfind(x,stage{j}),A,'UniformOutput',false);
+        aver=cellfun(@(x) length(x),aver,'UniformOutput',false);
+        Var=or(cell2mat(aver),Var);
+        end 
+end
+% xo
+if ~isempty(stage)
+    A=A(Var);
+end
 
-    if ~isempty(stage)
-        A = A(Var);  % Filter files based on trials
-    end
+A=A.';
+
+%% Label suggestion (Not used when All-trials option was selected)
+str2=cell(size(A,1),1);
+
+if ~isempty(stage)
     
-    % Prepare for labeling trials
-    str2 = cell(size(A, 1), 1);
-    if ~isempty(stage)
-        for j = 1:length(stage)
-            cont = 0;
-            for n = 1:size(A, 1)
-                if ~isempty(strfind(A{n}, stage{j}))
-                    cont = cont + 1;  
-                    str2{n, 1} = strcat(stage{j}, num2str(cont));  % Create label
-                end       
+   for j=1:length(stage)
+       cont=0;
+       for n=1:size(A,1)
+              
+            if n==1
+                
             end
-        end
-    else
-        str2 = A;  % Use file names as labels if no stage specified
-    end   
+           
+           %if contains(A{n},stage{j})
+            if ~isempty(strfind(A{n},stage{j}))                
+              cont=cont+1;  
+              str2{n,1}=strcat(stage{j},num2str(cont));   
+
+            end       
+       end
+     %str2{n,1}=strcat(stage{1},num2str(n));
+   end
+else
+ str2=A;   
+end   
+   %%
+%xo   
+%LABEL TRIALS.
+
+f = figure(2);
+set(f, 'NumberTitle', 'off', ...
+    'Name',strcat('Rat',num2str(Rat),'_',labelconditions{iii}));
+
+c = uicontrol('Style','text','Position',[1 380 450 30]);
+% c = uicontrol('Style','text','Position',[1 380 450 20]);
+% c.String = {'Edit the Label column with the correct trial index according to the dates.'};
+% c.String =sprintf('%s\n%s','Edit the Label column with the correct trial index according to the dates.','Leave blank if trial is corrupted.');
+%{'Edit the Label column with the correct trial index according to the dates' 'Leave blank if trial is corrupted.'};
+c.String =sprintf('%s\n%s','Select trials.','Leave blank label if trial is corrupted.');
+c.FontSize=10;
+c.FontAngle='italic';
+
+uit = uitable(f);
+% d = {A,str2};
+uit.Data = [A str2];
+uit.ColumnName={'File name'; 'Label'};
+uit.ColumnWidth= {200,80};
+% uit.Position = [20 20 258 78];
+
+
+        
+set(uit,'ColumnEditable',true(1,2))
+h = uicontrol('Position',[350 20 100 40],'String','Confirm',...
+              'Callback','uiresume(gcbf)');
+h.FontSize=10;
+uiwait(gcf); 
+str2= get(uit,'Data');   
+str2=str2(:,2);
+%Remove corrupted trials.
+close(f);
+str1=A;
+str1=str1(not(cellfun('isempty',str2)));
+A=A(not(cellfun('isempty',str2)));
+str2=str2(not(cellfun('isempty',str2)));
     
-    % Create GUI for labeling trials
-    f = figure(2);
-    set(f, 'NumberTitle', 'off', 'Name', strcat('Rat', num2str(Rat), '_', labelconditions{iii}));
-
-    % Instruction text
-    c = uicontrol('Style', 'text', 'Position', [1 380 450 30]);
-    c.String = sprintf('%s\n%s', 'Select trials.', 'Leave blank label if trial is corrupted.');
-    c.FontSize = 10;
-    c.FontAngle = 'italic';
-
-    % Create table for trial names and labels
-    uit = uitable(f);
-    uit.Data = [A str2];
-    uit.ColumnName = {'File name'; 'Label'};
-    uit.ColumnWidth = {200, 80};
-    set(uit, 'ColumnEditable', true(1, 2));
-
-    % Confirm button for labeling
-    h = uicontrol('Position', [350 20 100 40], 'String', 'Confirm', 'Callback', 'uiresume(gcbf)');
-    h.FontSize = 10;
-    uiwait(gcf);  % Wait for confirmation
-
-    % Get updated labels and remove corrupted trials
-    str2 = get(uit, 'Data');   
-    str2 = str2(:, 2);  % Extract label column
-    str1 = A;
-    str1 = str1(not(cellfun('isempty', str2)));  % Filter based on non-empty labels
-    A = A(not(cellfun('isempty', str2)));  % Filter file names
-    str2 = str2(not(cellfun('isempty', str2)));  % Filter labels
-
+    
+    
     % Initialize progress bar
     F = waitbar(0, 'Please wait...');
     
@@ -197,20 +251,43 @@ while iii <= length(labelconditions)
 
         % Process each selected channel
         for ch = 1:length(cf1)
-            data1 = load(cf1{ch});  % Load data for the first channel
-            data2 = load(cf2{ch});  % Load data for the second channel
-            data1 = data1.data1;  % Extract the actual data
-            data2 = data2.data2;  % Extract the actual data
-
+            HPC = load_open_ephys_data(cf1{ch});  % Load data for the first channel
+            PFC = load_open_ephys_data(cf2{ch});  % Load data for the second channel
+ 
             % Downsample and filter the data
-            data1_filtered = filtfilt(b, a, data1);  % Apply low-pass filter
-            data1_downsampled = downsample(data1_filtered, round(fs / fs_new));  % Downsample the data
-            data2_filtered = filtfilt(b, a, data2);  % Apply low-pass filter
-            data2_downsampled = downsample(data2_filtered, round(fs / fs_new));  % Downsample the data
-
+            HPC = filtfilt(b, a, HPC);  % Apply low-pass filter
+            HPC = downsample(HPC, round(fs / fs_new));  % Downsample the data
+            PFC = filtfilt(b, a, PFC);  % Apply low-pass filter
+            PFC = downsample(PFC, round(fs / fs_new));  % Downsample the data
+            %xo
             % Save downsampled data
-            downsampled_name = fullfile(dname2, strcat('Rat', num2str(Rat), '_', labelconditions{iii}, '_', str1{num}, '_CH', num2str(ch), '.mat'));
-            save(downsampled_name, 'data1_downsampled', 'data2_downsampled');  % Save both channels
+         
+            cd(dname2)
+            %Rat folder
+            if ~isfolder(num2str(Rat))
+                mkdir(num2str(Rat))
+            end
+            cd(num2str(Rat))
+            
+    if ~isfolder(labelconditions2{iii})    
+       mkdir(labelconditions2{iii})
+    end
+    cd(labelconditions2{iii})
+            
+    if ~exist(str2{num}, 'dir')
+        mkdir(str2{num})
+    end
+cd(str2{num})
+ save(['HPC_' cf1{1} '.mat'],'HPC')
+ save(['PFC_' cf2{1} '.mat'],'PFC')
+ clear PFC HPC 
+ 
+ 
+cd(strcat(dname,'/',BB))    
+
+ 
+
+    
         end
 
         % Update progress bar
