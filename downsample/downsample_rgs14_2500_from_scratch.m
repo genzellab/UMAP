@@ -247,15 +247,9 @@ str2=str2(not(cellfun('isempty',str2)));
             cd(dname3);
         end
 
-        % Select channels for HPC and PFC based on conditions
-        if strcmp(label1{1}, 'HPC')
-            cf1 = [cfold(cellfun(@(x) ~isempty(strfind(x, ['CH' num2str(vr(1)) '.'])), cfold)), cfold(cellfun(@(x) ~isempty(strfind(x, ['CH' num2str(vr(1)) '_'])), cfold))];
-            cf2 = [cfold(cellfun(@(x) ~isempty(strfind(x, ['CH' num2str(vr(2)) '.'])), cfold)), cfold(cellfun(@(x) ~isempty(strfind(x, ['CH' num2str(vr(2)) '_'])), cfold))];
-        else
-            cf1 = [cfold(cellfun(@(x) ~isempty(strfind(x, ['CH' num2str(vr(1)) '.'])), cfold)), cfold(cellfun(@(x) ~isempty(strfind(x, ['CH' num2str(vr(1)) '_'])), cfold))];
-            cf2 = [cfold(cellfun(@(x) ~isempty(strfind(x, ['CH' num2str(vr(2)) '.'])), cfold)), cfold(cellfun(@(x) ~isempty(strfind(x, ['CH' num2str(vr(2)) '_'])), cfold))];
-        end
-
+        cf1 = [cfold(cellfun(@(x) ~isempty(strfind(x, ['CH' num2str(vr(1)) '.'])), cfold)), cfold(cellfun(@(x) ~isempty(strfind(x, ['CH' num2str(vr(1)) '_'])), cfold))];
+        cf2 = [cfold(cellfun(@(x) ~isempty(strfind(x, ['CH' num2str(vr(2)) '.'])), cfold)), cfold(cellfun(@(x) ~isempty(strfind(x, ['CH' num2str(vr(2)) '_'])), cfold))];
+ 
         % Process each selected channel
         for ch = 1:length(cf1)
             HPC = load_open_ephys_data(cf1{ch});  % Load data for the first channel
