@@ -1,28 +1,35 @@
 % OS downsample
 % This script downsamples electrophysiological (ephys) data for specified rats.
 % It allows user interaction for selecting rats, acquisition frequencies, and conditions.
-%You need the 'select_folder.m' function from Corticohippocampal: https://github.com/Aleman-Z/CorticoHippocampal/blob/master/Object%20space%20task/select_folder.m
+%You need the 'select_folder.m', 'getfolder.m' and 'load_open_ephys_data.m' functions from Corticohippocampal: https://github.com/Aleman-Z/CorticoHippocampal/blob/master/Object%20space%20task/select_folder.m
 addpath(genpath('/home/adrian/Documents/GitHub/CorticoHippocampal/Object space task'))
-
+addpath('/home/adrian/Documents/GitHub/ADRITOOLS')
+addpath('/home/adrian/Documents/GitHub/CorticoHippocampal/Load_ephys')
 % Clear workspace and close figures
 clear variables;
 close all;
 
 %You need the pre-designed files with information of Object Space tast from
 %the UMAP github: https://github.com/genzellab/UMAP/tree/main/downsample
+%This data includes the rat IDs and the corresponding selecting channels
+%per brain area. 
 umap_github_path= '/home/adrian/Documents/GitHub/UMAP/downsample';
 
 % Set paths for raw and downsampled data
-folderpath_raw_data = '/kunefe/Rat_OS_Ephys_RGS14/Raw'; % Raw data directory for Rat 13
+folderpath_raw_data = '/kunefe/Rat_OS_Ephys_RGS14/Raw'; % Raw data directory
 folderpath_downsampled_data = '/home/adrian/Documents/UMAP/rgs_downsampled';
 
 % Change directory to downsampled data folder and load existing downsampled data
 cd(umap_github_path);
-load('OS_RGS14_UMAP_downsampling.mat');
+load('OS_RGS14_UMAP_downsampling.mat'); % You should change this if you plan to work with a dataset different to
+% RGS. 
 cd(folderpath_downsampled_data)
 
 % Define sampling frequencies for rats (in Hz)
 fs_rats = ones(1, 9) * 30000; % CAREFUL, THESE VALUES are different for OS BASIC rats. Ask a core lab member. 
+% Fos OS BASIC dataset: 20khz rats 1-9. Rats 11 and 13 acquired with 30khz.
+%Uncomment for OS BASIC: 
+%fs_rats = [ones(1, 5) * 20000, ones(1, 2) * 30000];
 
 % Select rat(s) via input dialog
 opts.Resize = 'on';
