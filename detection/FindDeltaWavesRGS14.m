@@ -146,7 +146,7 @@ delta = reshape(delta,size(where,1),6);
 
 % Discard waves that are too long or too short
 duration = delta(:,3) - delta(:,1);
-delta(duration<minDuration/2500|duration>maxDuration/2500,:) = [];
+delta(duration<minDuration/1000|duration>maxDuration/1000,:) = [];
 
 % Threshold z-scored peak and trough amplitudes
 peak = delta(:,5);
